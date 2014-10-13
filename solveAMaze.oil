@@ -1,0 +1,187 @@
+/*
+To add a task :
+1- copy-paste the code below at the end of the file ;
+2- in the code, replace each parameter between >>> <<< by its value.
+ 
+ TASK >>>MyTask<<<
+  {
+    AUTOSTART = FALSE;
+    PRIORITY = >>>Priority<<<;
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+    STACKSIZE = 512;
+  };
+  ALARM >>>MyTaskInitials<<<_alarm
+  {
+    COUNTER = SysTimerCnt;
+    ACTION = ACTIVATETASK
+    {
+        TASK = >>>MyTask<<<;
+    };
+    AUTOSTART = TRUE
+    {
+        ALARMTIME = >>>StartTime<<<;
+        CYCLETIME = >>>Period<<<;
+        APPMODE = appmode1;
+    };
+  };
+
+Don't forget to add the needed ressources in the task parameters (RESOURCE=>>>ResourceName<<<).
+*/
+
+
+#include "implementation.oil"
+
+
+CPU ATMEL_AT91SAM7S256
+{
+  OS LEJOS_OSEK
+  {
+    STATUS = EXTENDED;
+    STARTUPHOOK = FALSE;
+    ERRORHOOK = FALSE;
+    SHUTDOWNHOOK = FALSE;
+    PRETASKHOOK = FALSE;
+    POSTTASKHOOK = FALSE;
+    USEGETSERVICEID = FALSE;
+    USEPARAMETERACCESS = FALSE;
+    USERESSCHEDULER = FALSE;
+  };
+
+  /* Definition of application mode */
+  APPMODE appmode1{};
+  
+  RESOURCE UpdateLocker
+  {
+    RESOURCEPROPERTY = STANDARD;
+  };
+
+  COUNTER SysTimerCnt
+  {
+    MINCYCLE = 1;
+    MAXALLOWEDVALUE = 10000;
+    TICKSPERBASE = 1; /* One tick is equal to 1msec */
+  };
+
+
+  /* Definition of ColorReader */
+  TASK ColorReader
+  {
+    AUTOSTART = FALSE;
+    PRIORITY = 7;
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+    STACKSIZE = 512;
+  };
+  ALARM cr_alarm
+  {
+    COUNTER = SysTimerCnt;
+    ACTION = ACTIVATETASK
+    {
+        TASK = ColorReader;
+    };
+    AUTOSTART = TRUE
+    {
+        ALARMTIME = 1;
+        CYCLETIME = 50;
+        APPMODE = appmode1;
+    };
+  };
+
+  /* Definition of DistanceReader */
+  TASK DistanceReader
+  {
+    AUTOSTART = FALSE;
+    PRIORITY = 8;
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+    STACKSIZE = 512;
+  };
+  ALARM dr_alarm
+  {
+    COUNTER = SysTimerCnt;
+    ACTION = ACTIVATETASK
+    {
+        TASK = DistanceReader;
+    };
+    AUTOSTART = TRUE
+    {
+        ALARMTIME = 1;
+        CYCLETIME = 50;
+        APPMODE = appmode1;
+    };
+  };
+
+  /* Definition of WheelsPositionReader */
+  TASK WheelsPositionReader
+  {
+    AUTOSTART = FALSE;
+    PRIORITY = 9;
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+    STACKSIZE = 512;
+  };
+  ALARM wpr_alarm
+  {
+    COUNTER = SysTimerCnt;
+    ACTION = ACTIVATETASK
+    {
+        TASK = WheelsPositionReader;
+    };
+    AUTOSTART = TRUE
+    {
+        ALARMTIME = 1;
+        CYCLETIME = 50;
+        APPMODE = appmode1;
+    };
+  };
+
+  /* Definition of Localization */
+  TASK Localization
+  {
+    AUTOSTART = FALSE;
+    PRIORITY = 6;
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+    RESOURCE = UpdateLocker;
+    STACKSIZE = 512;
+  };
+  ALARM loc_alarm
+  {
+    COUNTER = SysTimerCnt;
+    ACTION = ACTIVATETASK
+    {
+        TASK = Localization;
+    };
+    AUTOSTART = TRUE
+    {
+        ALARMTIME = 1;
+        CYCLETIME = 100;
+        APPMODE = appmode1;
+    };
+  };
+  
+  /* Definition of Mapping */
+   TASK Mapping
+  {
+    AUTOSTART = FALSE;
+    PRIORITY = 6;
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+    STACKSIZE = 512;
+  };
+  ALARM map_alarm
+  {
+    COUNTER = SysTimerCnt;
+    ACTION = ACTIVATETASK
+    {
+        TASK = Mapping;
+    };
+    AUTOSTART = TRUE
+    {
+        ALARMTIME = 1;
+        CYCLETIME = 200;
+        APPMODE = appmode1;
+    };
+  };
+};
