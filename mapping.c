@@ -35,7 +35,7 @@ void update_map() {
 	S32 right_distance = get_distanceR();
 	S32 front_distance = get_distanceF();
 	int pos_x = get_x();
-	int pox_y = get_y();
+	int pos_y = get_y();
 
 	U8 result = 0x00;
 	if( left_distance > 10 ) {
@@ -51,5 +51,12 @@ void update_map() {
 		result += STOP_POSITION;
 	}
 
-	_map[pos_x][pox_y] = result;
+	if( pos_x < 0 ) {
+		pos_x += 15;
+	}
+	if( pos_y < 0 ) {
+		pos_y += 7;
+	}
+
+	_map[pos_x][pos_y] = result;
 }
