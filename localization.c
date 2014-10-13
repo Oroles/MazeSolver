@@ -1,7 +1,12 @@
 #include <stddef.h>
+#include <math.h>
 #include "kernel.h"
 #include "ecrobot_interface.h"
+#include "shared_variables.h"
 #include "localization.h"
+
+#define PI	3.14159265
+
 
 int access_x(int x, int setMode) {
 	static int __x=0;
@@ -39,11 +44,48 @@ int access_d(int d, int setMode) {
 	}
 	void set_d(int d) { access_d(d,1); }
 
+double round(double val) {
+	return floor(val + 0.5);
+}
 
 void update_localization() {
+	static int __last_wL;
+	static int __last_wR;
+
+	// Don't stop me, I need synchronized parameter values
+	GetResource(RES_SCHEDULER);
+	int wL=get_wPositionL;
+	int wR=get_wPositionR;
+	ReleaseResource(RES_SCHEDULER);
+	
+	// Initialization
+	int temp=wL;
+	wL -= __last_wL;
+	__last_wL=temp;
+	temp=wR;
+	wR -= __last_wR;
+	__last_wR=temp;
+	// Computations
+	wL=wL*R;
+	wR=wR*R;
+	double Vs=wL+wR;
+	Vs=Vs/2;
+	double w=wR-wL;
+	w=w/D;
+	double rad=PI/180.0;
+	w=w*rad;
+	double x=cos(w);
+	double y=sin(w);
+	x=Vs*x;
+	y=Vs*y;
+	x=round(x);
+	y=round(y);
+
+
+	// Update Shared Variables
 	GetResource(UpdateLocker);
-	set_x(1);
-	set_y(1);
-	set_d(1);
+	set_x((int)x);
+	set_y((int)y);
+	set_d(w);
 	ReleaseResource(UpdateLocker);
 }
