@@ -90,3 +90,4 @@ TASK(WheelsPositionReader) {
 	set_wpositionR(nxt_motor_get_count(PORT_MOTOR_R));
 	TerminateTask();
 }
+
