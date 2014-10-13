@@ -54,8 +54,8 @@ void displayData()
 	display_goto_xy(0,0);display_string("LD");display_goto_xy(2,0);display_int(get_distanceL(),3);
 	display_goto_xy(0,1);display_string("FD");display_goto_xy(2,1);display_int(get_distanceF(),3);
 	display_goto_xy(0,2);display_string("RD");display_goto_xy(2,2);display_int(get_distanceR(),3);
-	display_goto_xy(0,3);display_string("WL");display_goto_xy(2,3);display_int(get_wpositionL(),4);
-	display_goto_xy(0,4);display_string("WR");display_goto_xy(2,4);display_int(get_wpositionR(),4);
+	display_goto_xy(0,3);display_string("WL");display_goto_xy(2,3);display_int(get_wPositionL(),4);
+	display_goto_xy(0,4);display_string("WR");display_goto_xy(2,4);display_int(get_wPositionR(),4);
 	display_goto_xy(0,5);display_string("PX");display_goto_xy(2,5);display_int(get_x(),3);
 	display_goto_xy(0,6);display_string("PY");display_goto_xy(2,6);display_int(get_y(),3);
 	
@@ -86,8 +86,8 @@ TASK(DistanceReader) {
 }
 
 TASK(WheelsPositionReader) {
-	set_wpositionL(nxt_motor_get_count(PORT_MOTOR_L));
-	set_wpositionR(nxt_motor_get_count(PORT_MOTOR_R));
+	set_wPositionL(nxt_motor_get_count(PORT_MOTOR_L));
+	set_wPositionR(nxt_motor_get_count(PORT_MOTOR_R));
 	TerminateTask();
 }
 

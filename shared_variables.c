@@ -48,27 +48,27 @@ S32 access_distanceF(S32 distanceF, int setMode) {
 		return access_distanceF(0,0);
 	}
 	
-int access_wpositionL(int wpositionL, int setMode) {
-	static int __wpositionL;
-	if(setMode) { __wpositionL = wpositionL; return 0; }
-	else return __wpositionL;
+int access_wPositionL(int wPositionL, int setMode) {
+	static int __wPositionL;
+	if(setMode) { __wPositionL = wPositionL; return 0; }
+	else return __wPositionL;
 }
-	void set_wpositionL(int wpositionL) {
-		access_wpositionL(wpositionL,1);
+	void set_wPositionL(int wPositionL) {
+		access_wPositionL(wPositionL,1);
 	}
-	int get_wpositionL() {
-		return access_wpositionL(0,0);
+	int get_wPositionL() {
+		return access_wPositionL(0,0);
 	}
 	
-int access_wpositionR(int wpositionR, int setMode) {
-	static int __wpositionR;
-	if(setMode) { __wpositionR = wpositionR; return 0; }
-	else return __wpositionR;
+int access_wPositionR(int wPositionR, int setMode) {
+	static int __wPositionR;
+	if(setMode) { __wPositionR = wPositionR; return 0; }
+	else return __wPositionR;
 }
-	void set_wpositionR(int wpositionR) {
-		access_wpositionL(wpositionR,1);
+	void set_wPositionR(int wPositionR) {
+		access_wPositionL(wPositionR,1);
 	}
-	int get_wpositionR() {
-		return access_wpositionR(0,0);
+	int get_wPositionR() {
+		return access_wPositionR(0,0);
 	}
 

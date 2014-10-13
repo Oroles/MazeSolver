@@ -8,14 +8,14 @@ void set_color(U8 color);
 void set_distanceL(S32 distanceL);
 void set_distanceR(S32 distanceR);
 void set_distanceF(S32 distanceF);
-void set_wpositionL(int wpositionL);
-void set_wpositionR(int wpositionR);
+void set_wPositionL(int wpositionL);
+void set_wPositionR(int wpositionR);
 
 U8 get_color();
 S32 get_distanceL();
 S32 get_distanceR();
 S32 get_distanceF();
-int get_wpositionL();
-int get_wpositionR();
+int get_wPositionL();
+int get_wPositionR();
 
 #endif
