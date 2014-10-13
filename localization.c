@@ -54,8 +54,8 @@ void update_localization() {
 
 	// Don't stop me, I need synchronized parameter values
 	GetResource(RES_SCHEDULER);
-	int wL=get_wPositionL;
-	int wR=get_wPositionR;
+	int wL=get_wPositionL();
+	int wR=get_wPositionR();
 	ReleaseResource(RES_SCHEDULER);
 	
 	// Initialization
