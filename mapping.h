@@ -1,8 +1,8 @@
 #ifndef _MAP_H
 #define _MAP_H
 
-U8 _map[15][7];
 
+void init_map();
 void update_map();
 
 #endif
