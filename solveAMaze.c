@@ -64,6 +64,7 @@ void displayData()
 
 TASK(Localization) {
 	update_localization();
+	displayData();
 	TerminateTask();
 }
 
