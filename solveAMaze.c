@@ -5,6 +5,7 @@
 #include "shared_variables.h"
 #include "localization.h"
 #include "mapping.h"
+#include "movement.h"
 
 /* OSEK declarations */
 
@@ -61,16 +62,17 @@ void displayData()
 
 TASK(Localization) {
 	update_localization();
-	displayData();
 	TerminateTask();
 }
 
 TASK(Mapping) {
 	update_map();
+	//display_map_debug();
 	TerminateTask();
 }
 
 TASK(Movement) {
+	//move_forward();
 	TerminateTask();
 }
 

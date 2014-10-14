@@ -19,6 +19,11 @@ void display_map(int row, int column, U8 matrix[row][column]) {
 			display_hex( matrix[i][j], 1 );
 		}
 	}
+	display_update();
+}
+
+void display_map_debug() {
+	display_map(15,7,_map);
 }
 
 void init_map() {
@@ -47,7 +52,7 @@ void update_map() {
 	if ( front_distance > 10 ) {
 		result += NO_F_WALL;
 	}
-	if ( color != NXT_COLOR_RED ) {
+	if ( color == NXT_COLOR_RED ) {
 		result += STOP_POSITION;
 	}
 

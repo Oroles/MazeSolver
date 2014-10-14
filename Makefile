@@ -6,6 +6,7 @@ TARGET_SOURCES = \
 	localization.c \
 	mapping.c \
 	shared_variables.c \
+	movement.c \
 	$(TARGET).c
 TOPPERS_OSEK_OIL_SOURCE = ./$(TARGET).oil
 
