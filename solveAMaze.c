@@ -6,14 +6,6 @@
 #include "localization.h"
 #include "mapping.h"
 
-/* PORTS */
-#define PORT_COLOR NXT_PORT_S4
-#define PORT_DISTANCE_R NXT_PORT_S1
-#define PORT_DISTANCE_F NXT_PORT_S2
-#define PORT_DISTANCE_L NXT_PORT_S3
-#define PORT_MOTOR_R NXT_PORT_B
-#define PORT_MOTOR_L NXT_PORT_C
-
 /* OSEK declarations */
 
 DeclareCounter(SysTimerCnt);
@@ -22,6 +14,7 @@ DeclareTask(DistanceReader);
 DeclareTask(WheelsPositionReader);
 DeclareTask(Localization);
 DeclareTask(Mapping);
+DeclareTask(Movement);
 
 void ecrobot_device_initialize()
 {
@@ -59,17 +52,25 @@ void displayData()
 	display_goto_xy(0,4);display_string("WR");display_goto_xy(2,4);display_int(get_wPositionR(),4);
 	display_goto_xy(0,5);display_string("PX");display_goto_xy(2,5);display_int(get_x(),3);
 	display_goto_xy(0,6);display_string("PY");display_goto_xy(2,6);display_int(get_y(),3);
+	U8 color = get_color();
+	int result = color == NXT_COLOR_RED ? 1 : 0;
+	display_goto_xy(0,7);display_string("CL");display_goto_xy(2,7);display_int(result,3);
 	
 	display_update();
 }
 
 TASK(Localization) {
 	update_localization();
+	displayData();
 	TerminateTask();
 }
 
 TASK(Mapping) {
 	update_map();
+	TerminateTask();
+}
+
+TASK(Movement) {
 	TerminateTask();
 }
 
