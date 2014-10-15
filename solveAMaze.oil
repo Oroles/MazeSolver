@@ -165,7 +165,7 @@ CPU ATMEL_AT91SAM7S256
   TASK Mapping
   {
     AUTOSTART = FALSE;
-    PRIORITY = 6;
+    PRIORITY = 5;
     ACTIVATION = 1;
     SCHEDULE = FULL;
     STACKSIZE = 512;
@@ -189,7 +189,7 @@ CPU ATMEL_AT91SAM7S256
   TASK Movement
   {
     AUTOSTART = FALSE;
-    PRIORITY = 5;
+    PRIORITY = 4;
     ACTIVATION = 1;
     SCHEDULE = FULL;
     STACKSIZE = 512;
@@ -208,4 +208,28 @@ CPU ATMEL_AT91SAM7S256
         APPMODE = appmode1;
     };
   };
+
+ TASK Display
+  {
+    AUTOSTART = FALSE;
+    PRIORITY = 1;
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+    STACKSIZE = 512;
+  };
+  ALARM disp_alarm
+  {
+    COUNTER = SysTimerCnt;
+    ACTION = ACTIVATETASK
+    {
+        TASK = Display;
+    };
+    AUTOSTART = TRUE
+    {
+        ALARMTIME = 1;
+        CYCLETIME = 500;
+        APPMODE = appmode1;
+    };
+  };
+
 };

@@ -3,6 +3,7 @@ RPATH=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 PATH_TO_ROOT= $(subst .. ,../,$(strip $(patsubst %,..,$(subst /, ,$(RPATH)))))
 TARGET = solveAMaze
 TARGET_SOURCES = \
+	display.c \
 	localization.c \
 	mapping.c \
 	shared_variables.c \
