@@ -56,12 +56,11 @@ TASK(Localization) {
 
 TASK(Mapping) {
 	update_map();
-	//display_map_debug();
 	TerminateTask();
 }
 
 TASK(Movement) {
-	//move_forward();
+	move_forward(100);
 	TerminateTask();
 }
 

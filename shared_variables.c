@@ -66,7 +66,7 @@ int access_wPositionR(int wPositionR, int setMode) {
 	else return __wPositionR;
 }
 	void set_wPositionR(int wPositionR) {
-		access_wPositionL(wPositionR,1);
+		access_wPositionR(wPositionR,1);
 	}
 	int get_wPositionR() {
 		return access_wPositionR(0,0);

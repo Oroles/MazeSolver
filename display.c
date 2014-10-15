@@ -9,10 +9,10 @@
 #define DISPLAY_DATA 	1
 #define DISPLAY_MAP 	2
 
-#define MODE_DISPLAY 	0
+#define MODE_DISPLAY 	1
 
 void displayData() {
-	display_clear(1);
+	display_clear(0);
 	display_goto_xy(0,0);display_string("LD");display_goto_xy(2,0);display_int(get_distanceL(),3);
 	display_goto_xy(0,1);display_string("FD");display_goto_xy(2,1);display_int(get_distanceF(),3);
 	display_goto_xy(0,2);display_string("RD");display_goto_xy(2,2);display_int(get_distanceR(),3);

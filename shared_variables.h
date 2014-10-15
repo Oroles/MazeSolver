@@ -9,8 +9,8 @@
 #define PORT_DISTANCE_R NXT_PORT_S1
 #define PORT_DISTANCE_F NXT_PORT_S2
 #define PORT_DISTANCE_L NXT_PORT_S3
-#define PORT_MOTOR_R NXT_PORT_B
-#define PORT_MOTOR_L NXT_PORT_C
+#define PORT_MOTOR_R NXT_PORT_C
+#define PORT_MOTOR_L NXT_PORT_B
 
 void set_color(U8 color);
 void set_distanceL(S32 distanceL);

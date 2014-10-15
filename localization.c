@@ -7,7 +7,6 @@
 
 #define PI	3.14159265
 
-
 int access_x(int x, int setMode) {
 	static int __x=0;
 	if(setMode) { __x=x; return 0; }
@@ -59,7 +58,7 @@ void update_localization() {
 	ReleaseResource(RES_SCHEDULER);
 	
 	// Initialization
-	int temp,temp2,temp3;
+	int temp,temp2,temp3;/*
 	temp=wL;
 	wL -= __last_wL;
 	__last_wL=temp;
@@ -80,15 +79,15 @@ void update_localization() {
 	x=Vs*x;
 	y=Vs*y;
 	x=round(x);
-	y=round(y);
+	y=round(y);*/
 	temp= get_x();
 	temp2=get_y();
 	temp3=get_d();
 
 	// Update Shared Variables
 	GetResource(UpdateLocker);
-	set_x(temp  + (int)x);
-	set_y(temp2 + (int)y);
-	set_d(temp3 + w);
+	set_x(temp  /*+ (int)x*/);
+	set_y(temp2 /*+ (int)y*/);
+	set_d(temp3 /*+ w*/);
 	ReleaseResource(UpdateLocker);
 }
