@@ -17,6 +17,7 @@ DeclareTask(WheelsPositionReader);
 DeclareTask(Localization);
 DeclareTask(Mapping);
 DeclareTask(Movement);
+DeclareTask(MainController);
 
 void ecrobot_device_initialize()
 {
@@ -61,6 +62,10 @@ TASK(Mapping) {
 
 TASK(Movement) {
 	move_forward(100);
+	TerminateTask();
+}
+
+TASK(MainController) {
 	TerminateTask();
 }
 

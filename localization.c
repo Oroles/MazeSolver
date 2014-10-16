@@ -58,7 +58,7 @@ void update_localization() {
 	ReleaseResource(RES_SCHEDULER);
 	
 	// Initialization
-	int temp,temp2,temp3;/*
+	int temp,temp2,temp3;
 	temp=wL;
 	wL -= __last_wL;
 	__last_wL=temp;
@@ -79,7 +79,7 @@ void update_localization() {
 	x=Vs*x;
 	y=Vs*y;
 	x=round(x);
-	y=round(y);*/
+	y=round(y);
 	temp= get_x();
 	temp2=get_y();
 	temp3=get_d();
