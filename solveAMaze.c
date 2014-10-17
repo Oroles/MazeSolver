@@ -18,6 +18,7 @@ DeclareTask(Localization);
 DeclareTask(Mapping);
 DeclareTask(Movement);
 DeclareTask(MainController);
+DeclareTask(DummyTask);
 
 void ecrobot_device_initialize()
 {
@@ -85,6 +86,10 @@ TASK(DistanceReader) {
 TASK(WheelsPositionReader) {
 	set_wPositionL(nxt_motor_get_count(PORT_MOTOR_L));
 	set_wPositionR(nxt_motor_get_count(PORT_MOTOR_R));
+	TerminateTask();
+}
+
+TASK(DummyTask) {
 	TerminateTask();
 }
 
