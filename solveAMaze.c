@@ -52,7 +52,7 @@ TASK(Display) {
 }
 
 TASK(Localization) {
-	update_localization();
+	//update_localization();
 	TerminateTask();
 }
 
@@ -62,7 +62,7 @@ TASK(Mapping) {
 }
 
 TASK(Movement) {
-	move_forward(20);
+	//move_forward(20);
 	TerminateTask();
 }
 
@@ -84,12 +84,18 @@ TASK(DistanceReader) {
 }
 
 TASK(WheelsPositionReader) {
-	set_wPositionL(nxt_motor_get_count(PORT_MOTOR_L));
-	set_wPositionR(nxt_motor_get_count(PORT_MOTOR_R));
+	//set_wPositionL(nxt_motor_get_count(PORT_MOTOR_L));
+	//set_wPositionR(nxt_motor_get_count(PORT_MOTOR_R));
 	TerminateTask();
 }
 
 TASK(DummyTask) {
+	set_x(0);
+	set_y(0);
+	systick_wait_ms(400);
+	set_x(1);
+	set_y(1);
+	systick_wait_ms(400);
 	TerminateTask();
 }
 

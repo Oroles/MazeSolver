@@ -84,7 +84,6 @@ void update_map() {
 	static int last_pos_x = 0;
 	static int last_pos_y = 0;
 
-
 	U8 color = get_color();
 	S32 left_distance = get_distanceL();
 	S32 right_distance = get_distanceR();

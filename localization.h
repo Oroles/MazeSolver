@@ -12,6 +12,8 @@ DeclareResource(UpdateLocker);
 int get_x();
 int get_y();
 int get_d();
+void set_x(int x);
+void set_y(int y);
 void update_localization();
 
 #endif
