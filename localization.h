@@ -4,8 +4,12 @@
 #include "kernel.h"
 #include "ecrobot_interface.h"
 
-#define D	111 	// The distance between the wheels (mm)
-#define R	20 		// The radius of a wheel (mm)
+#define PI 			3.14159265
+#define RAD 		(PI/180.0) 	// Conversion factor that translate angles from degrees to radians
+#define W_DIST 		13 			// The distance between the wheels (mm)
+#define W_DIAM		56 			// Nominal wheel diameter (in mm)
+#define PULSES 		360 		// Encoder resolution (in pulses per revolution)
+#define CONV 		(PI*W_DIAM/PULSES)		// Conversion factor that translates encoder pulses into linear wheel displacement
 
 DeclareResource(UpdateLocker);
 

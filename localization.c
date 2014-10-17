@@ -5,8 +5,6 @@
 #include "shared_variables.h"
 #include "localization.h"
 
-#define PI	3.14159265
-
 int access_x(int x, int setMode) {
 	static int __x=0;
 	if(setMode) { __x=x; return 0; }
@@ -17,7 +15,9 @@ int access_x(int x, int setMode) {
 		ReleaseResource(UpdateLocker);
 		return access_x(0,0);
 	}
-	void set_x(int x) { access_x(x,1); }
+	void set_x(int x) {
+		access_x(x,1);
+	}
 
 int access_y(int y, int setMode) {
 	static int __y=0;
@@ -29,7 +29,9 @@ int access_y(int y, int setMode) {
 		ReleaseResource(UpdateLocker);
 		return access_y(0,0);
 	}
-	void set_y(int y) { access_y(y,1); }
+	void set_y(int y) {
+		access_y(y,1);
+	}
 
 int access_d(int d, int setMode) {
 	static int __d=0;
@@ -41,15 +43,14 @@ int access_d(int d, int setMode) {
 		ReleaseResource(UpdateLocker);
 		return access_d(0,0);
 	}
-	void set_d(int d) { access_d(d,1); }
-
-double round(double val) {
-	return floor(val + 0.5);
-}
+	void set_d(int d) {
+		access_d(d,1);
+	}
 
 void update_localization() {
-	static int __last_wL;
-	static int __last_wR;
+	static int __last_wL=0;
+	static int __last_wR=0;
+	static double __dx=0,__dy=0,__dw=0;
 
 	// Don't stop me, I need synchronized parameter values
 	GetResource(RES_SCHEDULER);
@@ -58,36 +59,36 @@ void update_localization() {
 	ReleaseResource(RES_SCHEDULER);
 	
 	// Initialization
-	int temp,temp2,temp3;/*
+	int temp;
 	temp=wL;
 	wL -= __last_wL;
 	__last_wL=temp;
 	temp=wR;
 	wR -= __last_wR;
 	__last_wR=temp;
+	
 	// Computations
-	wL=wL*R;
-	wR=wR*R;
+	wL=wL*CONV;
+	wR=wR*CONV;
 	double Vs=wL+wR;
 	Vs=Vs/2;
 	double w=wR-wL;
-	w=w/D;
-	double rad=PI/180.0;
-	w=w*rad;
-	double x=cos(w);
-	double y=sin(w);
+	w=w/W_DIST;
+
+	double x,y;
+	x=cos(w);
+	y=sin(w);
 	x=Vs*x;
 	y=Vs*y;
-	x=round(x);
-	y=round(y);*/
-	temp= get_x();
-	temp2=get_y();
-	temp3=get_d();
+
+	__dx+=x;
+	__dy+=y;
+	__dw+=w;
 
 	// Update Shared Variables
 	GetResource(UpdateLocker);
-	set_x(temp  /*+ (int)x*/);
-	set_y(temp2 /*+ (int)y*/);
-	set_d(temp3 /*+ w*/);
+	set_x(lround(__dx));
+	set_y(lround(__dy));
+	set_d(lround(__dw/RAD));
 	ReleaseResource(UpdateLocker);
 }

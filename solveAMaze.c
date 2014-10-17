@@ -60,7 +60,7 @@ TASK(Mapping) {
 }
 
 TASK(Movement) {
-	move_forward(100);
+	move_forward(30);
 	TerminateTask();
 }
 
