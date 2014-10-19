@@ -4,6 +4,12 @@
 *.rxe
 build/
 kernel_cfg.c
+movement.c
+movement.h
+mapping.c
+mapping.h
+display.c
+display.h
 kernel_id.h
 implementation.oil
 *.sh
