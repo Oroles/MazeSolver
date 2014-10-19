@@ -4,6 +4,7 @@
 #include "ecrobot_interface.h"
 #include "shared_variables.h"
 #include "localization.h"
+#include "utils_params.h"
 
 int access_x(int x, int setMode) {
 	static int __x=0;
@@ -87,8 +88,8 @@ void update_localization() {
 
 	// Update Shared Variables
 	GetResource(UpdateLocker);
-	set_x(lround(__dx));
-	set_y(lround(__dy));
+	set_x(lround(__dx)/MAP_RES);
+	set_y(lround(__dy)/MAP_RES);
 	set_d(lround(__dw/RAD));
 	ReleaseResource(UpdateLocker);
 }
