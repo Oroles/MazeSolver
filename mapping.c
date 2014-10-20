@@ -81,7 +81,7 @@ void init_mapping() {
 }
 
 void update_map() {
-	static int last_pos_x = 0;
+	/*static int last_pos_x = 0;
 	static int last_pos_y = 0;
 
 	U8 color = get_color();
@@ -129,5 +129,5 @@ void update_map() {
 
 		last_pos_y = pos_y;
 		last_pos_x = pos_x;
-	}
+	}*/
 }

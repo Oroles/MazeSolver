@@ -4,16 +4,25 @@
 #include "kernel.h"
 #include "ecrobot_interface.h"
 
-#define D	111 	// The distance between the wheels (mm)
-#define R	20 		// The radius of a wheel (mm)
+#define NO 0 	// North
+#define NE 1 	// North East
+#define EA 2 	// East
+#define SE 3 	// South East
+#define SO 4 	// South
+#define SW 5 	// South West
+#define WE 6 	// West
+#define NW 7 	// North West
+
+#define CARD_PRECISION 2 	// The 4 cardinal points North, East, South and West (for direction of the robot) will be precise with +/- CARD_PRECISION degrees
 
 DeclareResource(UpdateLocker);
 
 int get_x();
+double get_realX();
 int get_y();
-int get_d();
-void set_x(int x);
-void set_y(int y);
+double get_realY();
+double get_w();
+int get_cardinal_point();
 void update_localization();
 
 #endif

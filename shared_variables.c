@@ -13,7 +13,7 @@ U8 access_color(U8 color, int setMode) {
 	}
 	
 S32 access_distanceL(S32 distanceL, int setMode) {
-	static S32 __distanceL;
+	static S32 __distanceL=255;
 	if(setMode) { __distanceL = distanceL; return 0; }
 	else return __distanceL;
 }
@@ -25,7 +25,7 @@ S32 access_distanceL(S32 distanceL, int setMode) {
 	}
 	
 S32 access_distanceR(S32 distanceR, int setMode) {
-	static S32 __distanceR;
+	static S32 __distanceR=255;
 	if(setMode) { __distanceR = distanceR; return 0; }
 	else return __distanceR;
 }
@@ -37,7 +37,7 @@ S32 access_distanceR(S32 distanceR, int setMode) {
 	}
 	
 S32 access_distanceF(S32 distanceF, int setMode) {
-	static S32 __distanceF;
+	static S32 __distanceF=255;
 	if(setMode) { __distanceF = distanceF; return 0; }
 	else return __distanceF;
 }
@@ -49,7 +49,7 @@ S32 access_distanceF(S32 distanceF, int setMode) {
 	}
 	
 int access_wPositionL(int wPositionL, int setMode) {
-	static int __wPositionL;
+	static int __wPositionL=0;
 	if(setMode) { __wPositionL = wPositionL; return 0; }
 	else return __wPositionL;
 }
@@ -61,7 +61,7 @@ int access_wPositionL(int wPositionL, int setMode) {
 	}
 	
 int access_wPositionR(int wPositionR, int setMode) {
-	static int __wPositionR;
+	static int __wPositionR=0;
 	if(setMode) { __wPositionR = wPositionR; return 0; }
 	else return __wPositionR;
 }
