@@ -91,12 +91,12 @@ TASK(WheelsPositionReader) {
 }
 
 TASK(DummyTask) {
-	set_x(0);
+	/*set_x(0);
 	set_y(0);
 	systick_wait_ms(400);
 	set_x(1);
 	set_y(1);
-	systick_wait_ms(400);
+	systick_wait_ms(400);*/
 	TerminateTask();
 }
 
