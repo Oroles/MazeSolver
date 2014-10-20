@@ -4,7 +4,6 @@
 #include "shared_variables.h"
 #include "localization.h"
 
-
 /*
   7   6   5   4   3   2   1   0
 | x | x | x | x | x | x | x | x |
@@ -40,7 +39,12 @@ void display_map(int row, int column, U8 matrix[row][column]) {
 	for( int i = 0; i < row; ++i ) {
 		for( int j = 0; j < column; ++j ) {
 			display_goto_xy( i, j );
-			display_hex( matrix[i][j], 1 );
+			U8 result = 0x00;
+			result |= ( matrix[i][j] & W_WALL_MASK );
+			result |= ( ( matrix[i][j] & E_WALL_MASK ) >> 1 );
+			result |= ( ( matrix[i][j] & S_WALL_MASK ) >> 2 );
+			result |= ( ( matrix[i][j] & N_WALL_MASK ) >> 3 );
+			display_hex( result, 1 );
 		}
 	}
 	display_update();
