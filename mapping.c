@@ -69,7 +69,20 @@ boolean is_wall(S32 distance) {
 	return false;
 }
 
+
+U8 get_unknown_cardinal(U8 mask) {
+	if ( ( mask & N_ORI_MASK ) == 0 ) return N_ORI_MASK;
+	if ( ( mask & W_ORI_MASK ) == 0 ) return W_ORI_MASK;
+	if ( ( mask & S_ORI_MASK ) == 0 ) return S_ORI_MASK;
+	if ( ( mask & E_ORI_MASK ) == 0 ) return E_ORI_MASK;
+	return N_ORI_MASK;
+}
+
+
 void update_map() {
+	static int last_pos_x = 0;
+	static int last_pos_y = 0;
+
 	S32 left_distance = get_distanceL();
 	S32 right_distance = get_distanceR();
 	S32 front_distance = get_distanceF();
@@ -77,6 +90,22 @@ void update_map() {
 	int pos_x = get_x();
 	int pos_y = get_y();
 	U8 result = 0x00;
+
+	if ( ( pos_x < -15 ) || ( pos_x > 15 ) ) {
+		return;
+	}
+
+	if ( ( pos_y < -7 ) || (pos_y > 7 ) ) {
+		return;
+	}
+
+	if ( pos_x < 0 ) {
+		pos_x += 15;
+	}
+
+	if ( pos_y < 0 ) {
+		pos_y += 7;
+	}
 
 	if( cardinal_point == NO ) {
 		boolean north_wall = is_wall(front_distance);
@@ -112,4 +141,10 @@ void update_map() {
 	}
 
 	_map[pos_x][pos_y] = result;
+	if ( ( last_pos_y != pos_y ) || ( last_pos_x != pos_x ) ) {
+			U8 unknown_cardinal = get_unknown_cardinal(_map[pos_x][pos_y]);
+			_map[pos_x][pos_y] |= ( _map[pos_x][pos_y] | unknown_cardinal );
+			last_pos_x = pos_x;
+			last_pos_y = pos_y;
+	}
 }
