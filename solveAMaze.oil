@@ -254,28 +254,4 @@ CPU ATMEL_AT91SAM7S256
         APPMODE = appmode1;
     };
   };
-
-  TASK DummyTask
-  {
-    AUTOSTART = FALSE;
-    PRIORITY = 3;
-    ACTIVATION = 1;
-    SCHEDULE = FULL;
-    STACKSIZE = 512;
-  };
-  ALARM dt_alarm
-  {
-    COUNTER = SysTimerCnt;
-    ACTION = ACTIVATETASK
-    {
-        TASK = DummyTask;
-    };
-    AUTOSTART = TRUE
-    {
-        ALARMTIME = 1;
-        CYCLETIME = 20;
-        APPMODE = appmode1;
-    };
-  };
-
 };
