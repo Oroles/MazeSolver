@@ -4,21 +4,36 @@
 #include "shared_variables.h"
 #include "localization.h"
 
+
+/*
+  7   6   5   4   3   2   1   0
+| x | x | x | x | x | x | x | x |
+  O   W   O   W   O   W   O   W
+
+  The bits
+  	7,6 - are for the N wall
+  	5,4 - are for the S wall
+  	3,2 - are for the E wall
+  	1,0 - are for the W wall
+
+  O - 1 if the coresponding W it's known value
+  	- 0 if we don't know what's there and then W doesn't matter
+
+  W - 1 represents wall
+  	- 0 represents no-wall
+*/
+
 U8 _map[15][7];
 #define THRESHOLD_DISTANCE 10
-#define NO_L_WALL 0x01
-#define NO_R_WALL 0x02
-#define NO_F_WALL 0x04
-#define STOP_POSITION 0x08;
 
-S32 left_distance_array[10];
-S32 right_distance_array[10];
-S32 front_distance_array[10];
-U8 color_array[10];
-int count_left_distance_array;
-int count_right_distance_array;
-int count_front_distance_array;
-int count_color_array;
+#define N_ORI_MASK  0x80
+#define N_WALL_MASK 0x40
+#define S_ORI_MASK  0x20
+#define S_WALL_MASK 0x10
+#define E_ORI_MASK  0x08
+#define E_WALL_MASK 0x04
+#define W_ORI_MASK  0x02
+#define W_WALL_MASK 0x01
 
 void display_map(int row, int column, U8 matrix[row][column]) {
 	display_clear(0);
@@ -35,99 +50,62 @@ void display_map_debug() {
 	display_map(15,7,_map);
 }
 
-int corectPositionS32(S32* array, int size) {
-	for( int i = 0; i < size; ++i ) {
-		int counter = 0;
-		for ( int j = 0; j < size; ++j ) {
-			if ( array[i] == array[j] )
-			{
-				counter++;
-			}
-		}
-		if ( counter >= ( size / 2 ) ) {
-			return i;
-		}
-	}
-	return 0;
-}
-
-int corectPositionU8(U8* array, int size) {
-	for( int i = 0; i < size; ++i ) {
-		int counter = 0;
-		for ( int j = 0; j < size; ++j ) {
-			if ( array[i] == array[j] )
-			{
-				counter++;
-			}
-		}
-		if ( counter >= ( size / 2 ) ) {
-			return i;
-		}
-	}
-	return 0;
-}
-
 void init_mapping() {
 	for( int i = 0; i < 15; ++i ) {
 		for( int j = 0; j < 7; ++j ) {
 			_map[i][j] = 0;
 		}
 	}
+}
 
-	count_left_distance_array = 0;
-	count_right_distance_array = 0;
-	count_front_distance_array = 0;
-	count_color_array = 0;
+boolean is_wall(S32 distance) {
+	if (distance < THRESHOLD_DISTANCE) {
+		return true;
+	}
+	return false;
 }
 
 void update_map() {
-	static int last_pos_x = 0;
-	static int last_pos_y = 0;
-
-	U8 color = get_color();
 	S32 left_distance = get_distanceL();
 	S32 right_distance = get_distanceR();
 	S32 front_distance = get_distanceF();
+	int cardinal_point = get_cardinal_point();
 	int pos_x = get_x();
 	int pos_y = get_y();
+	U8 result = 0x00;
 
-	if ( ( last_pos_y == pos_y ) && ( last_pos_x == pos_x ) ) {
-		left_distance_array[count_left_distance_array++] = left_distance;
-		right_distance_array[count_right_distance_array++] = right_distance;
-		front_distance_array[count_front_distance_array++] = front_distance;
-		color_array[count_color_array] = color;
+	if( cardinal_point == NO ) {
+		boolean north_wall = is_wall(front_distance);
+		boolean est_wall = is_wall(right_distance);
+		boolean west_wall = is_wall(left_distance);	
+		result |= (N_ORI_MASK | (north_wall ? N_WALL_MASK : 0x00));
+		result |= (E_ORI_MASK | (est_wall ? E_WALL_MASK : 0x00));
+		result |= (W_ORI_MASK | (west_wall ? W_WALL_MASK : 0x00));
 	}
-	else
-	{
-		U8 corect_color = color_array[ corectPositionU8( color_array, count_color_array ) ];
-		S32 corect_left_distance = left_distance_array[ corectPositionS32( left_distance_array, count_left_distance_array ) ];
-		S32 corect_right_distance = right_distance_array[ corectPositionS32( right_distance_array, count_right_distance_array ) ];
-		S32 corect_front_distance = front_distance_array[ corectPositionS32( front_distance_array, count_front_distance_array ) ];
-
-		U8 result = 0x00;
-		if( corect_left_distance > 10 ) {
-			result += NO_L_WALL;
-		}
-		if ( corect_right_distance > 10 ) {
-			result += NO_R_WALL;
-		}
-		if ( corect_front_distance > 10 ) {
-			result += NO_F_WALL;
-		}
-		if ( corect_color == NXT_COLOR_RED ) {
-			result += STOP_POSITION;
-		}
-
-		if( pos_x < 0 ) {
-			pos_x += 15;
-		}
-		if( pos_y < 0 ) {
-			pos_y += 7;
-		}
-
-		_map[last_pos_x][last_pos_y] = result;
-
-		last_pos_y = pos_y;
-		last_pos_x = pos_x;
+	if ( cardinal_point == EA ) {
+		boolean est_wall = is_wall(front_distance);
+		boolean south_wall = is_wall(right_distance);
+		boolean north_wall = is_wall(left_distance);
+		result |= (N_ORI_MASK | (north_wall ? N_WALL_MASK : 0x00));
+		result |= (E_ORI_MASK | (est_wall ? E_WALL_MASK : 0x00));
+		result |= (S_ORI_MASK | (south_wall ? S_WALL_MASK : 0x00));
 	}
+	if ( cardinal_point == WE ) {
+		boolean west_wall = is_wall(front_distance);
+		boolean south_wall = is_wall(left_distance);
+		boolean north_wall = is_wall(right_distance);
+		result |= (N_ORI_MASK | (north_wall ? N_WALL_MASK : 0x00));
+		result |= (W_ORI_MASK | (west_wall ? W_WALL_MASK : 0x00));
+		result |= (S_ORI_MASK | (south_wall ? S_WALL_MASK : 0x00));
+	}
+	if ( cardinal_point == SO ) {
+		boolean south_wall = is_wall(front_distance);
+		boolean est_wall = is_wall(left_distance);
+		boolean west_wall = is_wall(right_distance);
+		result |= (S_ORI_MASK | (south_wall ? S_WALL_MASK : 0x00));
+		result |= (E_ORI_MASK | (est_wall ? E_WALL_MASK : 0x00));
+		result |= (W_ORI_MASK | (west_wall ? W_WALL_MASK : 0x00));
+	}
+
+	_map[pos_x][pos_y] = result;
 }
