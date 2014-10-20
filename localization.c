@@ -74,11 +74,11 @@ double access_y(double dy, int setMode) {
 int find_cardinal(double w) {
 	if(w<CARD_PRECISION) return EA;
 	if(w<90-CARD_PRECISION) return NE;
-	if(w<90+CARD_PRECISION) return NO;
+	if(w<=90+CARD_PRECISION) return NO;
 	if(w<180-CARD_PRECISION) return NW;
-	if(w<180+CARD_PRECISION) return WE;
+	if(w<=180+CARD_PRECISION) return WE;
 	if(w<270-CARD_PRECISION) return SW;
-	if(w<270+CARD_PRECISION) return SO;
+	if(w<=270+CARD_PRECISION) return SO;
 	if(w<360-CARD_PRECISION) return SE;
 	return EA;
 }
@@ -89,7 +89,8 @@ double access_w(double dw, int setMode) {
 	switch(setMode) {
 		case UPDATE:
 		__w+=dw;
-		if(__w>360) __w=__w-360;
+		if(__w>360) __w-=360;
+		if(__w<0) __w+=360;
 		__cp=find_cardinal(__w);
 		return 0;
 		case GET_REAL:

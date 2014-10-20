@@ -66,7 +66,6 @@ TASK(Movement) {
 }
 
 TASK(MainController) {
-	move_forward(30);
 	TerminateTask();
 }
 

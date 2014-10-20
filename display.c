@@ -9,7 +9,7 @@
 #define DISPLAY_DATA 	1
 #define DISPLAY_MAP 	2
 
-#define MODE_DISPLAY 	2
+#define MODE_DISPLAY 	1
 
 void displayData() {
 	display_clear(0);
@@ -19,7 +19,7 @@ void displayData() {
 	display_goto_xy(0,3);display_string("WL");display_goto_xy(2,3);display_int(get_wPositionL(),4);
 	display_goto_xy(0,4);display_string("WR");display_goto_xy(2,4);display_int(get_wPositionR(),4);
 	display_goto_xy(0,5);display_string("PX");display_goto_xy(2,5);display_int(get_x(),3);
-	display_goto_xy(0,6);display_string("PY");display_goto_xy(2,6);display_int(get_y(),3);
+	display_goto_xy(0,6);display_string("PY");display_goto_xy(2,6);display_int((int)get_w(),3);
 	//U8 color = get_color();
 	//int result = color == NXT_COLOR_RED ? 1 : 0;
 	//display_goto_xy(0,7);display_string("CL");display_goto_xy(2,7);display_int(result,3);
