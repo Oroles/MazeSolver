@@ -8,6 +8,7 @@ TARGET_SOURCES = \
 	mapping.c \
 	shared_variables.c \
 	movement.c \
+	mainController.c \
 	$(TARGET).c
 TOPPERS_OSEK_OIL_SOURCE = ./$(TARGET).oil
 
