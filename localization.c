@@ -125,11 +125,7 @@ void update_localization() {
 	ReleaseResource(RES_SCHEDULER);
 	
 	// Initialization
-<<<<<<< HEAD
 	int temp;
-=======
-	int temp,temp2,temp3;
->>>>>>> 6c48871235af3ff8b75fe3070d9de079e5a88cc7
 	temp=wL;
 	wL -= __last_wL;
 	__last_wL=temp;
@@ -150,14 +146,6 @@ void update_localization() {
 	y=sin(w);
 	x=Vs*x;
 	y=Vs*y;
-<<<<<<< HEAD
-=======
-	x=round(x);
-	y=round(y);
-	temp= get_x();
-	temp2=get_y();
-	temp3=get_d();
->>>>>>> 6c48871235af3ff8b75fe3070d9de079e5a88cc7
 
 	// Update Shared Variables
 	GetResource(UpdateLocker);

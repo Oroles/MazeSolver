@@ -21,10 +21,8 @@ int get_x();
 double get_realX();
 int get_y();
 double get_realY();
-
 double get_w();
 int get_cardinal_point();
-
 void update_localization();
 
 #endif
