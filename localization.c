@@ -3,55 +3,120 @@
 #include "kernel.h"
 #include "ecrobot_interface.h"
 #include "shared_variables.h"
-#include "localization.h"
 #include "utils_params.h"
+#include "localization.h"
 
-int access_x(int x, int setMode) {
+#define GET_REAL 	0
+#define GET_FORMAL	1
+#define UPDATE 	2
+
+
+double access_x(double dx, int setMode) {
+	static double __rx=0;
 	static int __x=0;
-	if(setMode) { __x=x; return 0; }
-	else return __x;
+	switch(setMode) {
+		case UPDATE:
+		__rx+=dx;
+		__x=lround(__rx/MAP_RES);
+		return 0;
+		case GET_REAL:
+		return __rx;
+		case GET_FORMAL:
+		return __x;
+		default:
+		return 0;
+	}
 }
 	int get_x() {
 		GetResource(UpdateLocker);
 		ReleaseResource(UpdateLocker);
-		return access_x(0,0);
+		return (int) access_x(0,GET_FORMAL);
 	}
-	void set_x(int x) {
-		access_x(x,1);
+	double get_realX() {
+		GetResource(UpdateLocker);
+		ReleaseResource(UpdateLocker);
+		return access_x(0,GET_REAL);
+	}
+	void update_x(double dx) {
+		access_x(dx,UPDATE);
 	}
 
-int access_y(int y, int setMode) {
+double access_y(double dy, int setMode) {
+	static double __ry=0;
 	static int __y=0;
-	if(setMode) { __y=y; return 0; }
-	else return __y;
-} 
+	switch(setMode) {
+		case UPDATE:
+		__ry+=dy;
+		__y=lround(__ry/MAP_RES);
+		return 0;
+		case GET_REAL:
+		return __ry;
+		case GET_FORMAL:
+		return __y;
+		default:
+		return 0;
+	}
+}
 	int get_y() {
 		GetResource(UpdateLocker);
 		ReleaseResource(UpdateLocker);
-		return access_y(0,0);
+		return (int) access_y(0,GET_FORMAL);
 	}
-	void set_y(int y) {
-		access_y(y,1);
-	}
-
-int access_d(int d, int setMode) {
-	static int __d=0;
-	if(setMode) { __d=d; return 0; }
-	else return __d;
-}
-	int get_d() {
+	double get_realY() {
 		GetResource(UpdateLocker);
 		ReleaseResource(UpdateLocker);
-		return access_d(0,0);
+		return access_y(0,GET_REAL);
 	}
-	void set_d(int d) {
-		access_d(d,1);
+	void update_y(double dy) {
+		access_y(dy,UPDATE);
+	}
+
+int find_cardinal(double w) {
+	if(w<CARD_PRECISION) return EA;
+	if(w<90-CARD_PRECISION) return NE;
+	if(w<90+CARD_PRECISION) return NO;
+	if(w<180-CARD_PRECISION) return NW;
+	if(w<180+CARD_PRECISION) return WE;
+	if(w<270-CARD_PRECISION) return SW;
+	if(w<270+CARD_PRECISION) return SO;
+	if(w<360-CARD_PRECISION) return SE;
+	return EA;
+}
+
+double access_w(double dw, int setMode) {
+	static double __w=0;
+	static int __cp=0;
+	switch(setMode) {
+		case UPDATE:
+		__w+=dw;
+		if(__w>360) __w=__w-360;
+		__cp=find_cardinal(__w);
+		return 0;
+		case GET_REAL:
+		return __w;
+		case GET_FORMAL:
+		return __cp;
+		default:
+		return 0;
+	}
+}
+	double get_w() {
+		GetResource(UpdateLocker);
+		ReleaseResource(UpdateLocker);
+		return access_w(0,GET_REAL);
+	}
+	int get_cardinal_point() {
+		GetResource(UpdateLocker);
+		ReleaseResource(UpdateLocker);
+		return (int) access_w(0,GET_FORMAL);
+	}
+	void update_w(double dw) {
+		access_w(dw,UPDATE);
 	}
 
 void update_localization() {
 	static int __last_wL=0;
 	static int __last_wR=0;
-	static double __dx=0,__dy=0,__dw=0;
 
 	// Don't stop me, I need synchronized parameter values
 	GetResource(RES_SCHEDULER);
@@ -82,14 +147,10 @@ void update_localization() {
 	x=Vs*x;
 	y=Vs*y;
 
-	__dx+=x;
-	__dy+=y;
-	__dw+=w;
-
 	// Update Shared Variables
 	GetResource(UpdateLocker);
-	set_x(lround(__dx)/MAP_RES);
-	set_y(lround(__dy)/MAP_RES);
-	set_d(lround(__dw/RAD));
+	update_x(x);
+	update_y(y);
+	update_w(w);
 	ReleaseResource(UpdateLocker);
 }

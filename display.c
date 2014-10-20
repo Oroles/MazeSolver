@@ -23,7 +23,7 @@ void displayData() {
 	//U8 color = get_color();
 	//int result = color == NXT_COLOR_RED ? 1 : 0;
 	//display_goto_xy(0,7);display_string("CL");display_goto_xy(2,7);display_int(result,3);
-	display_goto_xy(0,7);display_string("DI");display_goto_xy(2,7);display_int(get_d(),3);
+	display_goto_xy(0,7);display_string("DI");display_goto_xy(2,7);display_int(get_cardinal_point(),3);
 	
 	display_update();
 }
