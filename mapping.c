@@ -62,8 +62,57 @@ void init_mapping() {
 	}
 }
 
-boolean is_wall(S32 distance) {
-	if (distance < THRESHOLD_DISTANCE) {
+int is_wall(U8 data, U8 known_mask, U8 wall_mask) {
+	if ( ( data & known_mask ) != 0 ) {
+		if ( ( data & wall_mask ) != 0 ) {
+			return IS_WALL;
+		}
+		else {
+			return NO_WALL;
+		}
+	}
+	else {
+		return UNKNOWN;
+	}
+}
+
+int is_wall_in_direction(int orientation) {
+	int pos_x = get_x();
+	int pos_y = get_y();
+	if ( pos_x < 0 ) {
+		pos_x += 15;
+	}
+	if ( pos_y < 0 ) {
+		pos_y += 7;
+	}
+
+	U8 data = _map[pos_x][pos_y];
+	switch( orientation ) {
+		case NO: return is_wall( data, N_ORI_MASK, N_WALL_MASK );
+		case SO: return is_wall( data, S_ORI_MASK, S_WALL_MASK );
+		case EA: return is_wall( data, E_ORI_MASK, E_WALL_MASK );
+		case WE: return is_wall( data, W_ORI_MASK, W_WALL_MASK );
+	}
+	return ERROR;
+}
+
+boolean is_visited_in_direction(int orientation) {
+	int pos_x = get_x();
+	int pos_y = get_y();
+	if ( pos_x < 0 ) {
+		pos_x += 15;
+	}
+	if ( pos_y < 0 ) {
+		pos_y += 7;
+	}
+
+	U8 data = _map[pos_x][pos_y];
+	U8 result = 0x00;
+	result += ( ( data & N_ORI_MASK ) != 0 ) ? 1 : 0;
+	result += ( ( data & S_ORI_MASK ) != 0 ) ? 1 : 0;
+	result += ( ( data & E_ORI_MASK ) != 0 ) ? 1 : 0;
+	result += ( ( data & W_ORI_MASK ) != 0 ) ? 1 : 0;
+	if ( result >= 3 ) {
 		return true;
 	}
 	return false;
@@ -78,6 +127,12 @@ U8 get_unknown_cardinal(U8 mask) {
 	return N_ORI_MASK;
 }
 
+boolean detect_wall(S32 distance) {
+	if (distance < THRESHOLD_DISTANCE) {
+		return true;
+	}
+	return false;
+}
 
 void update_map() {
 	static int last_pos_x = 0;
@@ -108,33 +163,33 @@ void update_map() {
 	}
 
 	if( cardinal_point == NO ) {
-		boolean north_wall = is_wall(front_distance);
-		boolean est_wall = is_wall(right_distance);
-		boolean west_wall = is_wall(left_distance);	
+		boolean north_wall = detect_wall(front_distance);
+		boolean est_wall = detect_wall(right_distance);
+		boolean west_wall = detect_wall(left_distance);	
 		result |= (N_ORI_MASK | (north_wall ? N_WALL_MASK : 0x00));
 		result |= (E_ORI_MASK | (est_wall ? E_WALL_MASK : 0x00));
 		result |= (W_ORI_MASK | (west_wall ? W_WALL_MASK : 0x00));
 	}
 	if ( cardinal_point == EA ) {
-		boolean est_wall = is_wall(front_distance);
-		boolean south_wall = is_wall(right_distance);
-		boolean north_wall = is_wall(left_distance);
+		boolean est_wall = detect_wall(front_distance);
+		boolean south_wall = detect_wall(right_distance);
+		boolean north_wall = detect_wall(left_distance);
 		result |= (N_ORI_MASK | (north_wall ? N_WALL_MASK : 0x00));
 		result |= (E_ORI_MASK | (est_wall ? E_WALL_MASK : 0x00));
 		result |= (S_ORI_MASK | (south_wall ? S_WALL_MASK : 0x00));
 	}
 	if ( cardinal_point == WE ) {
-		boolean west_wall = is_wall(front_distance);
-		boolean south_wall = is_wall(left_distance);
-		boolean north_wall = is_wall(right_distance);
+		boolean west_wall = detect_wall(front_distance);
+		boolean south_wall = detect_wall(left_distance);
+		boolean north_wall = detect_wall(right_distance);
 		result |= (N_ORI_MASK | (north_wall ? N_WALL_MASK : 0x00));
 		result |= (W_ORI_MASK | (west_wall ? W_WALL_MASK : 0x00));
 		result |= (S_ORI_MASK | (south_wall ? S_WALL_MASK : 0x00));
 	}
 	if ( cardinal_point == SO ) {
-		boolean south_wall = is_wall(front_distance);
-		boolean est_wall = is_wall(left_distance);
-		boolean west_wall = is_wall(right_distance);
+		boolean south_wall = detect_wall(front_distance);
+		boolean est_wall = detect_wall(left_distance);
+		boolean west_wall = detect_wall(right_distance);
 		result |= (S_ORI_MASK | (south_wall ? S_WALL_MASK : 0x00));
 		result |= (E_ORI_MASK | (est_wall ? E_WALL_MASK : 0x00));
 		result |= (W_ORI_MASK | (west_wall ? W_WALL_MASK : 0x00));
