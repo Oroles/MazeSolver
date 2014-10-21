@@ -3,7 +3,7 @@
 #include "mapping.h"
 #include "shared_variables.h"
 #include "localization.h"
-#include "utils_params.h"
+#include "utils.h"
 
 /*
   7   6   5   4   3   2   1   0
@@ -89,10 +89,10 @@ int is_wall_in_direction(int orientation) {
 
 	U8 data = _map[pos_x][pos_y];
 	switch( orientation ) {
-		case NO: return is_wall( data, N_INFO_MASK, N_WALL_MASK );
-		case SO: return is_wall( data, S_INFO_MASK, S_WALL_MASK );
-		case EA: return is_wall( data, E_INFO_MASK, E_WALL_MASK );
-		case WE: return is_wall( data, W_INFO_MASK, W_WALL_MASK );
+		case NORTH: return is_wall( data, N_INFO_MASK, N_WALL_MASK );
+		case SOUTH: return is_wall( data, S_INFO_MASK, S_WALL_MASK );
+		case EAST: return is_wall( data, E_INFO_MASK, E_WALL_MASK );
+		case WEST: return is_wall( data, W_INFO_MASK, W_WALL_MASK );
 	}
 	return ERROR;
 }
@@ -163,7 +163,7 @@ void update_map() {
 		pos_y += 7;
 	}
 
-	if( cardinal_point == NO ) {
+	if( cardinal_point == NORTH ) {
 		boolean north_wall = detect_wall(front_distance);
 		boolean est_wall = detect_wall(right_distance);
 		boolean west_wall = detect_wall(left_distance);	
@@ -171,7 +171,7 @@ void update_map() {
 		result |= (E_INFO_MASK | (est_wall ? E_WALL_MASK : 0x00));
 		result |= (W_INFO_MASK | (west_wall ? W_WALL_MASK : 0x00));
 	}
-	if ( cardinal_point == EA ) {
+	if ( cardinal_point == EAST ) {
 		boolean est_wall = detect_wall(front_distance);
 		boolean south_wall = detect_wall(right_distance);
 		boolean north_wall = detect_wall(left_distance);
@@ -179,7 +179,7 @@ void update_map() {
 		result |= (E_INFO_MASK | (est_wall ? E_WALL_MASK : 0x00));
 		result |= (S_INFO_MASK | (south_wall ? S_WALL_MASK : 0x00));
 	}
-	if ( cardinal_point == WE ) {
+	if ( cardinal_point == WEST ) {
 		boolean west_wall = detect_wall(front_distance);
 		boolean south_wall = detect_wall(left_distance);
 		boolean north_wall = detect_wall(right_distance);
@@ -187,7 +187,7 @@ void update_map() {
 		result |= (W_INFO_MASK | (west_wall ? W_WALL_MASK : 0x00));
 		result |= (S_INFO_MASK | (south_wall ? S_WALL_MASK : 0x00));
 	}
-	if ( cardinal_point == SO ) {
+	if ( cardinal_point == SOUTH ) {
 		boolean south_wall = detect_wall(front_distance);
 		boolean est_wall = detect_wall(left_distance);
 		boolean west_wall = detect_wall(right_distance);

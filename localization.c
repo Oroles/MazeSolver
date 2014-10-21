@@ -3,7 +3,7 @@
 #include "kernel.h"
 #include "ecrobot_interface.h"
 #include "shared_variables.h"
-#include "utils_params.h"
+#include "utils.h"
 #include "localization.h"
 
 #define GET_REAL 	0
@@ -72,15 +72,15 @@ double access_y(double dy, int setMode) {
 	}
 
 int find_cardinal(double w) {
-	if(w<CARD_PRECISION) return EA;
-	if(w<90-CARD_PRECISION) return NE;
-	if(w<=90+CARD_PRECISION) return NO;
-	if(w<180-CARD_PRECISION) return NW;
-	if(w<=180+CARD_PRECISION) return WE;
-	if(w<270-CARD_PRECISION) return SW;
-	if(w<=270+CARD_PRECISION) return SO;
-	if(w<360-CARD_PRECISION) return SE;
-	return EA;
+	if(w<CARD_PRECISION) return EAST;
+	if(w<90-CARD_PRECISION) return NO_EA;
+	if(w<=90+CARD_PRECISION) return NORTH;
+	if(w<180-CARD_PRECISION) return NO_WE;
+	if(w<=180+CARD_PRECISION) return WEST;
+	if(w<270-CARD_PRECISION) return SO_WE;
+	if(w<=270+CARD_PRECISION) return SOUTH;
+	if(w<360-CARD_PRECISION) return SO_EA;
+	return EAST;
 }
 
 double access_w(double dw, int setMode) {
