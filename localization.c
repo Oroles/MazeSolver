@@ -3,7 +3,7 @@
 #include "kernel.h"
 #include "ecrobot_interface.h"
 #include "shared_variables.h"
-#include "utils_params.h"
+#include "utils.h"
 #include "localization.h"
 
 #define GET_REAL 	0
