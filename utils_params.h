@@ -14,6 +14,12 @@
 // about the map
 #define MAP_RES 	200 		// Resolution of the map (in mm) : size of the side of squares used to represent the maze
 
+// about the map                // Returns values for the function is_wall_in_direction(int direction)
+#define IS_WALL 0
+#define NO_WALL 1
+#define UNKNOWN 2
+#define ERROR   3
+
 DeclareResource(UpdateLocker);
 
 int get_x();
