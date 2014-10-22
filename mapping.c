@@ -202,5 +202,6 @@ void update_map() {
 			_map[pos_x][pos_y] |= ( _map[pos_x][pos_y] | unknown_cardinal );
 			last_pos_x = pos_x;
 			last_pos_y = pos_y;
+			SetEvent(MainController, NewDiscovery);
 	}
 }
