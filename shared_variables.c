@@ -1,7 +1,7 @@
 #include "shared_variables.h"
 
 U8 access_color(U8 color, int setMode) {
-	static U8 __color = 0;
+	static U8 __color = NXT_COLOR_UNKNOWN;
 	if(setMode) { __color = color; return 0; }
 	else return __color;
 }

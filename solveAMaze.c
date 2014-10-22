@@ -41,7 +41,7 @@ TASK(MainController) {
 	{
 		WaitEvent(NewDiscovery);
 		ClearEvent(NewDiscovery);
-		if(main_step()) stop();
+		if(main_step()) { stop(); TerminateTask(); }
 	}
 	TerminateTask();
 }
