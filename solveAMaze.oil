@@ -71,7 +71,7 @@ CPU ATMEL_AT91SAM7S256
   EVENT NewDiscovery{
     MASK = AUTO;
   };
-  EVENT NewCardinalPoint{
+  EVENT EndOfMovement{
     MASK = AUTO;
   };
 
@@ -86,7 +86,7 @@ CPU ATMEL_AT91SAM7S256
     SCHEDULE = FULL;
     STACKSIZE = 512;
     EVENT=NewDiscovery;
-    EVENT=NewCardinalPoint;
+    EVENT=EndOfMovement;
     RESOURCE=MovementOrder;
   };
 

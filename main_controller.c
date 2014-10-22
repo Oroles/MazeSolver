@@ -18,19 +18,10 @@ int find_next_goal() {
 	return tmp_goal;
 }
 
-void turn_to(int orientation) {
-	if(get_cardinal_point()!=orientation) {
-		turn_right(20);
-		do {
-			WaitEvent(NewCardinalPoint);
-			ClearEvent(NewCardinalPoint);
-		}while(get_cardinal_point()!=orientation);
-		stop();
-	}
-}
-
 void goto_cp(int goal){
-	turn_to(goal);
+	turn_to_cp(goal,20);
+	WaitEvent(EndOfMovement);
+	ClearEvent(EndOfMovement);
 	go_forward(40);
 }
 

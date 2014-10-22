@@ -38,7 +38,7 @@
 
 /* OSEK declarations */
 DeclareEvent(NewDiscovery);
-DeclareEvent(NewCardinalPoint);
+DeclareEvent(EndOfMovement);
 
 DeclareCounter(SysTimerCnt);
 DeclareTask(ColorReader);
