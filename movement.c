@@ -8,13 +8,13 @@
 int __movement_order=STOP;
 int __power=0;
 
-int KD = 10;
-int KI = 1;
-int KP = 10;
+U8 KD;
+U8 KI;
+U8 KP;
 double error_int;
 double error_dev;
 double last_error;
-double initial_w;
+double __target_w;
 
 void set_orientation(orientation* orient,int direction) {
 	if ( direction == 1 ) {
@@ -51,15 +51,18 @@ orientation get_orientation() {
 }
 
 
-void init_PID(double init_w) {
+void init_PID(double target_w, U8 Kp, U8 Ki, U8 Kd) {
 	error_int=0;
 	error_dev=0;
 	last_error=0;
-	initial_w=init_w;
+	KP=Kp;
+	KI=Ki;
+	KD=Kd;
+	__target_w=target_w;
 }
 
 int get_PID_output() {
-	double error = get_w() - initial_w;
+	double error = get_w() - __target_w;
 	if ( error > 180 ) error -=360;
 	else if( error < -180) error +=360;
 
@@ -85,12 +88,12 @@ void stop() {
 }
 
 void go_forward(int power) {
-	init_PID(get_w());
+	init_PID(get_w(),10,1,10);
 	set_movement(MOVE_FORWARD,power);
 }
 
 void turn_to_w(double w, int power) {
-	init_PID(w);
+	init_PID(w,1,0,0);
 	set_movement(TURN_TO_W,power);
 }
 void turn_to_cp(int cp, int power) {
@@ -121,7 +124,7 @@ void do_stop() {
 }
 
 void do_move_forward(int power) {
-	int output=get_PID_output();
+	int output=get_PID_output()/10;
 	nxt_motor_set_speed( PORT_MOTOR_R, power - output, 1 );
 	nxt_motor_set_speed( PORT_MOTOR_L, power + output, 1 );
 }
@@ -139,8 +142,15 @@ void do_rotate_left(int power) {
 }
 
 void do_turn_to_w(int power) {
-	int output=get_PID_output();
-	if(last_error<=0.1 && last_error>=-0.1) {
+	int output= get_PID_output();
+	
+	if(output>10 || output<-10) output=power;
+	else output= (int) (output*power/10);
+
+	if(output<0 && output>-10) output=-10;
+	else if(output>0 && output<10) output=10;
+
+	if(last_error<=1 && last_error>=-1) {
 		nxt_motor_set_speed( PORT_MOTOR_R, 0, 1 );
 		nxt_motor_set_speed( PORT_MOTOR_L, 0, 1 );
 		SetEvent(MainController, EndOfMovement);
