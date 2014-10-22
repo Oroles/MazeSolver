@@ -30,9 +30,9 @@
 #define NO_WE 	7 	// North West
 
 // Returns values for the function is_wall_in_direction(int direction)
-#define IS_WALL 0
+#define UNKNOWN 0
 #define NO_WALL 1
-#define UNKNOWN 2
+#define IS_WALL 2
 #define ERROR   3
 
 

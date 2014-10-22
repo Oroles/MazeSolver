@@ -9,7 +9,7 @@ int find_next_goal() {
 	int tmp_goal=-1;
 	int direction=NORTH;
 	do {
-		if(!is_wall_in_direction(direction)) {
+		if(is_wall_in_direction(direction)==NO_WALL) {
 			if(!is_visited_in_direction(direction)) return direction;
 			else tmp_goal=direction;
 		}
@@ -31,7 +31,7 @@ void turn_to(int orientation) {
 
 void goto_cp(int goal){
 	turn_to(goal);
-	move_forward(50);
+	move_forward(40);
 }
 
 int main_step() {
