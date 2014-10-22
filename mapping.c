@@ -136,8 +136,8 @@ boolean detect_wall(S32 distance) {
 }
 
 void update_map() {
-	static int last_pos_x = 0;
-	static int last_pos_y = 0;
+	static int last_pos_x = -1;
+	static int last_pos_y = -1;
 
 	S32 left_distance = get_distanceL();
 	S32 right_distance = get_distanceR();

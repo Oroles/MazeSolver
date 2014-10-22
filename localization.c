@@ -93,7 +93,10 @@ double access_w(double dw, int setMode) {
 		if(__w>360) __w-=360;
 		if(__w<0) __w+=360;
 		__cp=find_cardinal(__w);
-		if(__last_cp!=__cp && is_cp(__cp)) SetEvent(MainController, NewCardinalPoint);
+		if(__last_cp!=__cp && is_cp(__cp)) {
+			SetEvent(MainController, NewCardinalPoint);
+			__last_cp=__cp;
+		}
 		return 0;
 		case GET_REAL:
 		return __w;

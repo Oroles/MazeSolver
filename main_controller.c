@@ -15,7 +15,7 @@ int find_next_goal() {
 }
 
 void turn_to(int orientation) {
-	if(get_cardinal_point()!=orientation) rotate_right(50);
+	if(get_cardinal_point()!=orientation) rotate_right(20);
 	ClearEvent(NewCardinalPoint);
 	while(get_cardinal_point()!=orientation) {
 		WaitEvent(NewCardinalPoint);
