@@ -1,6 +1,9 @@
 #ifndef _UTILS_H
 #define _UTILS_H
 
+#include "kernel.h"
+#include "kernel_id.h"
+
 // General statics
 #define PI 			3.14159265
 #define RAD 		(PI/180.0) 	// Conversion factor that translate angles from degrees to radians
@@ -32,6 +35,21 @@
 #define UNKNOWN 2
 #define ERROR   3
 
+
+/* OSEK declarations */
+DeclareEvent(NewDiscovery);
+DeclareEvent(NewCardinalPoint);
+
+DeclareCounter(SysTimerCnt);
+DeclareTask(ColorReader);
+DeclareTask(DistanceReader);
+DeclareTask(WheelsPositionReader);
+DeclareTask(Localization);
+DeclareTask(Mapping);
+DeclareTask(Movement);
+DeclareTask(MainController);
+
+/* Function declarations */
 int next_cp(int cp);
 int is_cp(int val);
 

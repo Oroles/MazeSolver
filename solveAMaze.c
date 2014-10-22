@@ -2,22 +2,13 @@
 #include "kernel.h"
 #include "kernel_id.h"
 #include "ecrobot_interface.h"
+#include "utils.h"
 #include "shared_variables.h"
 #include "localization.h"
 #include "mapping.h"
 #include "movement.h"
+#include "main_controller.h"
 #include "display.h"
-
-/* OSEK declarations */
-
-DeclareCounter(SysTimerCnt);
-DeclareTask(ColorReader);
-DeclareTask(DistanceReader);
-DeclareTask(WheelsPositionReader);
-DeclareTask(Localization);
-DeclareTask(Mapping);
-DeclareTask(Movement);
-DeclareTask(MainController);
 
 void ecrobot_device_initialize()
 {
@@ -45,6 +36,16 @@ void user_1ms_isr_type2(void){
 	}
 }
 
+TASK(MainController) {
+	while(1)
+	{
+		WaitEvent(NewDiscovery);
+		ClearEvent(NewDiscovery);
+		if(main_step()) stop();
+	}
+	TerminateTask();
+}
+
 TASK(Display) {
 	update_display();
 	TerminateTask();
@@ -61,11 +62,7 @@ TASK(Mapping) {
 }
 
 TASK(Movement) {
-	move_forward(30);
-	TerminateTask();
-}
-
-TASK(MainController) {
+	//move_forward(30);
 	TerminateTask();
 }
 
