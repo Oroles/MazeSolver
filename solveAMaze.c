@@ -62,7 +62,7 @@ TASK(Mapping) {
 }
 
 TASK(Movement) {
-	//move_forward(30);
+	do_movement();
 	TerminateTask();
 }
 
