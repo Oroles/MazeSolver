@@ -9,7 +9,7 @@
 #define RAD 		(PI/180.0) 	// Conversion factor that translate angles from degrees to radians
 
 // About the robot
-#define W_DIST 		13 			// The distance between the wheels (in mm)
+#define W_DIST 		130 		// The distance between the wheels (in mm)
 #define W_DIAM		56 			// Nominal wheel diameter (in mm)
 #define PULSES 		360 		// Encoder resolution (in pulses per revolution)
 #define CONV 		(PI*W_DIAM/PULSES)		// Conversion factor that translates encoder pulses into linear wheel displacement

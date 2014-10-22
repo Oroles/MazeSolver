@@ -152,6 +152,6 @@ void update_localization() {
 	GetResource(UpdateLocker);
 	update_x(x);
 	update_y(y);
-	update_w(w);
+	update_w(w/RAD);
 	ReleaseResource(UpdateLocker);
 }
