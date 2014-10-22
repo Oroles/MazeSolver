@@ -2,6 +2,7 @@
 #include "ecrobot_interface.h"
 #include "shared_variables.h"
 #include "movement.h"
+#include "localization.h"
 
 void set_orientation(orientation* orient,int direction) {
 	if ( direction == 1 ) {
@@ -46,17 +47,31 @@ void move_forward(U32 power) {
 	nxt_motor_set_speed(PORT_MOTOR_R,power,1);
 	nxt_motor_set_speed(PORT_MOTOR_L,power,1);
 
-	/*S32 left_distance = get_distanceL();
-	S32 right_distance = get_distanceR();
-
-	if ( left_distance > ( right_distance + THRESHOLD_DISTANCE ) )
-	{
-		nxt_motor_set_speed(PORT_MOTOR_R,power+power/2,1);
+	double error = get_w();
+	if ( error > 180 ) {
+		error = error - 360;
 	}
-	if ( right_distance > ( left_distance + THRESHOLD_DISTANCE ) )
-	{
-		nxt_motor_set_speed(PORT_MOTOR_L,power+power/2,1);
-	}*/
+
+	error_dev = error - last_error;
+	error_int += error;
+	int output = KP * error + KI * error_int + KD * error_dev;
+	last_error = error;
+
+	nxt_motor_set_speed( PORT_MOTOR_R, power - output, 1 );
+	nxt_motor_set_speed( PORT_MOTOR_L, power + output, 1 );
+
+	display_clear(0);
+	/*display_goto_xy(0,0);
+	display_int(left_distance,3);
+	display_goto_xy(0,1);
+	display_int(right_distance,3);
+	display_goto_xy(0,2);
+	display_int(left_error, 3);
+	display_goto_xy(0,3);
+	display_int(right_error, 3);*/
+	display_goto_xy(0,4);
+	display_int(error, 4);
+	display_update();
 }
 
 void rotate_right(U32 power) {
