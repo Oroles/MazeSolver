@@ -8,9 +8,6 @@
 #define PI 			3.14159265
 #define RAD 		(PI/180.0) 	// Conversion factor that translate angles from degrees to radians
 
-#define FALSE 	0
-#define TRUE 	1
-
 // About the robot
 #define W_DIST 		120 		// The distance between the wheels (in mm)
 #define W_DIAM		56 			// Nominal wheel diameter (in mm)
