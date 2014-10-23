@@ -147,10 +147,10 @@ void update_map() {
 	int pos_y = get_y();
 	U8 result = 0x00;
 
-	if ( ( pos_x < -15 ) || ( pos_x > 15 ) ) {
+	if ( ( pos_x < -MAP_WIDTH ) || ( pos_x > MAP_WIDTH ) ) {
 		return;
 	}
-	if ( ( pos_y < -7 ) || (pos_y > 7 ) ) {
+	if ( ( pos_y < -MAP_HEIGHT ) || (pos_y > MAP_HEIGHT ) ) {
 		return;
 	}
 
