@@ -1,3 +1,4 @@
+#include "ecrobot_interface.h"
 #include "utils.h"
 
 int next_cp(int cp) {
