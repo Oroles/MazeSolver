@@ -115,9 +115,9 @@ int is_visited_in_direction(int orientation) {
 	result += ( ( data & E_INFO_MASK ) != UNKNOWN ) ? 1 : 0;
 	result += ( ( data & W_INFO_MASK ) != UNKNOWN ) ? 1 : 0;
 	if ( result >= 3 ) {
-		return true;
+		return TRUE;
 	}
-	return false;
+	return FALSE;
 }
 
 
@@ -131,9 +131,9 @@ U8 get_unknown_cardinal(U8 mask) {
 
 int detect_wall(S32 distance) {
 	if (distance < THRESHOLD_DISTANCE) {
-		return true;
+		return TRUE;
 	}
-	return false;
+	return FALSE;
 }
 
 void update_map() {
