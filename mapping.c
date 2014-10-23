@@ -199,3 +199,7 @@ void update_map() {
 			SetEvent(MainController, NewDiscovery);
 	}
 }
+
+void find_shortest_path( int start_x, int start_y, int stop_x, int stop_y ) {
+
+}
