@@ -1,7 +1,6 @@
 #ifndef _MOV_H
 #define _MOV_H
 
-#define THRESHOLD_DISTANCE  2
 #define EXPECTED_VALUE 		7
 #define PROPORTIONAL		3
 
