@@ -23,6 +23,10 @@
   	- 0 represents no-wall
 */
 
+//Will be needed for shortest path algorithm
+int max_min_x = 0; //the smallest x coord
+int max_min_y = 0; //the smallest y coord
+
 U8 _map[MAP_WIDTH][MAP_HEIGHT];
 #define THRESHOLD_DISTANCE 50
 
@@ -168,6 +172,10 @@ void update_map() {
 	int pos_y = get_y();
 	if (pos_x < -MAP_WIDTH || pos_x > MAP_WIDTH) return;
 	if (pos_y < -MAP_HEIGHT || pos_y > MAP_HEIGHT) return;
+
+	if ( pos_x < max_min_x ) max_min_x = pos_x;
+	if ( pos_y < max_min_y ) max_min_y = pos_y;
+
 	coord_to_table_index(&pos_x,&pos_y);
 	
 	U8 data = _map[pos_x][pos_y];
