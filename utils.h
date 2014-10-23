@@ -3,6 +3,8 @@
 
 #include "kernel.h"
 #include "kernel_id.h"
+#include "kernel.h"
+#include "ecrobot_interface.h"
 
 // General statics
 #define PI 			3.14159265
@@ -52,6 +54,6 @@ DeclareTask(MainController);
 /* Function declarations */
 int next_cp(int cp);
 int is_cp(int val);
-int coord_for_cp_square(int cp, int *x, int *y);
+boolean coord_for_cp_square(int cp, int *x, int *y);
 
 #endif

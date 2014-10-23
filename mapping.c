@@ -35,7 +35,7 @@ U8 _map[MAP_WIDTH][MAP_HEIGHT];
 #define W_INFO_MASK  0x02
 #define W_WALL_MASK 0x01
 
-int coord_to_table_index(int *x, int *y) {
+void coord_to_table_index(int *x, int *y) {
 	if ( *x < 0 ) {
 		*x += MAP_WIDTH;
 	}
@@ -104,7 +104,7 @@ int is_wall_in_direction(int orientation) {
 boolean is_visited_in_direction(int orientation) {
 	int pos_x = get_x();
 	int pos_y = get_y();
-	coord_for_cp_square(int cp, &pos_x, &pos_y);
+	coord_for_cp_square( orientation, &pos_x, &pos_y);
 	coord_to_table_index(&pos_x,&pos_y);
 
 	U8 data = _map[pos_x][pos_y];
