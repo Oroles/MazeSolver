@@ -101,9 +101,10 @@ int is_wall_in_direction(int orientation) {
 	return ERROR;
 }
 
-boolean is_visited_in_direction(int orientation) {
+int is_visited_in_direction(int orientation) {
 	int pos_x = get_x();
 	int pos_y = get_y();
+	
 	coord_for_cp_square(orientation, &pos_x, &pos_y);
 	coord_to_table_index(&pos_x,&pos_y);
 
@@ -128,7 +129,7 @@ U8 get_unknown_cardinal(U8 mask) {
 	return N_INFO_MASK;
 }
 
-boolean detect_wall(S32 distance) {
+int detect_wall(S32 distance) {
 	if (distance < THRESHOLD_DISTANCE) {
 		return true;
 	}
