@@ -23,7 +23,7 @@
   	- 0 represents no-wall
 */
 
-U8 _map[15][7];
+U8 _map[MAP_WIDTH][MAP_HEIGHT];
 #define THRESHOLD_DISTANCE 10
 
 #define N_INFO_MASK  0x80
@@ -34,6 +34,15 @@ U8 _map[15][7];
 #define E_WALL_MASK 0x04
 #define W_INFO_MASK  0x02
 #define W_WALL_MASK 0x01
+
+int coord_to_table_index(int *x, int *y) {
+	if ( *x < 0 ) {
+		*x += MAP_WIDTH;
+	}
+	if ( *y < 0 ) {
+		*y += MAP_HEIGHT;
+	}
+}
 
 void display_map(int row, int column, U8 matrix[row][column]) {
 	display_clear(0);
@@ -52,12 +61,12 @@ void display_map(int row, int column, U8 matrix[row][column]) {
 }
 
 void display_map_debug() {
-	display_map(15,7,_map);
+	display_map(MAP_WIDTH,MAP_HEIGHT,_map);
 }
 
 void init_mapping() {
-	for( int i = 0; i < 15; ++i ) {
-		for( int j = 0; j < 7; ++j ) {
+	for( int i = 0; i < MAP_WIDTH; ++i ) {
+		for( int j = 0; j < MAP_HEIGHT; ++j ) {
 			_map[i][j] = 0;
 		}
 	}
@@ -80,12 +89,7 @@ int is_wall(U8 data, U8 known_mask, U8 wall_mask) {
 int is_wall_in_direction(int orientation) {
 	int pos_x = get_x();
 	int pos_y = get_y();
-	if ( pos_x < 0 ) {
-		pos_x += 15;
-	}
-	if ( pos_y < 0 ) {
-		pos_y += 7;
-	}
+	coord_to_table_index(&pos_x,&pos_y);
 
 	U8 data = _map[pos_x][pos_y];
 	switch( orientation ) {
@@ -100,19 +104,15 @@ int is_wall_in_direction(int orientation) {
 boolean is_visited_in_direction(int orientation) {
 	int pos_x = get_x();
 	int pos_y = get_y();
-	if ( pos_x < 0 ) {
-		pos_x += 15;
-	}
-	if ( pos_y < 0 ) {
-		pos_y += 7;
-	}
+	coord_for_cp_square(int cp, &pos_x, &pos_y);
+	coord_to_table_index(&pos_x,&pos_y);
 
 	U8 data = _map[pos_x][pos_y];
 	U8 result = 0x00;
-	result += ( ( data & N_INFO_MASK ) != 0 ) ? 1 : 0;
-	result += ( ( data & S_INFO_MASK ) != 0 ) ? 1 : 0;
-	result += ( ( data & E_INFO_MASK ) != 0 ) ? 1 : 0;
-	result += ( ( data & W_INFO_MASK ) != 0 ) ? 1 : 0;
+	result += ( ( data & N_INFO_MASK ) != UNKNOWN ) ? 1 : 0;
+	result += ( ( data & S_INFO_MASK ) != UNKNOWN ) ? 1 : 0;
+	result += ( ( data & E_INFO_MASK ) != UNKNOWN ) ? 1 : 0;
+	result += ( ( data & W_INFO_MASK ) != UNKNOWN ) ? 1 : 0;
 	if ( result >= 3 ) {
 		return true;
 	}
@@ -150,18 +150,11 @@ void update_map() {
 	if ( ( pos_x < -15 ) || ( pos_x > 15 ) ) {
 		return;
 	}
-
 	if ( ( pos_y < -7 ) || (pos_y > 7 ) ) {
 		return;
 	}
 
-	if ( pos_x < 0 ) {
-		pos_x += 15;
-	}
-
-	if ( pos_y < 0 ) {
-		pos_y += 7;
-	}
+	coord_to_table_index(&pos_x,&pos_y);
 
 	if( cardinal_point == NORTH ) {
 		boolean north_wall = detect_wall(front_distance);
