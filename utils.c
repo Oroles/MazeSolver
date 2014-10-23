@@ -9,6 +9,15 @@ int next_cp(int cp) {
 		default: return -1;
 	}
 }
+int previous_cp(int cp) {
+	switch(cp) {
+		case NORTH: case NO_EA: return WEST;
+		case EAST: case SO_EA: return NORTH;
+		case SOUTH: case SO_WE: return EAST;
+		case WEST: case NO_WE: return SOUTH;
+		default: return -1;
+	}
+}
 
 int is_cp(int val) { return (val==NORTH)||(val==EAST)||(val==SOUTH)||(val==WEST); }
 

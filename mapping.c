@@ -24,7 +24,7 @@
 */
 
 U8 _map[MAP_WIDTH][MAP_HEIGHT];
-#define THRESHOLD_DISTANCE 10
+#define THRESHOLD_DISTANCE 50
 
 #define N_INFO_MASK  0x80
 #define N_WALL_MASK 0x40
@@ -35,6 +35,14 @@ U8 _map[MAP_WIDTH][MAP_HEIGHT];
 #define W_INFO_MASK  0x02
 #define W_WALL_MASK 0x01
 
+void init_mapping() {
+	for( int i = 0; i < MAP_WIDTH; ++i ) {
+		for( int j = 0; j < MAP_HEIGHT; ++j ) {
+			_map[i][j] = 0;
+		}
+	}
+}
+
 void coord_to_table_index(int *x, int *y) {
 	if ( *x < 0 ) {
 		*x += MAP_WIDTH;
@@ -43,6 +51,150 @@ void coord_to_table_index(int *x, int *y) {
 		*y += MAP_HEIGHT;
 	}
 }
+
+int set_masks(int cp, U8 *known_mask, U8 *wall_mask) {
+	switch(cp) {
+		case NORTH:
+		*known_mask=N_INFO_MASK;
+		*wall_mask=N_WALL_MASK;
+		break;
+		case EAST:
+		*known_mask=E_INFO_MASK;
+		*wall_mask=E_WALL_MASK;
+		break;
+		case SOUTH:
+		*known_mask=S_INFO_MASK;
+		*wall_mask=S_WALL_MASK;
+		break;
+		case WEST:
+		*known_mask=W_INFO_MASK;
+		*wall_mask=W_WALL_MASK;
+		break;
+		default:
+		return FALSE;
+		break;
+	}
+	return TRUE;
+}
+
+int get_wall_state(U8 data, int cp) {
+	U8 known_mask;
+	U8 wall_mask;
+	if(set_masks(cp, &known_mask, &wall_mask)) {
+		if ( ( data & known_mask ) != 0 ) {
+			if ( ( data & wall_mask ) != 0 ) {
+				return IS_WALL;
+			}
+			else {
+				return NO_WALL;
+			}
+		}
+		else {
+			return UNKNOWN;
+		}
+	}
+	else {
+		return ERROR;
+	}
+}
+
+void set_wall_state(U8 *data, int cp, int state) {
+	U8 known_mask;
+	U8 wall_mask;
+	if(!set_masks(cp, &known_mask, &wall_mask)) return;
+
+	switch(state) {
+		case IS_WALL:
+		*data|=known_mask;
+		*data|=wall_mask;
+		break;
+		case NO_WALL:
+		*data|=known_mask;
+		*data&=(0xff -wall_mask);
+		break;
+		case UNKNOWN:
+		*data&=(0xff -known_mask);
+		*data&=(0xff -wall_mask);
+		break;
+		default:
+		break;
+	}
+}
+
+int is_wall_in_direction(int orientation) {
+	int pos_x = get_x();
+	int pos_y = get_y();
+	coord_to_table_index(&pos_x,&pos_y);
+
+	return get_wall_state(_map[pos_x][pos_y],orientation);
+}
+
+int is_visited_in_direction(int orientation) {
+	int pos_x = get_x();
+	int pos_y = get_y();
+	
+	coord_for_cp_square(orientation, &pos_x, &pos_y);
+	coord_to_table_index(&pos_x,&pos_y);
+
+	U8 data = _map[pos_x][pos_y];
+	U8 result = 0x00;
+	result += (get_wall_state(data,NORTH) != UNKNOWN) ? 1 : 0;
+	result += (get_wall_state(data,EAST) != UNKNOWN) ? 1 : 0;
+	result += (get_wall_state(data,SOUTH) != UNKNOWN) ? 1 : 0;
+	result += (get_wall_state(data,WEST) != UNKNOWN) ? 1 : 0;
+	if ( result >= 3 ) {
+		return TRUE;
+	}
+	return FALSE;
+}
+
+int detect_wall(S32 distance) {
+	if (distance < THRESHOLD_DISTANCE) {
+		return TRUE;
+	}
+	return FALSE;
+}
+
+void update_map() {
+	static int last_pos_x = -1;
+	static int last_pos_y = -1;
+
+	int left_wall = detect_wall(get_distanceL());
+	int right_wall = detect_wall(get_distanceR());
+	int front_wall = detect_wall(get_distanceF());
+	int cardinal_point = get_cardinal_point();
+
+	int pos_x = get_x();
+	int pos_y = get_y();
+	if (pos_x < -MAP_WIDTH || pos_x > MAP_WIDTH) return;
+	if (pos_y < -MAP_HEIGHT || pos_y > MAP_HEIGHT) return;
+	coord_to_table_index(&pos_x,&pos_y);
+	
+	U8 data = _map[pos_x][pos_y];
+
+	if(is_cp(cardinal_point)) {
+		if(front_wall) set_wall_state(&data, cardinal_point, IS_WALL);
+		else set_wall_state(&data, cardinal_point, NO_WALL);
+
+		if(right_wall) set_wall_state(&data, next_cp(cardinal_point), IS_WALL);
+		else set_wall_state(&data, next_cp(cardinal_point), NO_WALL);
+
+		if(left_wall) set_wall_state(&data, previous_cp(cardinal_point), IS_WALL);
+		else set_wall_state(&data, previous_cp(cardinal_point), NO_WALL);
+	}
+
+	if ( ( last_pos_y != pos_y ) || ( last_pos_x != pos_x ) ) {
+			if(is_cp(cardinal_point)) set_wall_state(&data, next_cp(next_cp(cardinal_point)), IS_WALL);
+			last_pos_x = pos_x;
+			last_pos_y = pos_y;
+			SetEvent(MainController, NewDiscovery);
+	}
+}
+
+void find_shortest_path( int start_x, int start_y, int stop_x, int stop_y ) {
+
+}
+
 
 void display_map(int row, int column, U8 matrix[row][column]) {
 	display_clear(0);
@@ -62,144 +214,4 @@ void display_map(int row, int column, U8 matrix[row][column]) {
 
 void display_map_debug() {
 	display_map(MAP_WIDTH,MAP_HEIGHT,_map);
-}
-
-void init_mapping() {
-	for( int i = 0; i < MAP_WIDTH; ++i ) {
-		for( int j = 0; j < MAP_HEIGHT; ++j ) {
-			_map[i][j] = 0;
-		}
-	}
-}
-
-int is_wall(U8 data, U8 known_mask, U8 wall_mask) {
-	if ( ( data & known_mask ) != 0 ) {
-		if ( ( data & wall_mask ) != 0 ) {
-			return IS_WALL;
-		}
-		else {
-			return NO_WALL;
-		}
-	}
-	else {
-		return UNKNOWN;
-	}
-}
-
-int is_wall_in_direction(int orientation) {
-	int pos_x = get_x();
-	int pos_y = get_y();
-	coord_to_table_index(&pos_x,&pos_y);
-
-	U8 data = _map[pos_x][pos_y];
-	switch( orientation ) {
-		case NORTH: return is_wall( data, N_INFO_MASK, N_WALL_MASK );
-		case SOUTH: return is_wall( data, S_INFO_MASK, S_WALL_MASK );
-		case EAST: return is_wall( data, E_INFO_MASK, E_WALL_MASK );
-		case WEST: return is_wall( data, W_INFO_MASK, W_WALL_MASK );
-	}
-	return ERROR;
-}
-
-int is_visited_in_direction(int orientation) {
-	int pos_x = get_x();
-	int pos_y = get_y();
-	
-	coord_for_cp_square(orientation, &pos_x, &pos_y);
-	coord_to_table_index(&pos_x,&pos_y);
-
-	U8 data = _map[pos_x][pos_y];
-	U8 result = 0x00;
-	result += ( ( data & N_INFO_MASK ) != UNKNOWN ) ? 1 : 0;
-	result += ( ( data & S_INFO_MASK ) != UNKNOWN ) ? 1 : 0;
-	result += ( ( data & E_INFO_MASK ) != UNKNOWN ) ? 1 : 0;
-	result += ( ( data & W_INFO_MASK ) != UNKNOWN ) ? 1 : 0;
-	if ( result >= 3 ) {
-		return TRUE;
-	}
-	return FALSE;
-}
-
-
-U8 get_unknown_cardinal(U8 mask) {
-	if ( ( mask & N_INFO_MASK ) == 0 ) return N_INFO_MASK;
-	if ( ( mask & W_INFO_MASK ) == 0 ) return W_INFO_MASK;
-	if ( ( mask & S_INFO_MASK ) == 0 ) return S_INFO_MASK;
-	if ( ( mask & E_INFO_MASK ) == 0 ) return E_INFO_MASK;
-	return N_INFO_MASK;
-}
-
-int detect_wall(S32 distance) {
-	if (distance < THRESHOLD_DISTANCE) {
-		return TRUE;
-	}
-	return FALSE;
-}
-
-void update_map() {
-	static int last_pos_x = -1;
-	static int last_pos_y = -1;
-
-	S32 left_distance = get_distanceL();
-	S32 right_distance = get_distanceR();
-	S32 front_distance = get_distanceF();
-	int cardinal_point = get_cardinal_point();
-	int pos_x = get_x();
-	int pos_y = get_y();
-	U8 result = 0x00;
-
-	if ( ( pos_x < -MAP_WIDTH ) || ( pos_x > MAP_WIDTH ) ) {
-		return;
-	}
-	if ( ( pos_y < -MAP_HEIGHT ) || (pos_y > MAP_HEIGHT ) ) {
-		return;
-	}
-
-	coord_to_table_index(&pos_x,&pos_y);
-
-	if( cardinal_point == NORTH ) {
-		boolean north_wall = detect_wall(front_distance);
-		boolean est_wall = detect_wall(right_distance);
-		boolean west_wall = detect_wall(left_distance);	
-		result |= (N_INFO_MASK | (north_wall ? N_WALL_MASK : 0x00));
-		result |= (E_INFO_MASK | (est_wall ? E_WALL_MASK : 0x00));
-		result |= (W_INFO_MASK | (west_wall ? W_WALL_MASK : 0x00));
-	}
-	if ( cardinal_point == EAST ) {
-		boolean est_wall = detect_wall(front_distance);
-		boolean south_wall = detect_wall(right_distance);
-		boolean north_wall = detect_wall(left_distance);
-		result |= (N_INFO_MASK | (north_wall ? N_WALL_MASK : 0x00));
-		result |= (E_INFO_MASK | (est_wall ? E_WALL_MASK : 0x00));
-		result |= (S_INFO_MASK | (south_wall ? S_WALL_MASK : 0x00));
-	}
-	if ( cardinal_point == WEST ) {
-		boolean west_wall = detect_wall(front_distance);
-		boolean south_wall = detect_wall(left_distance);
-		boolean north_wall = detect_wall(right_distance);
-		result |= (N_INFO_MASK | (north_wall ? N_WALL_MASK : 0x00));
-		result |= (W_INFO_MASK | (west_wall ? W_WALL_MASK : 0x00));
-		result |= (S_INFO_MASK | (south_wall ? S_WALL_MASK : 0x00));
-	}
-	if ( cardinal_point == SOUTH ) {
-		boolean south_wall = detect_wall(front_distance);
-		boolean est_wall = detect_wall(left_distance);
-		boolean west_wall = detect_wall(right_distance);
-		result |= (S_INFO_MASK | (south_wall ? S_WALL_MASK : 0x00));
-		result |= (E_INFO_MASK | (est_wall ? E_WALL_MASK : 0x00));
-		result |= (W_INFO_MASK | (west_wall ? W_WALL_MASK : 0x00));
-	}
-
-	_map[pos_x][pos_y] = result;
-	if ( ( last_pos_y != pos_y ) || ( last_pos_x != pos_x ) ) {
-			U8 unknown_cardinal = get_unknown_cardinal(_map[pos_x][pos_y]);
-			_map[pos_x][pos_y] |= ( _map[pos_x][pos_y] | unknown_cardinal );
-			last_pos_x = pos_x;
-			last_pos_y = pos_y;
-			SetEvent(MainController, NewDiscovery);
-	}
-}
-
-void find_shortest_path( int start_x, int start_y, int stop_x, int stop_y ) {
-
 }

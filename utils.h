@@ -51,6 +51,7 @@ DeclareTask(MainController);
 
 /* Function declarations */
 int next_cp(int cp);
+int previous_cp(int cp);
 int is_cp(int val);
 int coord_for_cp_square(int cp, int *x, int *y);
 
