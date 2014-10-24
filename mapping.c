@@ -4,6 +4,7 @@
 #include "shared_variables.h"
 #include "localization.h"
 #include "utils.h"
+#include "node.h"
 
 /*
   7   6   5   4   3   2   1   0
@@ -123,7 +124,6 @@ void set_wall_state(U8 *data, int cp, int state) {
 
 int is_wall_in_direction(int orientation, int pos_x, int pos_y) {
 	coord_to_table_index(&pos_x,&pos_y);
-
 	return get_wall_state(_map[pos_x][pos_y],orientation);
 }
 
@@ -185,6 +185,26 @@ void update_map() {
 			last_pos_y = pos_y;
 			SetEvent(MainController, NewDiscovery);
 	}
+}
+
+struct node* find_neighbors(struct node* current ) {
+	struct node* neighbors = NULL;
+	int orientation = NORTH;
+	int contor = 0;
+	while( contor != 4 ) {
+		if ( is_wall_in_direction(orientation,current->x,current->y) == NO_WALL )
+		{
+			struct node* neighbor = create_empty_node();
+			int pos_x = current->x;
+			int pos_y = current->y;
+			coord_for_cp_square(orientation, &pos_x, &pos_y);
+			init_nod_position( neighbor, pos_x, pos_y );
+			add_node(&neighbors, neighbor );
+		}
+		orientation = next_cp( orientation );
+		++contor;
+	}
+	return neighbors;
 }
 
 void find_shortest_path( int start_x, int start_y, int stop_x, int stop_y ) {
