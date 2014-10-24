@@ -1,8 +1,8 @@
-#include "utils.h"
-#include "localization.h"
-#include "mapping.h"
-#include "movement.h"
-#include "shared_variables.h"
+#include "utils/utils.h"
+#include "utils/shared_variables.h"
+#include "slam/localization.h"
+#include "slam/mapping.h"
+#include "actions/movement.h"
 #include "main_controller.h"
 
 int find_next_goal() {

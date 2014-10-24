@@ -2,13 +2,13 @@
 #include "kernel.h"
 #include "kernel_id.h"
 #include "ecrobot_interface.h"
-#include "utils.h"
-#include "shared_variables.h"
-#include "localization.h"
-#include "mapping.h"
-#include "movement.h"
+#include "utils/utils.h"
+#include "utils/shared_variables.h"
+#include "utils/display.h"
+#include "slam/localization.h"
+#include "slam/mapping.h"
+#include "actions/movement.h"
 #include "main_controller.h"
-#include "display.h"
 
 void ecrobot_device_initialize()
 {

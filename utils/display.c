@@ -1,8 +1,8 @@
 #include "kernel.h"
 #include "ecrobot_interface.h"
+#include "slam/localization.h"
+#include "slam/mapping.h"
 #include "shared_variables.h"
-#include "localization.h"
-#include "mapping.h"
 #include "display.h"
 
 #define DISPLAY_NONE 	0

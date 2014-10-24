@@ -3,14 +3,15 @@ RPATH=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 PATH_TO_ROOT= $(subst .. ,../,$(strip $(patsubst %,..,$(subst /, ,$(RPATH)))))
 TARGET = solveAMaze
 TARGET_SOURCES = \
-	utils.c \
-	display.c \
-	localization.c \
-	mapping.c \
-	shared_variables.c \
-	movement.c \
+	utils/utils.c \
+	utils/display.c \
+	utils/shared_variables.c \
+	slam/localization.c \
+	slam/mapping.c \
+	slam/node.c \
+	slam/path_finding.c \
+	actions/movement.c \
 	main_controller.c \
-	node.c \
 	$(TARGET).c
 TOPPERS_OSEK_OIL_SOURCE = ./$(TARGET).oil
 

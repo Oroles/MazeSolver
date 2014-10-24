@@ -1,8 +1,8 @@
 #include "kernel.h"
 #include "ecrobot_interface.h"
-#include "shared_variables.h"
-#include "localization.h"
-#include "utils.h"
+#include "utils/shared_variables.h"
+#include "utils/utils.h"
+#include "slam/localization.h"
 #include "movement.h"
 
 int __movement_order=STOP;
