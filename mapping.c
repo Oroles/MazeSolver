@@ -121,17 +121,13 @@ void set_wall_state(U8 *data, int cp, int state) {
 	}
 }
 
-int is_wall_in_direction(int orientation) {
-	int pos_x = get_x();
-	int pos_y = get_y();
+int is_wall_in_direction(int orientation, int pos_x, int pos_y) {
 	coord_to_table_index(&pos_x,&pos_y);
 
 	return get_wall_state(_map[pos_x][pos_y],orientation);
 }
 
-int is_visited_in_direction(int orientation) {
-	int pos_x = get_x();
-	int pos_y = get_y();
+int is_visited_in_direction(int orientation, int pos_x, int pos_y) {
 	
 	coord_for_cp_square(orientation, &pos_x, &pos_y);
 	coord_to_table_index(&pos_x,&pos_y);

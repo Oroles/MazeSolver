@@ -9,8 +9,8 @@ int find_next_goal() {
 	int tmp_goal=-1;
 	int direction=NORTH;
 	do {
-		if(is_wall_in_direction(direction)==NO_WALL) {
-			if(!is_visited_in_direction(direction)) return direction;
+		if(is_wall_in_direction(direction,get_x(),get_y())==NO_WALL) {
+			if(!is_visited_in_direction(direction,get_x(),get_y())) return direction;
 			else tmp_goal=direction;
 		}
 		direction=next_cp(direction);
