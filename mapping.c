@@ -199,6 +199,40 @@ void update_map() {
 	}
 }
 
+void reverse_array( U8* data, int start, int stop ){
+	for( start; start < stop; ++start, --stop ) {
+		U8 aux = data[start];
+		data[start] = data[stop];
+		data[stop] = aux;
+	}
+}
+
+void shift_array( U8* data, int array_size, int nr_shift ) {
+	reverse_array( data, 0, array_size - 1);
+	reverse_array( data, 0, nr_shift - 1);
+	reverse_array( data, nr_shift, array_size - 1);
+}
+
+void shift_map_y( int nr_shift ) {
+		for ( int i = 0; i < MAP_WIDTH; ++i ) {
+			shift_array( _map[i], MAP_HEIGHT, nr_shift );
+		}
+}
+
+void shift_map_x( int nr_shift ) {
+	for ( int count = 0; count < nr_shift; ++count ) {
+		for( int j = 0; j < MAP_HEIGHT; ++j ) {
+			U8 auxSet = _map[0][j];
+			for ( int i = 1; i < MAP_WIDTH; ++i ) {
+				U8 aux = _map[i][j];
+				_map[i][j] = auxSet;
+				auxSet = aux;
+			}
+			_map[0][j] = auxSet;
+		}
+	}
+}
+
 void find_shortest_path( int start_x, int start_y, int stop_x, int stop_y ) {
 
 }
