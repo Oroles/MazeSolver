@@ -230,6 +230,32 @@ int heuristic_function(struct node* current, int stop_x, int stop_y ) {
 	return result;
 }
 
+void print_path(struct node* current) {
+	U8 path_map[MAP_WIDTH][MAP_HEIGHT];
+	for( int i = 0; i < MAP_WIDTH; ++i ) {
+		for( int j = 0; j < MAP_HEIGHT; ++j ) {
+			path_map[i][j] = 0x00;
+		}
+	}
+
+	while( current != NULL ) {
+		int pos_x = current->x;
+		int pos_y = current->y;
+		coord_to_table_index(&pos_x,&pos_y);
+		path_map[ pos_x ][ pos_y ] = 1;
+		current = current->parent;
+	}
+
+	display_clear(0);
+	for ( int i = 0; i < MAP_WIDTH; ++i ) {
+		for ( int j = 0; j < MAP_HEIGHT; ++j ) {
+			display_goto_xy(i,j);
+			display_hex( path_map[i][j], 1);
+		}
+	}
+	display_update();
+}
+
 void find_shortest_path( int start_x, int start_y, int stop_x, int stop_y ) {
 	struct node* open_list = create_empty_node();
 	struct node* close_list = NULL;
@@ -262,12 +288,11 @@ void find_shortest_path( int start_x, int start_y, int stop_x, int stop_y ) {
 		}
 		current = remove_first_node( &open_list );
 	}
-	//print_map( current );
+	print_path( current );
 
 	free_list( &open_list );
 	free_list( &close_list );
 }
-
 
 void display_map(int row, int column, U8 matrix[row][column]) {
 	display_clear(0);
