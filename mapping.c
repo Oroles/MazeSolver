@@ -36,6 +36,8 @@ U8 _map[MAP_WIDTH][MAP_HEIGHT];
 #define W_INFO_MASK  0x02
 #define W_WALL_MASK 0x01
 
+#define D 			0x01
+
 void init_mapping() {
 	for( int i = 0; i < MAP_WIDTH; ++i ) {
 		for( int j = 0; j < MAP_HEIGHT; ++j ) {
@@ -207,8 +209,64 @@ struct node* find_neighbors(struct node* current ) {
 	return neighbors;
 }
 
-void find_shortest_path( int start_x, int start_y, int stop_x, int stop_y ) {
+int move_cost(struct node* current, struct node* neighbor) {
+	return 1;
+}
 
+int is_stop_position(struct node* current, int stop_x, int stop_y )
+{
+	if ( ( current->x == stop_x ) && ( current->y == stop_y ) ) {
+		return TRUE;
+	}
+	return FALSE;
+}
+
+/* Use manhattan distance */
+int heuristic_function(struct node* current, int stop_x, int stop_y ) {
+	int dx = abs( current->x - stop_x );
+	int dy = abs( current->y - stop_y );
+	int result = 0;
+	result = D * ( dx + dy );
+	return result;
+}
+
+void find_shortest_path( int start_x, int start_y, int stop_x, int stop_y ) {
+	struct node* open_list = create_empty_node();
+	struct node* close_list = NULL;
+
+	init_nod_position( open_list, start_x, start_y );
+
+	struct node* current = remove_first_node( &open_list );
+	current->g_cost = 0;
+	while( ( current != NULL ) && ( is_stop_position( current, stop_x, stop_y ) == FALSE ) ) {
+
+		add_node( &close_list, current );
+
+		struct node* neighbors = find_neighbors( current );
+		struct node* neighbor = remove_first_node( &neighbors );
+		while ( neighbor != NULL ) {
+			if ( find_node(&close_list, neighbor) == TRUE ) {
+				free(neighbor);
+				neighbor = remove_first_node( &neighbors );
+				continue;
+			}
+			int cost = current->g_cost + move_cost(current,neighbor);
+
+			if ( (cost < neighbor->g_cost) && ( find_node(&open_list, neighbor) == FALSE ) ) {
+				neighbor->g_cost = cost;
+				neighbor->f_cost = cost + heuristic_function( neighbor, stop_x, stop_y );
+				add_node_priority(&open_list, neighbor);
+				neighbor->parent = current;
+			}
+			neighbor = remove_first_node( &neighbors );
+		}
+		current = remove_first_node( &open_list );
+	}
+	//print_path( current );
+	//print_map( current );
+
+	free_list( &open_list );
+	free_list( &close_list );
 }
 
 
