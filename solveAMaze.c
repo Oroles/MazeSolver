@@ -16,7 +16,7 @@ void ecrobot_device_initialize()
 	ecrobot_init_sonar_sensor(PORT_DISTANCE_L);
 	ecrobot_init_sonar_sensor(PORT_DISTANCE_F);
 	ecrobot_init_sonar_sensor(PORT_DISTANCE_R);
-	init_mapping();
+	init_mapping( 0x00 );
 }
 void ecrobot_device_terminate()
 {

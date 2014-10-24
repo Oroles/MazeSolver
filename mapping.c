@@ -38,10 +38,10 @@ U8 _map[MAP_WIDTH][MAP_HEIGHT];
 
 #define D 			0x01
 
-void init_mapping() {
+void init_mapping( U8 init_val ) {
 	for( int i = 0; i < MAP_WIDTH; ++i ) {
 		for( int j = 0; j < MAP_HEIGHT; ++j ) {
-			_map[i][j] = 0;
+			_map[i][j] = init_val;
 		}
 	}
 }
@@ -262,7 +262,6 @@ void find_shortest_path( int start_x, int start_y, int stop_x, int stop_y ) {
 		}
 		current = remove_first_node( &open_list );
 	}
-	//print_path( current );
 	//print_map( current );
 
 	free_list( &open_list );
