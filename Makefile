@@ -10,6 +10,7 @@ TARGET_SOURCES = \
 	shared_variables.c \
 	movement.c \
 	main_controller.c \
+	node.c \
 	$(TARGET).c
 TOPPERS_OSEK_OIL_SOURCE = ./$(TARGET).oil
 
