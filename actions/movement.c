@@ -99,13 +99,13 @@ void turn_to_w(double w, int power) {
 void turn_to_cp(int cp, int power) {
 	switch(cp) {
 		case NORTH:
-		turn_to_w(90,power);
+		turn_to_w(90,power); break;
 		case EAST:
-		turn_to_w(0,power);
+		turn_to_w(0,power); break;
 		case SOUTH:
-		turn_to_w(270,power);
+		turn_to_w(270,power); break;
 		case WEST:
-		turn_to_w(180,power);
+		turn_to_w(180,power); break;
 	}
 }
 

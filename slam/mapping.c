@@ -24,7 +24,7 @@
 */
 
 U8 _map[MAP_WIDTH][MAP_HEIGHT];
-#define THRESHOLD_DISTANCE 50
+#define THRESHOLD_DISTANCE 25
 
 #define N_INFO_MASK  0x80
 #define N_WALL_MASK 0x40
@@ -177,6 +177,8 @@ void update_map() {
 		if(left_wall) set_wall_state(&data, previous_cp(cardinal_point), IS_WALL);
 		else set_wall_state(&data, previous_cp(cardinal_point), NO_WALL);
 	}
+
+	_map[pos_x][pos_y]=data;
 
 	if ( ( last_pos_y != pos_y ) || ( last_pos_x != pos_x ) ) {
 			if(is_cp(cardinal_point)) set_wall_state(&data, next_cp(next_cp(cardinal_point)), IS_WALL);

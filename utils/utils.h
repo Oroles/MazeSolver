@@ -54,5 +54,6 @@ int next_cp(int cp);
 int previous_cp(int cp);
 int is_cp(int val);
 int coord_for_cp_square(int cp, int *x, int *y);
+void display_cp(int cp);
 
 #endif
