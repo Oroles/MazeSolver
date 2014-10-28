@@ -127,7 +127,6 @@ int is_wall_in_direction(int orientation, int pos_x, int pos_y) {
 }
 
 int is_visited_in_direction(int orientation, int pos_x, int pos_y) {
-	
 	coord_for_cp_square(orientation, &pos_x, &pos_y);
 	coord_to_table_index(&pos_x,&pos_y);
 
@@ -181,7 +180,10 @@ void update_map() {
 	_map[pos_x][pos_y]=data;
 
 	if ( ( last_pos_y != pos_y ) || ( last_pos_x != pos_x ) ) {
-			if(is_cp(cardinal_point)) set_wall_state(&data, next_cp(next_cp(cardinal_point)), IS_WALL);
+			if(is_cp(cardinal_point)) {
+				set_wall_state(&data, next_cp(next_cp(cardinal_point)), NO_WALL);
+				_map[pos_x][pos_y]=data;
+			}
 			last_pos_x = pos_x;
 			last_pos_y = pos_y;
 			SetEvent(MainController, NewDiscovery);

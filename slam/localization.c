@@ -83,12 +83,12 @@ int find_cardinal(double w) {
 	return EAST;
 }
 
-double access_w(double dw, int setMode) {
+double access_w(double w, int setMode) {
 	static double __w=0;
 	static int __cp=0;
 	switch(setMode) {
 		case UPDATE:
-		__w+=dw;
+		__w=w;
 		if(__w>360) __w-=360;
 		if(__w<0) __w+=360;
 		__cp=find_cardinal(__w);
@@ -111,13 +111,14 @@ double access_w(double dw, int setMode) {
 		ReleaseResource(UpdateLocker);
 		return (int) access_w(0,GET_FORMAL);
 	}
-	void update_w(double dw) {
-		access_w(dw,UPDATE);
+	void update_w(double w) {
+		access_w(w,UPDATE);
 	}
 
 void update_localization() {
 	static int __last_wL=0;
 	static int __last_wR=0;
+	static double __w=0;
 
 	// Don't stop me, I need synchronized parameter values
 	GetResource(RES_SCHEDULER);
@@ -141,10 +142,11 @@ void update_localization() {
 	Vs=Vs/2;
 	double w=wR-wL;
 	w=w/W_DIST;
+	__w+=w;
 
 	double x,y;
-	x=cos(w);
-	y=sin(w);
+	x=cos(__w);
+	y=sin(__w);
 	x=Vs*x;
 	y=Vs*y;
 
@@ -152,6 +154,6 @@ void update_localization() {
 	GetResource(UpdateLocker);
 	update_x(x);
 	update_y(y);
-	update_w(w/RAD);
+	update_w(__w/RAD);
 	ReleaseResource(UpdateLocker);
 }
