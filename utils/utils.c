@@ -1,5 +1,5 @@
-#include "utils.h"
 #include "ecrobot_interface.h"
+#include "utils.h"
 
 int next_cp(int cp) {
 	switch(cp) {
@@ -34,8 +34,6 @@ int coord_for_cp_square(int cp, int *x, int *y) {
 }
 
 void display_cp(int cp) {
-	display_clear(0);
-	display_goto_xy(0,0);
 	switch(cp) {
 		case NORTH: display_string("NORTH"); break;
 		case EAST: display_string("EAST"); break;
@@ -43,5 +41,4 @@ void display_cp(int cp) {
 		case WEST: display_string("WEST"); break;
 		default: display_string("????"); break;
 	}
-	display_update();
 }

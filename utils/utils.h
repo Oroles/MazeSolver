@@ -15,7 +15,7 @@
 #define CONV 		(PI*W_DIAM/PULSES)		// Conversion factor that translates encoder pulses into linear wheel displacement
 
 // About the map
-#define MAP_RES 	200 	// Resolution of the map (in mm) : size of the side of squares used to represent the maze
+#define MAP_RES 	300 	// Resolution of the map (in mm) : size of the side of squares used to represent the maze
 #define MAP_WIDTH 	15 		// Width of the map
 #define MAP_HEIGHT 	7 		// Height of the map
 
