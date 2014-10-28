@@ -90,22 +90,21 @@ CPU ATMEL_AT91SAM7S256
     RESOURCE=MovementOrder;
   };
 
-
-  /* Definition of ColorReader */
-  TASK ColorReader
+  /* Definition of WheelsPositionReader */
+  TASK WheelsPositionReader
   {
     AUTOSTART = FALSE;
-    PRIORITY = 7;
+    PRIORITY = 9;
     ACTIVATION = 1;
     SCHEDULE = FULL;
     STACKSIZE = 512;
   };
-  ALARM cr_alarm
+  ALARM wpr_alarm
   {
     COUNTER = SysTimerCnt;
     ACTION = ACTIVATETASK
     {
-        TASK = ColorReader;
+        TASK = WheelsPositionReader;
     };
     AUTOSTART = TRUE
     {
@@ -139,21 +138,21 @@ CPU ATMEL_AT91SAM7S256
     };
   };
 
-  /* Definition of WheelsPositionReader */
-  TASK WheelsPositionReader
+  /* Definition of ColorReader */
+  TASK ColorReader
   {
     AUTOSTART = FALSE;
-    PRIORITY = 9;
+    PRIORITY = 7;
     ACTIVATION = 1;
     SCHEDULE = FULL;
     STACKSIZE = 512;
   };
-  ALARM wpr_alarm
+  ALARM cr_alarm
   {
     COUNTER = SysTimerCnt;
     ACTION = ACTIVATETASK
     {
-        TASK = WheelsPositionReader;
+        TASK = ColorReader;
     };
     AUTOSTART = TRUE
     {
@@ -182,31 +181,7 @@ CPU ATMEL_AT91SAM7S256
     };
     AUTOSTART = TRUE
     {
-        ALARMTIME = 1;
-        CYCLETIME = 200;
-        APPMODE = appmode1;
-    };
-  };
-  
-  /* Definition of Mapping */
-  TASK Mapping
-  {
-    AUTOSTART = FALSE;
-    PRIORITY = 5;
-    ACTIVATION = 1;
-    SCHEDULE = FULL;
-    STACKSIZE = 512;
-  };
-  ALARM map_alarm
-  {
-    COUNTER = SysTimerCnt;
-    ACTION = ACTIVATETASK
-    {
-        TASK = Mapping;
-    };
-    AUTOSTART = TRUE
-    {
-        ALARMTIME = 1;
+        ALARMTIME = 200;
         CYCLETIME = 100;
         APPMODE = appmode1;
     };
@@ -216,7 +191,7 @@ CPU ATMEL_AT91SAM7S256
   TASK Movement
   {
     AUTOSTART = FALSE;
-    PRIORITY = 4;
+    PRIORITY = 5;
     ACTIVATION = 1;
     SCHEDULE = FULL;
     STACKSIZE = 512;
@@ -233,6 +208,30 @@ CPU ATMEL_AT91SAM7S256
     {
         ALARMTIME = 1;
         CYCLETIME = 100;
+        APPMODE = appmode1;
+    };
+  };
+  
+  /* Definition of Mapping */
+  TASK Mapping
+  {
+    AUTOSTART = FALSE;
+    PRIORITY = 4;
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+    STACKSIZE = 512;
+  };
+  ALARM map_alarm
+  {
+    COUNTER = SysTimerCnt;
+    ACTION = ACTIVATETASK
+    {
+        TASK = Mapping;
+    };
+    AUTOSTART = TRUE
+    {
+        ALARMTIME = 200;
+        CYCLETIME = 150;
         APPMODE = appmode1;
     };
   };

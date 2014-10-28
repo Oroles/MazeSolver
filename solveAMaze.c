@@ -16,6 +16,10 @@ void ecrobot_device_initialize()
 	ecrobot_init_sonar_sensor(PORT_DISTANCE_L);
 	ecrobot_init_sonar_sensor(PORT_DISTANCE_F);
 	ecrobot_init_sonar_sensor(PORT_DISTANCE_R);
+	ecrobot_off_sonar_sensor(PORT_DISTANCE_L);
+	//ecrobot_off_sonar_sensor(PORT_DISTANCE_F);
+	ecrobot_off_sonar_sensor(PORT_DISTANCE_R);
+	ecrobot_continuous_sonar_sensor(PORT_DISTANCE_F);
 	init_mapping( 0x00 );
 }
 void ecrobot_device_terminate()
@@ -62,7 +66,7 @@ TASK(Mapping) {
 }
 
 TASK(Movement) {
-	do_movement();
+	//do_movement();
 	TerminateTask();
 }
 
@@ -73,9 +77,24 @@ TASK(ColorReader) {
 }
 
 TASK(DistanceReader) {
-	set_distanceL(ecrobot_get_sonar_sensor(PORT_DISTANCE_L));
-	set_distanceF(ecrobot_get_sonar_sensor(PORT_DISTANCE_F));
-	set_distanceR(ecrobot_get_sonar_sensor(PORT_DISTANCE_R));
+	static U8 __ping_front=TRUE;
+	if(__ping_front) {
+		set_distanceL(ecrobot_get_sonar_sensor(PORT_DISTANCE_L));
+		set_distanceR(ecrobot_get_sonar_sensor(PORT_DISTANCE_R));
+		ecrobot_off_sonar_sensor(PORT_DISTANCE_L);
+		ecrobot_off_sonar_sensor(PORT_DISTANCE_R);
+		ecrobot_continuous_sonar_sensor(PORT_DISTANCE_F);
+
+		__ping_front=FALSE;
+	}
+	else {
+		set_distanceF(ecrobot_get_sonar_sensor(PORT_DISTANCE_F));
+		ecrobot_off_sonar_sensor(PORT_DISTANCE_F);
+		ecrobot_continuous_sonar_sensor(PORT_DISTANCE_L);
+		ecrobot_continuous_sonar_sensor(PORT_DISTANCE_R);
+
+		__ping_front=TRUE;
+	}
 	TerminateTask();
 }
 

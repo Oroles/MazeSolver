@@ -7,13 +7,15 @@
 
 int find_next_goal() {
 	int tmp_goal=-1;
-	int direction=NORTH;
+	int direction=NORTH,pos=4;
 	do {
 		if(is_wall_in_direction(direction,get_x(),get_y())==NO_WALL) {
+			display_goto_xy(pos,0);display_string("NO WALL IN ");display_cp(direction);
 			if(!is_visited_in_direction(direction,get_x(),get_y())) return direction;
 			else tmp_goal=direction;
 		}
 		direction=next_cp(direction);
+		pos++;
 	}while(direction!=NORTH);
 	return tmp_goal;
 }
@@ -29,9 +31,8 @@ int main_step() {
 	if(get_color()!=NXT_COLOR_GREEN) {
 		int goal;
 		goal=find_next_goal();
-		display_cp(goal);
 
-		if(goal>=0) goto_cp(goal);
+		//if(goal!=-1) goto_cp(goal);
 		return 0;
 	}
 	else return 1;
