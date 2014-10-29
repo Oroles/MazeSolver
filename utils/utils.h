@@ -11,8 +11,9 @@
 // About the robot
 #define W_DIST 		120 		// The distance between the wheels (in mm)
 #define W_DIAM		56 			// Nominal wheel diameter (in mm)
+#define W_PERI		178 		// Nominal wheel diameter (in mm)
 #define PULSES 		360 		// Encoder resolution (in pulses per revolution)
-#define CONV 		(PI*W_DIAM/PULSES)		// Conversion factor that translates encoder pulses into linear wheel displacement
+#define CONV 		(W_PERI/PULSES)		// Conversion factor that translates encoder pulses into linear wheel displacement
 
 // About the map
 #define MAP_RES 	300 	// Resolution of the map (in mm) : size of the side of squares used to represent the maze
