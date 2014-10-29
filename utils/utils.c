@@ -25,10 +25,10 @@ int is_cp(int val) { return (val==NORTH)||(val==EAST)||(val==SOUTH)||(val==WEST)
 
 int coord_for_cp_square(int cp, int *x, int *y) {
 	switch(cp) {
-		case NORTH: *y++; return TRUE;
-		case EAST: *x++; return TRUE;
-		case SOUTH: *y--; return TRUE;
-		case WEST: *x--; return TRUE;
+		case NORTH: (*y)++; return TRUE;
+		case EAST: (*x)++; return TRUE;
+		case SOUTH: (*y)--; return TRUE;
+		case WEST: (*x)--; return TRUE;
 		default: return FALSE;
 	}
 }
