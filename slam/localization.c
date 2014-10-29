@@ -1,9 +1,11 @@
 #include <stddef.h>
+#include <stdlib.h>
 #include <math.h>
 #include "kernel.h"
 #include "ecrobot_interface.h"
 #include "utils/shared_variables.h"
 #include "utils/utils.h"
+#include "actions/movement.h"
 #include "localization.h"
 
 #define GET_REAL 	0
@@ -122,38 +124,38 @@ void update_localization() {
 
 	// Don't stop me, I need synchronized parameter values
 	GetResource(RES_SCHEDULER);
-	int wL=get_wPositionL();
-	int wR=get_wPositionR();
+	int temp_wL=get_wPositionL();
+	int temp_wR=get_wPositionR();
 	ReleaseResource(RES_SCHEDULER);
 	
 	// Initialization
-	int temp;
-	temp=wL;
-	wL -= __last_wL;
-	__last_wL=temp;
-	temp=wR;
-	wR -= __last_wR;
-	__last_wR=temp;
+	double wL,wR;
+	wL=temp_wL-__last_wL;
+	wR=temp_wR-__last_wR;
 	
-	// Computations
-	wL=wL*CONV;
-	wR=wR*CONV;
-	double Vs=wL+wR;
-	Vs=Vs/2;
-	double w=wR-wL;
-	w=w/W_DIST;
-	__w+=w;
+	if(abs(wL)>=0 || abs(wR)>=0) {
+		__last_wL=temp_wL;
+		__last_wR=temp_wR;
+		// Computations
+		wL=wL*CONV;
+		wR=wR*CONV;
+		double Vs=wL+wR;
+		Vs=Vs/2;
+		double w=wR-wL;
+		w=w/W_DIST;
+		__w+=w;
 
-	double x,y;
-	x=cos(__w);
-	y=sin(__w);
-	x=Vs*x;
-	y=Vs*y;
+		double x,y;
+		x=cos(__w);
+		y=sin(__w);
+		x=Vs*x;
+		y=Vs*y;
 
-	// Update Shared Variables
-	GetResource(UpdateLocker);
-	update_x(x);
-	update_y(y);
-	update_w(__w/RAD);
-	ReleaseResource(UpdateLocker);
+		// Update Shared Variables
+		GetResource(UpdateLocker);
+		update_x(x);
+		update_y(y);
+		update_w(__w/RAD);
+		ReleaseResource(UpdateLocker);
+	}
 }
