@@ -29,7 +29,6 @@ int main_step() {
 	if(get_color()!=NXT_COLOR_GREEN) {
 		int goal;
 		goal=find_next_goal();
-		display_cp(goal);
 
 		if(goal>=0) goto_cp(goal);
 		return 0;
