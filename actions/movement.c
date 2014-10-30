@@ -144,7 +144,8 @@ void do_rotate_left(int power) {
 void do_turn_to_w(int power) {
 	int output= get_PID_output();
 	
-	if(output>10 || output<-10) output=power;
+	if(output>10) output = power;
+	else if ( output<-10) output=-power;
 	else output= (int) (output*power/10);
 
 	if(output<0 && output>-10) output=-10;
