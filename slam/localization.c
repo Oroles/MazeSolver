@@ -117,6 +117,11 @@ double access_w(double w, int setMode) {
 		access_w(w,UPDATE);
 	}
 
+void init_localization() {
+	update_x(MAP_RES - (get_distanceF() % MAP_RES));
+	update_y(get_distanceR() % MAP_RES);
+}
+
 void update_localization() {
 	static int __last_wL=0;
 	static int __last_wR=0;

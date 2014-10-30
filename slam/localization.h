@@ -14,6 +14,7 @@ int get_y();
 double get_realY();
 double get_w();
 int get_cardinal_point();
+void init_localization();
 void update_localization();
 
 #endif

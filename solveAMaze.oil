@@ -182,7 +182,7 @@ CPU ATMEL_AT91SAM7S256
     };
     AUTOSTART = TRUE
     {
-        ALARMTIME = 1;
+        ALARMTIME = 500;
         CYCLETIME = 100;
         APPMODE = appmode1;
     };
@@ -207,7 +207,7 @@ CPU ATMEL_AT91SAM7S256
     };
     AUTOSTART = TRUE
     {
-        ALARMTIME = 1;
+        ALARMTIME = 500;
         CYCLETIME = 100;
         APPMODE = appmode1;
     };
@@ -231,7 +231,7 @@ CPU ATMEL_AT91SAM7S256
     };
     AUTOSTART = TRUE
     {
-        ALARMTIME = 180;
+        ALARMTIME = 500;
         CYCLETIME = 180;
         APPMODE = appmode1;
     };
@@ -254,7 +254,7 @@ CPU ATMEL_AT91SAM7S256
     };
     AUTOSTART = TRUE
     {
-        ALARMTIME = 1;
+        ALARMTIME = 500;
         CYCLETIME = 500;
         APPMODE = appmode1;
     };

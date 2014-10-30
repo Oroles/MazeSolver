@@ -40,6 +40,9 @@ void user_1ms_isr_type2(void){
 }
 
 TASK(MainController) {
+	WaitEvent(NewDiscovery);
+	ClearEvent(NewDiscovery);
+	init_localization();
 	while(1)
 	{
 		WaitEvent(NewDiscovery);
