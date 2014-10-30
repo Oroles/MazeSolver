@@ -115,4 +115,7 @@ void find_shortest_path( int start_x, int start_y, int stop_x, int stop_y ) {
 
 	free_list( &open_list );
 	free_list( &close_list );
+	if ( current != NULL ) {
+		free( current );
+	}
 }
