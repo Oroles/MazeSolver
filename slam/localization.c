@@ -8,124 +8,106 @@
 #include "actions/movement.h"
 #include "localization.h"
 
-#define GET_REAL 	0
-#define GET_FORMAL	1
-#define UPDATE 	2
+#define CENTER_RES 20
 
-
-double access_x(double dx, int setMode) {
-	static double __rx=0;
-	static int __x=0;
-	switch(setMode) {
-		case UPDATE:
-		__rx+=dx;
-		__x=lround(__rx/MAP_RES);
-		return 0;
-		case GET_REAL:
-		return __rx;
-		case GET_FORMAL:
-		return __x;
-		default:
-		return 0;
-	}
-}
+// X functions
+double __rx=MAP_RES/2;
+int __x=0;
 	int get_x() {
 		GetResource(UpdateLocker);
 		ReleaseResource(UpdateLocker);
-		return (int) access_x(0,GET_FORMAL);
+		return __x;
 	}
 	double get_realX() {
 		GetResource(UpdateLocker);
 		ReleaseResource(UpdateLocker);
-		return access_x(0,GET_REAL);
+		return __rx;
 	}
 	void update_x(double dx) {
-		access_x(dx,UPDATE);
+		__rx+=dx;
+		__x=lround(__rx/MAP_RES);
 	}
 
-double access_y(double dy, int setMode) {
-	static double __ry=0;
-	static int __y=0;
-	switch(setMode) {
-		case UPDATE:
-		__ry+=dy;
-		__y=lround(__ry/MAP_RES);
-		return 0;
-		case GET_REAL:
-		return __ry;
-		case GET_FORMAL:
-		return __y;
-		default:
-		return 0;
-	}
-}
+// Y functions
+double __ry=MAP_RES/2;
+int __y=0;
 	int get_y() {
 		GetResource(UpdateLocker);
 		ReleaseResource(UpdateLocker);
-		return (int) access_y(0,GET_FORMAL);
+		return __y;
 	}
 	double get_realY() {
 		GetResource(UpdateLocker);
 		ReleaseResource(UpdateLocker);
-		return access_y(0,GET_REAL);
+		return __ry;
 	}
 	void update_y(double dy) {
-		access_y(dy,UPDATE);
+		__ry+=dy;
+		__y=lround(__ry/MAP_RES);
 	}
 
-int find_cardinal(double w) {
-	if(w<CARD_PRECISION) return EAST;
-	if(w<90-CARD_PRECISION) return NO_EA;
-	if(w<=90+CARD_PRECISION) return NORTH;
-	if(w<180-CARD_PRECISION) return NO_WE;
-	if(w<=180+CARD_PRECISION) return WEST;
-	if(w<270-CARD_PRECISION) return SO_WE;
-	if(w<=270+CARD_PRECISION) return SOUTH;
-	if(w<360-CARD_PRECISION) return SO_EA;
-	return EAST;
-}
+// W functions (angle)
+double __w=0;
+int __cp=0;
 
-double access_w(double w, int setMode) {
-	static double __w=0;
-	static int __cp=0;
-	switch(setMode) {
-		case UPDATE:
-		__w=w;
-		if(__w>360) __w-=360;
-		if(__w<0) __w+=360;
-		__cp=find_cardinal(__w);
-		return 0;
-		case GET_REAL:
-		return __w;
-		case GET_FORMAL:
-		return __cp;
-		default:
-		return 0;
+	int find_cardinal(double w) {
+		if(w<CARD_PRECISION) return EAST;
+		if(w<90-CARD_PRECISION) return NO_EA;
+		if(w<=90+CARD_PRECISION) return NORTH;
+		if(w<180-CARD_PRECISION) return NO_WE;
+		if(w<=180+CARD_PRECISION) return WEST;
+		if(w<270-CARD_PRECISION) return SO_WE;
+		if(w<=270+CARD_PRECISION) return SOUTH;
+		if(w<360-CARD_PRECISION) return SO_EA;
+		return EAST;
 	}
-}
+
 	double get_w() {
 		GetResource(UpdateLocker);
 		ReleaseResource(UpdateLocker);
-		return access_w(0,GET_REAL);
+		return __w;
 	}
 	int get_cardinal_point() {
 		GetResource(UpdateLocker);
 		ReleaseResource(UpdateLocker);
-		return (int) access_w(0,GET_FORMAL);
+		return __cp;
 	}
 	void update_w(double w) {
-		access_w(w,UPDATE);
+		__w=w;
+		if(__w>=360) __w-=360;
+		else if(__w<0) __w+=360;
+		__cp=find_cardinal(__w);
 	}
 
+// General functions
+int is_cell_center(double rx, double ry) {
+	double x_in_cell=rx-__x*MAP_RES;
+	double y_in_cell=ry-__y*MAP_RES;
+	if( x_in_cell<(MAP_RES/2+CENTER_RES) &&
+		x_in_cell>(MAP_RES/2-CENTER_RES) &&
+		y_in_cell<(MAP_RES/2+CENTER_RES) &&
+		y_in_cell>(MAP_RES/2-CENTER_RES))
+		return TRUE;
+	else
+		return FALSE;
+}
+
+// Task functions
 void init_localization() {
-	update_x(MAP_RES - (get_distanceF() % MAP_RES));
-	update_y(get_distanceR() % MAP_RES);
+	__rx= MAP_RES-(get_distanceF() % MAP_RES);
+	__ry= get_distanceR() % MAP_RES;
+	if(__rx<MAP_RES/2) move_forward(-20);
+	else if(__rx>MAP_RES/2) move_forward(20);
 }
 
 void update_localization() {
 	static int __last_wL=0;
 	static int __last_wR=0;
 	static double __w=0;
+
+	if(is_cell_center(get_realX(),get_realY())) {
+		SetEvent(MainController, CellCenter);
+	}
 
 	// Don't stop me, I need synchronized parameter values
 	GetResource(RES_SCHEDULER);

@@ -26,11 +26,27 @@ void goto_cp(int goal){
 }
 
 int main_step() {
+	static int __next_goal_x=0;
+	static int __next_goal_y=0;
 	if(get_color()!=NXT_COLOR_GREEN) {
-		int goal;
-		goal=find_next_goal();
+		if(get_x()==__next_goal_x && get_y()==__next_goal_y) {
+			stop();
 
-		if(goal>=0) goto_cp(goal);
+			// If we're not in direction of one of the four cardinal points, we turn.
+			if(!is_cp(get_cp())) {
+				turn_to_cp(next_cp(get_cp()),20);
+				WaitEvent(EndOfMovement);
+				ClearEvent(EndOfMovement);
+			}
+
+			// Find the next goal, then go in its direction
+			int goal=find_next_goal();
+
+			if(goal>=0) {
+				coord_for_cp_square(goal,&__next_goal_x,&__next_goal_y);
+				goto_cp(goal);
+			}
+		}
 		return 0;
 	}
 	else return 1;

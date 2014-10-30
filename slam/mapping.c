@@ -186,7 +186,6 @@ void update_map() {
 			}
 			last_pos_x = pos_x;
 			last_pos_y = pos_y;
-			SetEvent(MainController, NewDiscovery);
 	}
 }
 

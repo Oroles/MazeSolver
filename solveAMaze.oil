@@ -68,12 +68,13 @@ CPU ATMEL_AT91SAM7S256
   };
 
 
-  EVENT NewDiscovery{
+  EVENT CellCenter{
     MASK = AUTO;
   };
   EVENT EndOfMovement{
     MASK = AUTO;
   };
+
 
   TASK MainController
   {
@@ -85,7 +86,7 @@ CPU ATMEL_AT91SAM7S256
     ACTIVATION = 1;
     SCHEDULE = FULL;
     STACKSIZE = 512;
-    EVENT=NewDiscovery;
+    EVENT=CellCenter;
     EVENT=EndOfMovement;
     RESOURCE=MovementOrder;
   };

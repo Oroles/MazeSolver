@@ -40,13 +40,13 @@ void user_1ms_isr_type2(void){
 }
 
 TASK(MainController) {
-	WaitEvent(NewDiscovery);
-	ClearEvent(NewDiscovery);
+	WaitEvent(CellCenter);
+	ClearEvent(CellCenter);
 	init_localization();
 	while(1)
 	{
-		WaitEvent(NewDiscovery);
-		ClearEvent(NewDiscovery);
+		WaitEvent(CellCenter);
+		ClearEvent(CellCenter);
 		if(main_step()) { stop(); TerminateTask(); }
 	}
 	TerminateTask();
