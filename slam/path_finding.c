@@ -34,7 +34,9 @@ int move_cost(struct node* current, struct node* neighbor) {
 
 int is_stop_position(struct node* current, int stop_x, int stop_y )
 {
-	if ( ( current->x == stop_x ) && ( current->y == stop_y ) ) {
+	int current_x = current->x < 0 ? current->x + MAP_WIDTH : current->x;
+	int current_y = current->y < 0 ? current->y + MAP_HEIGHT : current->y;
+	if ( ( current_x == stop_x ) && ( current_y == stop_y ) ) {
 		return TRUE;
 	}
 	return FALSE;
@@ -42,8 +44,10 @@ int is_stop_position(struct node* current, int stop_x, int stop_y )
 
 /* Use manhattan distance */
 int heuristic_function(struct node* current, int stop_x, int stop_y ) {
-	int dx = abs( current->x - stop_x );
-	int dy = abs( current->y - stop_y );
+	int current_x = current->x < 0 ? current->x + MAP_WIDTH : current->x;
+	int current_y = current->y < 0 ? current->y + MAP_HEIGHT : current->y;
+	int dx = abs( current_x - stop_x );
+	int dy = abs( current_y - stop_y );
 	int result = 0;
 	result = D * ( dx + dy );
 	return result;
