@@ -96,8 +96,8 @@ int is_cell_center(double rx, double ry) {
 void init_localization() {
 	__rx= MAP_RES-(get_distanceF() % MAP_RES);
 	__ry= get_distanceR() % MAP_RES;
-	if(__rx<MAP_RES/2) move_forward(-20);
-	else if(__rx>MAP_RES/2) move_forward(20);
+	if(__rx<MAP_RES/2) go_forward(-20);
+	else if(__rx>MAP_RES/2) go_forward(20);
 }
 
 void update_localization() {

@@ -38,8 +38,8 @@
 
 
 /* OSEK declarations */
-DeclareEvent(NewDiscovery);
 DeclareEvent(EndOfMovement);
+DeclareEvent(CellCenter);
 
 DeclareCounter(SysTimerCnt);
 DeclareTask(ColorReader);
