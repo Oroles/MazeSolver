@@ -32,13 +32,6 @@ int main_step() {
 		if(get_x()==__next_goal_x && get_y()==__next_goal_y) {
 			stop();
 
-			// If we're not in direction of one of the four cardinal points, we turn.
-			if(!is_cp(get_cp())) {
-				turn_to_cp(next_cp(get_cp()),20);
-				WaitEvent(EndOfMovement);
-				ClearEvent(EndOfMovement);
-			}
-
 			// Find the next goal, then go in its direction
 			int goal=find_next_goal();
 
