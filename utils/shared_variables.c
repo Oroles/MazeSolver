@@ -13,8 +13,8 @@ U8 access_color(U8 color, int setMode) {
 	}
 	
 S32 access_distanceL(S32 distanceL, int setMode) {
-	static S32 __distanceL=255;
-	if(setMode) { __distanceL = distanceL; return 0; }
+	static S32 __distanceL=255+CENTER_TO_SIDES;
+	if(setMode) { __distanceL = distanceL+CENTER_TO_SIDES; return 0; }
 	else return __distanceL;
 }
 	void set_distanceL(S32 distanceL) {
@@ -25,8 +25,8 @@ S32 access_distanceL(S32 distanceL, int setMode) {
 	}
 	
 S32 access_distanceR(S32 distanceR, int setMode) {
-	static S32 __distanceR=255;
-	if(setMode) { __distanceR = distanceR; return 0; }
+	static S32 __distanceR=255+CENTER_TO_SIDES;
+	if(setMode) { __distanceR = distanceR+CENTER_TO_SIDES; return 0; }
 	else return __distanceR;
 }
 	void set_distanceR(S32 distanceR) {
@@ -37,8 +37,8 @@ S32 access_distanceR(S32 distanceR, int setMode) {
 	}
 	
 S32 access_distanceF(S32 distanceF, int setMode) {
-	static S32 __distanceF=255;
-	if(setMode) { __distanceF = distanceF; return 0; }
+	static S32 __distanceF=255+CENTER_TO_FRONT;
+	if(setMode) { __distanceF = distanceF+CENTER_TO_FRONT; return 0; }
 	else return __distanceF;
 }
 	void set_distanceF(S32 distanceF) {
