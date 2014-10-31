@@ -96,7 +96,6 @@ int is_cell_center(double rx, double ry) {
 
 // Task functions
 void init_localization() {
-<<<<<<< HEAD
 	int distF=get_distanceF();
 	int distR=get_distanceR();
 	int distL=get_distanceL();
@@ -114,12 +113,6 @@ void init_localization() {
 	WaitEvent(EndOfMovement);
 	ClearEvent(EndOfMovement);
 	go_forward(-20);
-=======
-	__rx= MAP_RES-(get_distanceF() % MAP_RES);
-	__ry= get_distanceL() % MAP_RES;
-	if(__rx<MAP_RES/2) go_forward(-20);
-	else if(__rx>MAP_RES/2) go_forward(20);
->>>>>>> origin/master
 }
 
 void update_localization() {
