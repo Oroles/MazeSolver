@@ -7,6 +7,7 @@
 #include "utils/display.h"
 #include "slam/localization.h"
 #include "slam/mapping.h"
+#include "slam/path_finding.h"
 #include "actions/movement.h"
 #include "main_controller.h"
 
@@ -47,7 +48,11 @@ TASK(MainController) {
 	{
 		WaitEvent(CellCenter);
 		ClearEvent(CellCenter);
-		if(main_step()) { stop(); TerminateTask(); }
+		if(main_step()) {
+			stop();
+			find_shortest_path(0,0,get_x(),get_y());
+			TerminateTask();
+		}
 	}
 	TerminateTask();
 }
