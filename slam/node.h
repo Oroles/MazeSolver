@@ -8,16 +8,16 @@
 #define NULL 0
 
 struct node {
-	int x;
-	int y;
-	int f_cost;
-	int g_cost;
+	S8 x;
+	S8 y;
+	S8 f_cost;
+	S8 g_cost;
 	struct node* parent;
 	struct node* next;
 };
 
 struct node* create_empty_node();
-void init_nod_position(struct node* root, int x, int y);
+void init_nod_position(struct node* root, S8 x, S8 y);
 
 void add_node(struct node** root, struct node* new_node);
 void add_node_priority(struct node** root, struct node* new_node);

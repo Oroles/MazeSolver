@@ -3,7 +3,7 @@
 struct node* create_empty_node() {
 	struct node* empty_node = (struct node*)malloc( sizeof( struct node ) );
 	empty_node->f_cost = 0;
-	empty_node->g_cost = 255;
+	empty_node->g_cost = 127;
 	empty_node->x = 0;
 	empty_node->y = 0;
 	empty_node->next = NULL;
@@ -11,7 +11,7 @@ struct node* create_empty_node() {
 	return empty_node;
 }
 
-void init_nod_position(struct node* root, int x, int y) {
+void init_nod_position(struct node* root, S8 x, S8 y) {
 	root->x = x;
 	root->y = y;
 }
