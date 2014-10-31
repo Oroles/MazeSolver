@@ -21,6 +21,7 @@ void stop();
 void go_forward(int power);
 void turn_right(int power);
 void turn_left(int power);
+void turn_to_w(double w, int power);
 void turn_to_cp(int cp, int power);
 
 void do_movement();

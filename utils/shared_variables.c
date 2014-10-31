@@ -1,3 +1,4 @@
+#include "utils.h"
 #include "shared_variables.h"
 
 U8 access_color(U8 color, int setMode) {

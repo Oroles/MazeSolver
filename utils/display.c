@@ -9,7 +9,7 @@
 #define DISPLAY_DATA 	1
 #define DISPLAY_MAP 	2
 
-#define MODE_DISPLAY 	1
+#define MODE_DISPLAY 	0
 
 void displayData() {
 	display_clear(0);

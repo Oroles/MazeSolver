@@ -4,6 +4,14 @@
 #include "kernel.h"
 #include "kernel_id.h"
 
+/* PORTS */
+#define PORT_COLOR NXT_PORT_S4
+#define PORT_DISTANCE_R NXT_PORT_S1
+#define PORT_DISTANCE_F NXT_PORT_S2
+#define PORT_DISTANCE_L NXT_PORT_S3
+#define PORT_MOTOR_R NXT_PORT_C
+#define PORT_MOTOR_L NXT_PORT_B
+
 // General statics
 #define PI 			3.14159265
 #define RAD 		(PI/180.0) 	// Conversion factor that translate angles from degrees to radians
@@ -14,6 +22,9 @@
 #define W_PERI		178.0 		// Nominal wheel diameter (in mm)
 #define PULSES 		360 		// Encoder resolution (in pulses per revolution)
 #define CONV 		(W_PERI/PULSES)		// Conversion factor that translates encoder pulses into linear wheel displacement
+// Distance sensors
+#define CENTER_TO_FRONT 3 // Distance from the front sensor to the center of the three sensors (center of the robot)
+#define CENTER_TO_SIDES 6 // Distance from one of the side sensors to the center of the three sensors (center of the robot)
 
 // About the map
 #define MAP_RES 	300 	// Resolution of the map (in mm) : size of the side of squares used to represent the maze
@@ -56,5 +67,6 @@ int previous_cp(int cp);
 int is_cp(int val);
 int coord_for_cp_square(int cp, int *x, int *y);
 void display_cp(int cp);
+double angle_to_reach(double xi, double yi, double xf, double yf);
 
 #endif

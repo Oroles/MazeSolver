@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include <math.h>
 #include "ecrobot_interface.h"
 #include "utils.h"
 
@@ -40,5 +42,25 @@ void display_cp(int cp) {
 		case SOUTH: display_string("EAST"); break;
 		case WEST: display_string("WEST"); break;
 		default: display_string("????"); break;
+	}
+}
+
+double angle_to_reach(double xi, double yi, double xf, double yf) {
+	double opp=yf-yi,adj=xf-xi;
+	double res;
+	if(adj!=0 && opp!=0) {
+		res=fabs(opp/adj);
+		res=atan(res)/RAD;
+	}
+	else if(opp!=0) res=90;
+	else res=0;
+
+	if(opp>=0) {
+		if(adj>=0) return res;
+		else return 180-res;
+	}
+	else {
+		if(adj>=0) return 360-res;
+		else return 180+res;
 	}
 }
