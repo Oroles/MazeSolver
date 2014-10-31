@@ -24,7 +24,7 @@
 */
 
 U8 _map[MAP_WIDTH][MAP_HEIGHT];
-#define THRESHOLD_DISTANCE 25
+#define THRESHOLD_DISTANCE 30
 
 #define N_INFO_MASK  0x80
 #define N_WALL_MASK 0x40
@@ -152,6 +152,10 @@ int detect_wall(S32 distance) {
 void update_map() {
 	static int last_pos_x = -1;
 	static int last_pos_y = -1;
+	//Stores the average value of walls
+	static int count_front_walls = 0;
+	static int count_left_walls = 0;
+	static int count_right_walls = 0;
 
 	int left_wall = detect_wall(get_distanceL());
 	int right_wall = detect_wall(get_distanceR());
@@ -167,13 +171,18 @@ void update_map() {
 	U8 data = _map[pos_x][pos_y];
 
 	if(is_cp(cardinal_point)) {
-		if(front_wall) set_wall_state(&data, cardinal_point, IS_WALL);
+		//Add plus one for is wall and substract one for no wall
+		count_front_walls = front_wall ? count_front_walls + 1 : count_front_walls - 1;
+		count_left_walls = left_wall ? count_left_walls + 1 : count_left_walls - 1;
+		count_right_walls = right_wall ? count_right_walls + 1 : count_right_walls - 1;
+
+		if(count_front_walls>0) set_wall_state(&data, cardinal_point, IS_WALL);
 		else set_wall_state(&data, cardinal_point, NO_WALL);
 
-		if(right_wall) set_wall_state(&data, next_cp(cardinal_point), IS_WALL);
+		if(count_right_walls>0) set_wall_state(&data, next_cp(cardinal_point), IS_WALL);
 		else set_wall_state(&data, next_cp(cardinal_point), NO_WALL);
 
-		if(left_wall) set_wall_state(&data, previous_cp(cardinal_point), IS_WALL);
+		if(count_left_walls>0) set_wall_state(&data, previous_cp(cardinal_point), IS_WALL);
 		else set_wall_state(&data, previous_cp(cardinal_point), NO_WALL);
 	}
 
@@ -186,6 +195,9 @@ void update_map() {
 			}
 			last_pos_x = pos_x;
 			last_pos_y = pos_y;
+			count_front_walls = 0;
+			count_left_walls = 0;
+			count_right_walls = 0;
 	}
 }
 
