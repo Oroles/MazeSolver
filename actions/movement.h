@@ -4,29 +4,13 @@
 #define EXPECTED_VALUE 		7
 #define PROPORTIONAL		3
 
-// Movement Orders
-#define STOP 			0
-#define MOVE_FORWARD 	1
-#define TURN_RIGHT 		2
-#define TURN_LEFT 		3
-#define TURN_TO_W 		4
+void init_PID(double target_w, U8 Kp, U8 Ki, U8 Kd);
+void set_target_w(double target_w);
 
-typedef enum { UP, RIGHT, DOWN, LEFT } orientation;
-
-DeclareResource(MovementOrder);
-
-int get_movement();
-
-void stop();
-void go_forward(int power);
-void turn_right(int power);
-void turn_left(int power);
-void turn_to_w(double w, int power);
-void turn_to_cp(int cp, int power);
-
-void do_movement();
-
-orientation get_orientation();
-
+void do_stop();
+void do_move_forward(int power);
+void do_rotate_right(int power);
+void do_rotate_left(int power);
+void do_turn_to_w(int power);
 
 #endif

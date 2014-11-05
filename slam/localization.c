@@ -5,7 +5,7 @@
 #include "ecrobot_interface.h"
 #include "utils/shared_variables.h"
 #include "utils/utils.h"
-#include "actions/movement.h"
+#include "actions/commands.h"
 #include "localization.h"
 
 #define CENTER_RES 20
@@ -83,6 +83,9 @@ int __cp=0;
 int is_cell_center(double rx, double ry) {
 	double x_in_cell=rx-__x*MAP_RES;
 	double y_in_cell=ry-__y*MAP_RES;
+	if(x_in_cell<0) x_in_cell+=MAP_RES;
+	if(y_in_cell<0) y_in_cell+=MAP_RES;
+
 	if( x_in_cell<(MAP_RES/2+CENTER_RES) &&
 		x_in_cell>(MAP_RES/2-CENTER_RES) &&
 		y_in_cell<(MAP_RES/2+CENTER_RES) &&
@@ -103,7 +106,7 @@ void init_localization() {
 		__rx= MAP_RES-((distF*10) % MAP_RES);
 
 	if(distL<distR)
-		__ry= MAP_RES-(distL*10) % MAP_RES;
+		__ry= MAP_RES-((distL*10) % MAP_RES);
 	else if(distR!=255)
 		__ry= (distR*10) % MAP_RES;
 
@@ -120,7 +123,7 @@ void update_localization() {
 	static int __last_wR=0;
 	static double __w=0;
 
-	if(is_cell_center(get_realX(),get_realY())) {
+	if(is_cell_center(__rx,__ry)) {
 		SetEvent(MainController, CellCenter);
 	}
 

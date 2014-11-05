@@ -8,7 +8,7 @@
 #include "slam/localization.h"
 #include "slam/mapping.h"
 #include "slam/path_finding.h"
-#include "actions/movement.h"
+#include "actions/commands.h"
 #include "main_controller.h"
 
 void ecrobot_device_initialize()

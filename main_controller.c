@@ -2,8 +2,11 @@
 #include "utils/shared_variables.h"
 #include "slam/localization.h"
 #include "slam/mapping.h"
-#include "actions/movement.h"
+#include "actions/commands.h"
 #include "main_controller.h"
+
+int __next_goal_x=0;
+int __next_goal_y=0;
 
 int find_next_goal() {
 	int tmp_goal=-1;
@@ -22,12 +25,10 @@ void goto_cp(int goal){
 	turn_to_cp(goal,20);
 	WaitEvent(EndOfMovement);
 	ClearEvent(EndOfMovement);
-	go_forward(40);
+	move_to_cell(__next_goal_x,__next_goal_y,40);
 }
 
 int main_step() {
-	static int __next_goal_x=0;
-	static int __next_goal_y=0;
 	if(get_color()!=NXT_COLOR_GREEN) {
 		if(get_x()==__next_goal_x && get_y()==__next_goal_y) {
 			stop();
