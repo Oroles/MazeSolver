@@ -39,7 +39,7 @@ int is_stop(U8 color) {
 int main_step() {
 	static int __next_goal_x=0;
 	static int __next_goal_y=0;
-	if(is_stop(get_color())) {
+	if(!is_stop(get_color())) {
 		if(get_x()==__next_goal_x && get_y()==__next_goal_y) {
 			stop();
 
