@@ -68,5 +68,6 @@ int is_cp(int val);
 int coord_for_cp_square(int cp, int *x, int *y);
 void display_cp(int cp);
 double angle_to_reach(double xi, double yi, double xf, double yf);
+void cell_center(int x, int y, double *realx, double *realy);
 
 #endif
