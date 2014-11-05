@@ -106,7 +106,10 @@ void find_shortest_path( int start_x, int start_y, int stop_x, int stop_y ) {
 				neighbor->f_cost = cost + heuristic_function( neighbor, stop_x, stop_y );
 				add_node_priority(&open_list, neighbor);
 				neighbor->parent = current;
+			} else {
+				free( neighbor );
 			}
+
 			neighbor = remove_first_node( &neighbors );
 		}
 		current = remove_first_node( &open_list );
