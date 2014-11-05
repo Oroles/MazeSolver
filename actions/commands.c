@@ -39,11 +39,6 @@ void move_to_xy(double x, double y, int power) {
 void move_to_cell(int cx, int cy, int power) {
 	double x,y;
 	cell_center(cx,cy,&x,&y);
-	display_clear(0);
-	display_goto_xy(0,0);display_string("MOVE_TO_XY");
-	display_goto_xy(0,1);display_int((int)x,3);
-	display_goto_xy(0,2);display_int((int)y,3);
-	display_update();
 	move_to_xy(x,y,power);
 }
 
