@@ -25,10 +25,21 @@ void goto_cp(int goal){
 	go_forward(40);
 }
 
+int is_stop(U8 color) {
+	static int counter_color = 0;
+	if ( color == NXT_COLOR_GREEN ) {
+		counter_color++;
+	}
+	else {
+		counter_color = 0;
+	}
+	return counter_color > 3 ? TRUE : FALSE;
+}
+
 int main_step() {
 	static int __next_goal_x=0;
 	static int __next_goal_y=0;
-	if(get_color()!=NXT_COLOR_GREEN) {
+	if(is_stop(get_color())) {
 		if(get_x()==__next_goal_x && get_y()==__next_goal_y) {
 			stop();
 
