@@ -163,7 +163,7 @@ void update_map() {
 	int cardinal_point = get_cardinal_point();
 
 	if (!is_cp(cardinal_point)) {
-		continue;
+		return;
 	}
 
 	int pos_x = get_x();
