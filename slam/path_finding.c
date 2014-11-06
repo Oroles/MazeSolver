@@ -8,10 +8,10 @@
 
 #define D 			0x01
 
-struct node* find_neighbors(struct node* current ) {
-	struct node* neighbors = NULL;
+struct list_element* find_neighbors(struct node* current ) {
+	struct list_element* neighbors = NULL;
 	int orientation = NORTH;
-	int contor = 0;
+	U8 contor = 0;
 	while( contor != 4 ) {
 		if ( is_wall_in_direction(orientation,current->x,current->y) == NO_WALL )
 		{
@@ -20,7 +20,9 @@ struct node* find_neighbors(struct node* current ) {
 			int pos_y = current->y;
 			coord_for_cp_square(orientation, &pos_x, &pos_y);
 			init_nod_position( neighbor, pos_x, pos_y );
-			add_node(&neighbors, neighbor );
+			struct list_element* element = create_empty_list_element();
+			element->data = neighbor;
+			add_node(&neighbors, element );
 		}
 		orientation = next_cp( orientation );
 		++contor;
@@ -80,45 +82,54 @@ void print_path(struct node* current) {
 }
 
 void find_shortest_path( int start_x, int start_y, int stop_x, int stop_y ) {
-	struct node* open_list = create_empty_node();
-	struct node* close_list = NULL;
+	struct list_element* open_list = NULL;
+	struct list_element* close_list = NULL;
 
-	init_nod_position( open_list, start_x, start_y );
+	struct node* current_node = create_empty_node();
+	init_nod_position( current_node, start_x, start_y );
 
-	struct node* current = remove_first_node( &open_list );
-	current->g_cost = 0;
-	while( ( current != NULL ) && ( is_stop_position( current, stop_x, stop_y ) == FALSE ) ) {
+	struct list_element* element = create_empty_list_element();
+	element->data = current_node;
+	add_node(&open_list,element);
 
-		add_node( &close_list, current );
+	struct list_element* current_element = remove_first_node( &open_list );
+	current_element->data->g_cost = 0;
+	while( ( current_element != NULL ) && ( is_stop_position( current_element->data, stop_x, stop_y ) == FALSE ) ) {
 
-		struct node* neighbors = find_neighbors( current );
-		struct node* neighbor = remove_first_node( &neighbors );
+		add_node( &close_list, current_element );
+
+		struct list_element* neighbors = find_neighbors( current_element->data );
+		struct list_element* neighbor = remove_first_node( &neighbors );
 		while ( neighbor != NULL ) {
-			if ( find_node(&close_list, neighbor) == TRUE ) {
+			if ( find_node(&close_list, neighbor->data) == TRUE ) {
+				free(neighbor->data);
 				free(neighbor);
 				neighbor = remove_first_node( &neighbors );
 				continue;
 			}
-			int cost = current->g_cost + move_cost(current,neighbor);
+			int cost = current_element->data->g_cost + move_cost(current_element->data,neighbor->data);
 
-			if ( (cost < neighbor->g_cost) && ( find_node(&open_list, neighbor) == FALSE ) ) {
-				neighbor->g_cost = cost;
-				neighbor->f_cost = cost + heuristic_function( neighbor, stop_x, stop_y );
+			if ( (cost < neighbor->data->g_cost) && ( find_node(&open_list, neighbor->data) == FALSE ) ) {
+				neighbor->data->g_cost = cost;
+				neighbor->data->f_cost = cost + heuristic_function( neighbor->data, stop_x, stop_y );
 				add_node_priority(&open_list, neighbor);
-				neighbor->parent = current;
-			} else {
+				neighbor->data->parent = current_element->data;
+			}
+			else
+			{
+				free( neighbor->data );
 				free( neighbor );
 			}
-
 			neighbor = remove_first_node( &neighbors );
 		}
-		current = remove_first_node( &open_list );
+		current_element = remove_first_node( &open_list );
 	}
-	print_path( current );
+	print_path( current_element->data );
 
 	free_list( &open_list );
 	free_list( &close_list );
-	if ( current != NULL ) {
-		free( current );
+	if ( current_element != NULL ) {
+		free( current_element->data );
+		free( current_element );
 	}
 }
