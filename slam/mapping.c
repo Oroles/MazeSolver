@@ -162,6 +162,10 @@ void update_map() {
 	int front_wall = detect_wall(get_distanceF());
 	int cardinal_point = get_cardinal_point();
 
+	if (!is_cp(cardinal_point)) {
+		continue;
+	}
+
 	int pos_x = get_x();
 	int pos_y = get_y();
 	if (pos_x < -MAP_WIDTH || pos_x > MAP_WIDTH) return;
