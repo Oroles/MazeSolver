@@ -16,5 +16,6 @@ double get_w();
 int get_cardinal_point();
 void init_localization();
 void update_localization();
+int is_cell_center(double rx, double ry);
 
 #endif
