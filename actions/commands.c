@@ -76,15 +76,29 @@ void turn_left(int power) {
 	ReleaseResource(MovementOrder);
 }
 
+void do_turn_to_w() {
+	double error= get_w()-get_target_w();
+
+	if(error<=1 && error>=-1) {
+		do_stop();
+		SetEvent(MainController, EndOfMovement);
+	}
+	else {
+		do_turn(__power);
+	}
+}
+
 void do_move_to_xy() {
 	double x=get_realX();
 	double y=get_realY();
 
 	set_target_w(angle_to_reach(x,y,__target_x,__target_y));
 
-	if(__target_x-x<=5 && x-__target_x<=5 &&
-		__target_y-y<=5 && y-__target_y<=5)
+	if(__target_x-x<=1 && x-__target_x<=1 &&
+		__target_y-y<=1 && y-__target_y<=1) {
 		do_stop();
+		SetEvent(MainController, EndOfMovement);
+	}
 	else
 		do_move_forward(__power);
 }
@@ -105,7 +119,7 @@ void do_movement() {
 		do_rotate_left(__power);
 		break;
 		case TURN_TO_W:
-		do_turn_to_w(__power);
+		do_turn_to_w();
 		break;
 		case MOVE_TO_XY:
 		do_move_to_xy();
