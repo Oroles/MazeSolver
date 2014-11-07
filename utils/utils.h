@@ -19,7 +19,7 @@
 // About the robot
 #define W_DIST 		125 		// The distance between the wheels (in mm)
 #define W_DIAM		56 			// Nominal wheel diameter (in mm)
-#define W_PERI		178.0 		// Nominal wheel diameter (in mm)
+#define W_PERI		176.5 		// Nominal wheel diameter (in mm)
 #define PULSES 		360 		// Encoder resolution (in pulses per revolution)
 #define CONV 		(W_PERI/PULSES)		// Conversion factor that translates encoder pulses into linear wheel displacement
 // Distance sensors
