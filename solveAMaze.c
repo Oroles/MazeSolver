@@ -43,7 +43,7 @@ void user_1ms_isr_type2(void){
 TASK(MainController) {
 	WaitEvent(CellCenter);
 	ClearEvent(CellCenter);
-	if ( !is_cell_center(get_realX(),get_realY()) ) init_localization();
+	if ( !is_inside_square(get_realX(),get_realY(),CENTER_RES) ) init_localization();
 	while(1)
 	{
 		WaitEvent(CellCenter);
