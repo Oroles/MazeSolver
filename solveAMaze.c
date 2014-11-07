@@ -55,19 +55,19 @@ TASK(MainController) {
 		}
 	}*/
 	
-	move_to_xy(0,200,20);
+	move_to_xy(2000,0,20);
 	WaitEvent(EndOfMovement);
 	ClearEvent(EndOfMovement);
 	turn_to_cp(SOUTH,20);
 	WaitEvent(EndOfMovement);
 	ClearEvent(EndOfMovement);
-	move_to_xy(-200,200,20);
+	move_to_xy(2000,-2000,20);
 	WaitEvent(EndOfMovement);
 	ClearEvent(EndOfMovement);
 	turn_to_cp(WEST,20);
 	WaitEvent(EndOfMovement);
 	ClearEvent(EndOfMovement);
-	move_to_xy(-200,0,20);
+	move_to_xy(0,-2000,20);
 	WaitEvent(EndOfMovement);
 	ClearEvent(EndOfMovement);
 	turn_to_cp(NORTH,20);

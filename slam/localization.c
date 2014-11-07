@@ -11,7 +11,8 @@
 #define CENTER_RES 20
 
 // X functions
-double __rx=MAP_RES/2;
+//double __rx=MAP_RES/2;
+double __rx=0;
 int __x=0;
 	int get_x() {
 		GetResource(UpdateLocker);
@@ -29,7 +30,8 @@ int __x=0;
 	}
 
 // Y functions
-double __ry=MAP_RES/2;
+//double __ry=MAP_RES/2;
+double __ry=0;
 int __y=0;
 	int get_y() {
 		GetResource(UpdateLocker);
