@@ -6,11 +6,13 @@
 
 void init_PID(double target_w, U8 Kp, U8 Ki, U8 Kd);
 void set_target_w(double target_w);
+double get_target_w();
 
 void do_stop();
 void do_move_forward(int power);
+void do_turn(int power);
+
 void do_rotate_right(int power);
 void do_rotate_left(int power);
-void do_turn_to_w(int power);
 
 #endif
