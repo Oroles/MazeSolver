@@ -79,7 +79,7 @@ void print_path(struct node* current) {
 	display_update();
 }
 
-int all_cells_visited( int start_x, int start_y ) {
+struct node* find_unvisited_node( int start_x, int start_y ) {
 	struct node* open_list = create_empty_node();
 	struct node* close_list = NULL;
 	init_nod_position( open_list, start_x, start_y );
@@ -95,19 +95,19 @@ int all_cells_visited( int start_x, int start_y ) {
 				neighbor = remove_first_node( &neighbors );
 				continue;
 			}
-			add_node( &open_list, neighbor );
 			U8 data = get_cell_data(neighbor->x, neighbor->y);
 			if ( data == 0x00 ) {
 				free_list( &open_list );
 				free_list( &close_list );
 				free_list( &neighbors );
-				return FALSE;
+				return neighbor;
 			}
+			add_node( &open_list, neighbor );
 			neighbor = remove_first_node( &neighbors );
 		}
 	}
 	free_list( &close_list );
-	return TRUE;
+	return NULL;
 }
 
 void find_shortest_path( int start_x, int start_y, int stop_x, int stop_y ) {
