@@ -43,6 +43,10 @@ void init_mapping( U8 init_val ) {
 	}
 }
 
+U8 get_cell_data(int pos_x, int pos_y) {
+	return _map[pos_x][pos_y];
+}
+
 void coord_to_table_index(int *x, int *y) {
 	if ( *x < 0 ) {
 		*x += MAP_WIDTH;
