@@ -12,6 +12,7 @@ double error_int;
 double error_dev;
 double last_error;
 double __target_w;
+double ramp_up = 0;
 
 
 void init_PID(double target_w, U8 Kp, U8 Ki, U8 Kd) {
@@ -23,9 +24,11 @@ void init_PID(double target_w, U8 Kp, U8 Ki, U8 Kd) {
 	KD=Kd;
 	__target_w=target_w;
 }
+
 void set_target_w(double target_w) {
 	__target_w=target_w;
 }
+
 double get_target_w() {
 	return __target_w;
 }
@@ -45,17 +48,20 @@ int get_PID_output() {
 void do_stop() {
 	nxt_motor_set_speed(PORT_MOTOR_R,0,1);
 	nxt_motor_set_speed(PORT_MOTOR_L,0,1);
+	ramp_up =0;
 }
 
 void do_move_forward(int power) {
 	int output=get_PID_output();
-	nxt_motor_set_speed( PORT_MOTOR_R, power - output, 1 );
-	nxt_motor_set_speed( PORT_MOTOR_L, power + output, 1 );
+	if (ramp_up < power){ramp_up += 5;}
+	else {ramp_up = power;}
+	nxt_motor_set_speed( PORT_MOTOR_R, ramp_up - output, 1 );
+	nxt_motor_set_speed( PORT_MOTOR_L, ramp_up + output, 1 );
 }
 
 void do_turn(int power) {
 	int output= get_PID_output();
-	
+	ramp_up = 0;
 	if(output>10) output = power;
 	else if ( output<-10) output=-power;
 	else output= (int) (output*power/10);
