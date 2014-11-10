@@ -7,25 +7,30 @@
 #include "commands.h"
 #include "movement.h"
 
+double ramp_up = 0;
+
 #define POS_RES 4
 
 void do_stop() {
 	stop_PID();
 	nxt_motor_set_speed(PORT_MOTOR_R,0,1);
 	nxt_motor_set_speed(PORT_MOTOR_L,0,1);
+	ramp_up =0;
 }
 
 void do_move_forward(int power) {
 	int output=get_PID_output();
 	if(output>power) output=power;
 	else if(output<-power) output=-power;
-	nxt_motor_set_speed( PORT_MOTOR_R, power - output, 1 );
-	nxt_motor_set_speed( PORT_MOTOR_L, power + output, 1 );
+	if (ramp_up < power){ramp_up += 5;}
+	else {ramp_up = power;}
+	nxt_motor_set_speed( PORT_MOTOR_R, ramp_up - output, 1 );
+	nxt_motor_set_speed( PORT_MOTOR_L, ramp_up + output, 1 );
 }
 
 void do_turn(int power) {
 	int output= get_PID_output();
-	
+	ramp_up = 0;
 	if(output>10) output = power;
 	else if ( output<-10) output=-power;
 	else output= (int) (output*power/10);
