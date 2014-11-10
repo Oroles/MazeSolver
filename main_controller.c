@@ -56,3 +56,7 @@ int main_step() {
 	}
 	else return 1;
 }
+
+void main_end() {
+	stop();
+}

@@ -10,8 +10,9 @@ TARGET_SOURCES = \
 	slam/mapping.c \
 	slam/node.c \
 	slam/path_finding.c \
-	actions/movement.c \
+	actions/pid_control.c \
 	actions/commands.c \
+	actions/movement.c \
 	main_controller.c \
 	$(TARGET).c
 TOPPERS_OSEK_OIL_SOURCE = ./$(TARGET).oil

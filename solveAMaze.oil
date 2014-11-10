@@ -238,6 +238,29 @@ CPU ATMEL_AT91SAM7S256
     };
   };
 
+  TASK PIDControl
+  {
+    AUTOSTART = FALSE;
+    PRIORITY = 3;
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+    STACKSIZE = 512;
+  };
+  ALARM pidc_alarm
+  {
+    COUNTER = SysTimerCnt;
+    ACTION = ACTIVATETASK
+    {
+        TASK = PIDControl;
+    };
+    AUTOSTART = TRUE
+    {
+        ALARMTIME = 500;
+        CYCLETIME = 300;
+        APPMODE = appmode1;
+    };
+  };
+
  TASK Display
   {
     AUTOSTART = FALSE;

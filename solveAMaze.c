@@ -8,7 +8,9 @@
 #include "slam/localization.h"
 #include "slam/mapping.h"
 #include "slam/path_finding.h"
+#include "actions/pid_control.h"
 #include "actions/commands.h"
+#include "actions/movement.h"
 #include "main_controller.h"
 
 void ecrobot_device_initialize()
@@ -49,7 +51,7 @@ TASK(MainController) {
 		WaitEvent(CellCenter);
 		ClearEvent(CellCenter);
 		if(main_step()) {
-			stop();
+			main_end();
 			find_shortest_path(0,0,get_x(),get_y());
 			TerminateTask();
 		}
@@ -69,6 +71,11 @@ TASK(Localization) {
 
 TASK(Mapping) {
 	update_map();
+	TerminateTask();
+}
+
+TASK(PIDControl) {
+	calculate_PID_output(get_mov_target_w());
 	TerminateTask();
 }
 
