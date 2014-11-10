@@ -7,9 +7,9 @@
 #include "commands.h"
 #include "movement.h"
 
-double ramp_up = 0;
-
 #define POS_RES 4
+
+double ramp_up = 0;
 
 void do_stop() {
 	stop_PID();
@@ -20,10 +20,10 @@ void do_stop() {
 
 void do_move_forward(int power) {
 	int output=get_PID_output();
-	if(output>power) output=power;
-	else if(output<-power) output=-power;
 	if (ramp_up < power){ramp_up += 5;}
 	else {ramp_up = power;}
+	if(output>ramp_up) output=ramp_up;
+	else if(output<-ramp_up) output=-ramp_up;
 	nxt_motor_set_speed( PORT_MOTOR_R, ramp_up - output, 1 );
 	nxt_motor_set_speed( PORT_MOTOR_L, ramp_up + output, 1 );
 }
