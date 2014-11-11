@@ -107,13 +107,15 @@ void init_localization() {
 		__ry= MAP_RES-((distL*10) % MAP_RES);
 	else if(distR!=255)
 		__ry= (distR*10) % MAP_RES;
+	
+	if ( !is_inside_square(get_realX(),get_realY(),CENTER_RES) ) {
+		double angle=angle_to_reach(MAP_RES/2,MAP_RES/2,__rx,__ry);
 
-	double angle=angle_to_reach(MAP_RES/2,MAP_RES/2,__rx,__ry);
-
-	turn_to_w(angle,20);
-	WaitEvent(EndOfMovement);
-	ClearEvent(EndOfMovement);
-	go_forward(-20);
+		turn_to_w(angle,20);
+		WaitEvent(EndOfMovement);
+		ClearEvent(EndOfMovement);
+		go_forward(-20);
+	}
 }
 
 void update_localization() {

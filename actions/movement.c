@@ -69,10 +69,10 @@ void do_turn_to_w(int power) {
 
 void do_move_to_xy(int target_x,int target_y,int power) {
 	if(!is_mov_ended()) {
-	double x=get_realX();
-	double y=get_realY();
-	double w_to_reach=angle_to_reach(x,y,target_x,target_y);
-	double wdiff=get_w()-w_to_reach;
+		double x=get_realX();
+		double y=get_realY();
+		double w_to_reach=angle_to_reach(x,y,target_x,target_y);
+		double wdiff=get_w()-w_to_reach;
 		if(target_x-x<=POS_RES+40 && x-target_x<=POS_RES+40 &&
 			target_y-y<=POS_RES+40 && y-target_y<=POS_RES+40) {
 			set_mov_target_w(w_to_reach);
