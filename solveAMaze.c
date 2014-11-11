@@ -8,7 +8,9 @@
 #include "slam/localization.h"
 #include "slam/mapping.h"
 #include "slam/path_finding.h"
+#include "actions/pid_control.h"
 #include "actions/commands.h"
+#include "actions/movement.h"
 #include "main_controller.h"
 
 void ecrobot_device_initialize()
@@ -43,13 +45,13 @@ void user_1ms_isr_type2(void){
 TASK(MainController) {
 	WaitEvent(CellCenter);
 	ClearEvent(CellCenter);
-	if ( !is_inside_square(get_realX(),get_realY(),CENTER_RES) ) init_localization();
+	init_localization();
 	while(1)
 	{
 		WaitEvent(CellCenter);
 		ClearEvent(CellCenter);
 		if(main_step()) {
-			stop();
+			main_end();
 			find_shortest_path(0,0,get_x(),get_y());
 			TerminateTask();
 		}
@@ -72,14 +74,23 @@ TASK(Mapping) {
 	TerminateTask();
 }
 
+TASK(PIDControl) {
+	calculate_PID_output(get_mov_target_w());
+	TerminateTask();
+}
+
 TASK(Movement) {
 	do_movement();
 	TerminateTask();
 }
 
 TASK(ColorReader) {
-	ecrobot_process_bg_nxtcolorsensor();
 	set_color(ecrobot_get_nxtcolorsensor_id(PORT_COLOR));
+	TerminateTask();
+}
+
+TASK(ColorMaintainer) {
+	ecrobot_process_bg_nxtcolorsensor();
 	TerminateTask();
 }
 

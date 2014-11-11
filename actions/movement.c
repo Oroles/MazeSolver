@@ -3,52 +3,16 @@
 #include "utils/shared_variables.h"
 #include "utils/utils.h"
 #include "slam/localization.h"
+#include "pid_control.h"
+#include "commands.h"
 #include "movement.h"
 
-U8 KD;
-U8 KI;
-U8 KP;
-double error_int;
-double error_dev;
-double last_error;
-double __target_w;
+#define POS_RES 4
+
 double ramp_up = 0;
 
-
-void init_PID(double target_w, U8 Kp, U8 Ki, U8 Kd) {
-	error_int=0;
-	error_dev=0;
-	last_error=0;
-	KP=Kp;
-	KI=Ki;
-	KD=Kd;
-	__target_w=target_w;
-}
-
-void set_target_w(double target_w) {
-	__target_w=target_w;
-}
-double get_target_w() {
-	return __target_w;
-}
-
-double get_target_w() {
-	return __target_w;
-}
-
-int get_PID_output() {
-	double error = get_w() - __target_w;
-	if ( error > 180 ) error -=360;
-	else if( error < -180) error +=360;
-
-	error_dev = error - last_error;
-	error_int += error;
-	last_error = error;
-	return (int) (KP * error + KI * error_int + KD * error_dev);
-}
-
-
 void do_stop() {
+	stop_PID();
 	nxt_motor_set_speed(PORT_MOTOR_R,0,1);
 	nxt_motor_set_speed(PORT_MOTOR_L,0,1);
 	ramp_up =0;
@@ -58,9 +22,10 @@ void do_move_forward(int power) {
 	int output=get_PID_output();
 	if (ramp_up < power){ramp_up += 5;}
 	else {ramp_up = power;}
+	if(output>ramp_up) output=ramp_up;
+	else if(output<-ramp_up) output=-ramp_up;
 	nxt_motor_set_speed( PORT_MOTOR_R, ramp_up - output, 1 );
 	nxt_motor_set_speed( PORT_MOTOR_L, ramp_up + output, 1 );
-
 }
 
 void do_turn(int power) {
@@ -78,11 +43,78 @@ void do_turn(int power) {
 }
 
 void do_rotate_right(int power) {
+	stop_PID();
 	nxt_motor_set_speed(PORT_MOTOR_L,power,1);
 	nxt_motor_set_speed(PORT_MOTOR_R,-power,1);
 }
 
 void do_rotate_left(int power) {
+	stop_PID();
 	nxt_motor_set_speed(PORT_MOTOR_L,-power,1);
 	nxt_motor_set_speed(PORT_MOTOR_R,power,1);
+}
+
+void do_turn_to_w(int power) {
+	double error= get_w()-get_mov_target_w();
+
+	if(error<=1 && error>=-1) {
+		end_of_mov();
+		do_stop();
+		SetEvent(MainController, EndOfMovement);
+	}
+	else {
+		do_turn(power);
+	}
+}
+
+void do_move_to_xy(int target_x,int target_y,int power) {
+	if(!is_mov_ended()) {
+		double x=get_realX();
+		double y=get_realY();
+		double w_to_reach=angle_to_reach(x,y,target_x,target_y);
+		double wdiff=get_w()-w_to_reach;
+		if(target_x-x<=POS_RES+40 && x-target_x<=POS_RES+40 &&
+			target_y-y<=POS_RES+40 && y-target_y<=POS_RES+40) {
+			set_mov_target_w(w_to_reach);
+			do_move_forward(15);
+			if(target_x-x<=POS_RES && x-target_x<=POS_RES &&
+				target_y-y<=POS_RES && y-target_y<=POS_RES) {
+				end_of_mov();
+				do_stop();
+				SetEvent(MainController, EndOfMovement);
+			}
+		}
+		else {
+			if(wdiff>5 || wdiff<-5)
+				set_mov_target_w(w_to_reach);
+			do_move_forward(power);
+		}
+	}
+}
+
+void do_movement() {
+	GetResource(MovementOrder);
+	switch(get_mov_order()) {
+		case STOP:
+		do_stop(get_mov_power());
+		break;
+		case MOVE_FORWARD:
+		do_move_forward(get_mov_power());
+		break;
+		case TURN_RIGHT:
+		do_rotate_right(get_mov_power());
+		break;
+		case TURN_LEFT:
+		do_rotate_left(get_mov_power());
+		break;
+		case TURN_TO_W:
+		do_turn_to_w(get_mov_power());
+		break;
+		case MOVE_TO_XY:
+		do_move_to_xy(get_mov_target_x(),get_mov_target_y(),get_mov_power());
+		break;
+		default:
+		break;
+	}
+	ReleaseResource(MovementOrder);
 }

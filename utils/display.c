@@ -2,14 +2,16 @@
 #include "ecrobot_interface.h"
 #include "slam/localization.h"
 #include "slam/mapping.h"
+#include "actions/pid_control.h"
 #include "shared_variables.h"
 #include "display.h"
 
 #define DISPLAY_NONE 	0
 #define DISPLAY_DATA 	1
 #define DISPLAY_MAP 	2
+#define DISPLAY_PID 	3
 
-#define MODE_DISPLAY 	2
+#define MODE_DISPLAY 	3
 
 void displayData() {
 	display_clear(0);
@@ -28,6 +30,15 @@ void displayData() {
 	display_update();
 }
 
+void displayPID() {
+	static int x=0,y=0;
+	display_goto_xy(x,y);
+	display_int(get_PID_error(),2);display_string(",");
+	x=(x+3)%15;
+	if(x==0) y=(y+1)%7;
+	display_update();
+}
+
 void displayMap() {
 	display_map_debug();
 }
@@ -37,6 +48,7 @@ void update_display() {
 		case DISPLAY_NONE: break;
 		case DISPLAY_DATA: displayData(); break;
 		case DISPLAY_MAP: displayMap(); break;
+		case DISPLAY_PID: displayPID(); break;
 		default: break;
 	}
 }
