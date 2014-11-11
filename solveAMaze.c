@@ -43,7 +43,7 @@ void user_1ms_isr_type2(void){
 }
 
 TASK(MainController) {
-	/*WaitEvent(CellCenter);
+	WaitEvent(CellCenter);
 	ClearEvent(CellCenter);
 	if ( !is_inside_square(get_realX(),get_realY(),CENTER_RES) ) init_localization();
 	while(1)
@@ -55,32 +55,7 @@ TASK(MainController) {
 			find_shortest_path(0,0,get_x(),get_y());
 			TerminateTask();
 		}
-	}*/
-	
-	move_to_xy(2000,0,20);
-	WaitEvent(EndOfMovement);
-	ClearEvent(EndOfMovement);
-	turn_to_cp(SOUTH,20);
-	WaitEvent(EndOfMovement);
-	ClearEvent(EndOfMovement);
-	move_to_xy(2000,-2000,20);
-	WaitEvent(EndOfMovement);
-	ClearEvent(EndOfMovement);
-	turn_to_cp(WEST,20);
-	WaitEvent(EndOfMovement);
-	ClearEvent(EndOfMovement);
-	move_to_xy(0,-2000,20);
-	WaitEvent(EndOfMovement);
-	ClearEvent(EndOfMovement);
-	turn_to_cp(NORTH,20);
-	WaitEvent(EndOfMovement);
-	ClearEvent(EndOfMovement);
-	move_to_xy(0,0,20);
-	WaitEvent(EndOfMovement);
-	ClearEvent(EndOfMovement);
-	turn_to_cp(EAST,20);
-	WaitEvent(EndOfMovement);
-	ClearEvent(EndOfMovement);
+	}
 	TerminateTask();
 }
 
