@@ -1,7 +1,7 @@
 #ifndef _PID_H
 #define _PID_H
 
-void init_PID(U8 Kp, U8 Ki, U8 Kd);
+void init_PID(double Kp, double Ki, double Kd);
 int get_PID_output();
 int get_PID_error();
 

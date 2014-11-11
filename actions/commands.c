@@ -43,7 +43,7 @@ void move_to_xy(double x, double y, int power) {
 	__target_x=x;
 	__target_y=y;
 	__target_w=angle_to_reach(get_realX(),get_realY(),__target_x,__target_y);
-	init_PID(1.2,0.3,0.6);
+	init_PID(1,0.1,0.4);
 	ReleaseResource(MovementOrder);
 }
 void move_to_cell(int cx, int cy, int power) {
