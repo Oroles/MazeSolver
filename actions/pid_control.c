@@ -2,7 +2,7 @@
 #include "ecrobot_interface.h"
 #include "utils/utils.h"
 #include "slam/localization.h"
-#include "movement.h"
+#include "pid_control.h"
 
 U8 pid_needed=FALSE;
 
