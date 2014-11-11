@@ -59,6 +59,7 @@ DeclareEvent(StartMapping);
 
 DeclareCounter(SysTimerCnt);
 DeclareTask(ColorReader);
+DeclareTask(ColorMaintainer);
 DeclareTask(DistanceReader);
 DeclareTask(WheelsPositionReader);
 DeclareTask(Localization);
