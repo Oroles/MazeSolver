@@ -3,19 +3,19 @@
 #include "pid_control.h"
 #include "commands.h"
 
-int __movement_order=STOP;
+U8 __movement_order=STOP;
 int __power=0;
-int __movement_ended=FALSE;
+U8 __movement_ended=FALSE;
 double __target_w;
 double __target_x;
 double __target_y;
 
-int get_mov_order() { return __movement_order; }
+U8 get_mov_order() { return __movement_order; }
 int get_mov_power() { return __power; }
 int get_mov_target_w() { return __target_w; }
 int get_mov_target_x() { return __target_x; }
 int get_mov_target_y() { return __target_y; }
-int is_mov_ended() { return __movement_ended; }
+U8 is_mov_ended() { return __movement_ended; }
 
 void set_mov_target_w(double target_w) { __target_w=target_w; }
 void end_of_mov() { __movement_ended=TRUE; }

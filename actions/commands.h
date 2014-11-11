@@ -11,12 +11,12 @@
 
 DeclareResource(MovementOrder);
 
-int get_mov_order();
+U8 get_mov_order();
 int get_mov_power();
 int get_mov_target_w();
 int get_mov_target_x();
 int get_mov_target_y();
-int is_mov_ended();
+U8 is_mov_ended();
 
 void set_mov_target_w(double target_w);
 void end_of_mov();
