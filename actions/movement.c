@@ -58,6 +58,7 @@ void do_turn_to_w(int power) {
 	double error= get_w()-get_mov_target_w();
 
 	if(error<=1 && error>=-1) {
+		end_of_mov();
 		do_stop();
 		SetEvent(MainController, EndOfMovement);
 	}
@@ -67,8 +68,7 @@ void do_turn_to_w(int power) {
 }
 
 void do_move_to_xy(int target_x,int target_y,int power) {
-	static U8 stopped=FALSE;
-	if(!stopped) {
+	if(!is_mov_ended()) {
 	double x=get_realX();
 	double y=get_realY();
 	double w_to_reach=angle_to_reach(x,y,target_x,target_y);
@@ -79,7 +79,7 @@ void do_move_to_xy(int target_x,int target_y,int power) {
 			do_move_forward(15);
 			if(target_x-x<=POS_RES && x-target_x<=POS_RES &&
 				target_y-y<=POS_RES && y-target_y<=POS_RES) {
-				stopped=TRUE;
+				end_of_mov();
 				do_stop();
 				SetEvent(MainController, EndOfMovement);
 			}

@@ -5,6 +5,7 @@
 
 int __movement_order=STOP;
 int __power=0;
+int __movement_ended=FALSE;
 double __target_w;
 double __target_x;
 double __target_y;
@@ -14,8 +15,10 @@ int get_mov_power() { return __power; }
 int get_mov_target_w() { return __target_w; }
 int get_mov_target_x() { return __target_x; }
 int get_mov_target_y() { return __target_y; }
+int is_mov_ended() { return __movement_ended; }
 
 void set_mov_target_w(double target_w) { __target_w=target_w; }
+void end_of_mov() { __movement_ended=TRUE; }
 
 void stop() {
 	GetResource(MovementOrder);
@@ -36,6 +39,7 @@ void move_to_xy(double x, double y, int power) {
 	GetResource(MovementOrder);
 	__movement_order=MOVE_TO_XY;
 	__power=power;
+	__movement_ended=FALSE;
 	__target_x=x;
 	__target_y=y;
 	__target_w=angle_to_reach(get_realX(),get_realY(),__target_x,__target_y);
@@ -52,6 +56,7 @@ void turn_to_w(double w, int power) {
 	GetResource(MovementOrder);
 	__movement_order=TURN_TO_W;
 	__power=power;
+	__movement_ended=FALSE;
 	__target_w=w;
 	init_PID(1,0,0);
 	ReleaseResource(MovementOrder);
