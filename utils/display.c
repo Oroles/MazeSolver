@@ -49,6 +49,6 @@ void update_display() {
 		case DISPLAY_DATA: displayData(); break;
 		case DISPLAY_MAP: displayMap(); break;
 		case DISPLAY_PID: displayPID(); break;
-		default: break;
+		default: display_clear(1); break;
 	}
 }
