@@ -4,17 +4,17 @@
 #include "slam/localization.h"
 #include "movement.h"
 
-int pid_needed=FALSE;
+U8 pid_needed=FALSE;
 
-U8 KD;
-U8 KI;
-U8 KP;
+double KD;
+double KI;
+double KP;
 double error_int;
 double error_dev;
 double last_error;
 int pid_output=0;
 
-void init_PID(U8 Kp, U8 Ki, U8 Kd) {
+void init_PID(double Kp, double Ki, double Kd) {
 	pid_output=0;
 	error_int=0;
 	error_dev=0;
