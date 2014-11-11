@@ -8,8 +8,6 @@
 #include "actions/commands.h"
 #include "localization.h"
 
-#define CENTER_RES 20
-
 // X functions
 //double __rx=MAP_RES/2;
 double __rx=0;
@@ -82,16 +80,16 @@ int __cp=0;
 	}
 
 // General functions
-int is_cell_center(double rx, double ry) {
+int is_inside_square(double rx, double ry, int side) {
 	double x_in_cell=rx-__x*MAP_RES;
 	double y_in_cell=ry-__y*MAP_RES;
 	if(x_in_cell<0) x_in_cell+=MAP_RES;
 	if(y_in_cell<0) y_in_cell+=MAP_RES;
 
-	if( x_in_cell<(MAP_RES/2+CENTER_RES) &&
-		x_in_cell>(MAP_RES/2-CENTER_RES) &&
-		y_in_cell<(MAP_RES/2+CENTER_RES) &&
-		y_in_cell>(MAP_RES/2-CENTER_RES))
+	if( x_in_cell<(MAP_RES/2+side) &&
+		x_in_cell>(MAP_RES/2-side) &&
+		y_in_cell<(MAP_RES/2+side) &&
+		y_in_cell>(MAP_RES/2-side))
 	{
 		return TRUE;
 	}else{
@@ -125,8 +123,11 @@ void update_localization() {
 	static int __last_wR=0;
 	static double __w=0;
 
-	if(is_cell_center(__rx,__ry)) {
+	if(is_inside_square(__rx,__ry,CENTER_RES)) {
 		SetEvent(MainController, CellCenter);
+	}
+	if(is_inside_square(__rx,__ry,MAPPING_RES)) {
+		SetEvent(Mapping, StartMapping);
 	}
 
 	// Don't stop me, I need synchronized parameter values

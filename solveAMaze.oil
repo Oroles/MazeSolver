@@ -74,6 +74,9 @@ CPU ATMEL_AT91SAM7S256
   EVENT EndOfMovement{
     MASK = AUTO;
   };
+  EVENT StartMapping{
+    MASK = AUTO;
+  };
 
 
   TASK MainController
@@ -221,6 +224,7 @@ CPU ATMEL_AT91SAM7S256
     PRIORITY = 4;
     ACTIVATION = 1;
     SCHEDULE = FULL;
+    EVENT=StartMapping;
     STACKSIZE = 512;
   };
   ALARM map_alarm
@@ -234,6 +238,29 @@ CPU ATMEL_AT91SAM7S256
     {
         ALARMTIME = 500;
         CYCLETIME = 180;
+        APPMODE = appmode1;
+    };
+  };
+
+  TASK PIDControl
+  {
+    AUTOSTART = FALSE;
+    PRIORITY = 3;
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+    STACKSIZE = 512;
+  };
+  ALARM pidc_alarm
+  {
+    COUNTER = SysTimerCnt;
+    ACTION = ACTIVATETASK
+    {
+        TASK = PIDControl;
+    };
+    AUTOSTART = TRUE
+    {
+        ALARMTIME = 500;
+        CYCLETIME = 300;
         APPMODE = appmode1;
     };
   };

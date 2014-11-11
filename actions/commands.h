@@ -11,9 +11,13 @@
 
 DeclareResource(MovementOrder);
 
-void do_movement();
-int get_movement();
-int get_power();
+int get_mov_order();
+int get_mov_power();
+int get_mov_target_w();
+int get_mov_target_x();
+int get_mov_target_y();
+
+void set_mov_target_w(double target_w);
 
 void stop();
 void go_forward(int power);

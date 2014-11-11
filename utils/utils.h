@@ -47,10 +47,15 @@
 #define IS_WALL 2
 #define ERROR   3
 
+//Defines the side of the square
+#define CENTER_RES 20
+#define MAPPING_RES 100
+
 
 /* OSEK declarations */
 DeclareEvent(EndOfMovement);
 DeclareEvent(CellCenter);
+DeclareEvent(StartMapping);
 
 DeclareCounter(SysTimerCnt);
 DeclareTask(ColorReader);

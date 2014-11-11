@@ -157,6 +157,9 @@ void update_map() {
 	static int count_left_walls = 0;
 	static int count_right_walls = 0;
 
+	WaitEvent(StartMapping);
+	ClearEvent(StartMapping);
+
 	int left_wall = detect_wall(get_distanceL());
 	int right_wall = detect_wall(get_distanceR());
 	int front_wall = detect_wall(get_distanceF());

@@ -25,7 +25,7 @@ void goto_cp(int goal){
 	turn_to_cp(goal,20);
 	WaitEvent(EndOfMovement);
 	ClearEvent(EndOfMovement);
-	move_to_cell(__next_goal_x,__next_goal_y,20);
+	move_to_cell(__next_goal_x,__next_goal_y,40);
 }
 
 int is_stop(U8 color) {
@@ -55,4 +55,8 @@ int main_step() {
 		return 0;
 	}
 	else return 1;
+}
+
+void main_end() {
+	stop();
 }
