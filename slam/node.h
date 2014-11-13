@@ -23,8 +23,11 @@ void add_node(struct node** root, struct node* new_node);
 void add_node_priority(struct node** root, struct node* new_node);
 
 struct node* remove_first_node(struct node** root);
+void remove_node(struct node** root, struct node* nod );
 
 int find_node(struct node** root, struct node* node_to_find);
+
+int equal(struct node* first_node, struct node* second_node);
 
 void free_list(struct node** root);
 int count(struct node* root);

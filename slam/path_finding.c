@@ -79,7 +79,14 @@ void print_path(struct node* current) {
 	display_update();
 }
 
-struct node* find_unvisited_node( int start_x, int start_y ) {
+struct node* find_parent_node( struct node* current, struct node* son ) {
+	while( !equal( current->parent, son ) ) {
+		current = current->parent;
+	}
+	return current;
+}
+
+struct node* find_unvisited_cell( int start_x, int start_y ) {
 	struct node* open_list = create_empty_node();
 	struct node* close_list = NULL;
 	init_nod_position( open_list, start_x, start_y );
@@ -96,11 +103,15 @@ struct node* find_unvisited_node( int start_x, int start_y ) {
 				continue;
 			}
 			U8 data = get_cell_data(neighbor->x, neighbor->y);
+			neighbor->parent = current;
 			if ( data == 0x00 ) {
+				struct node* next_node = find_parent_node( neighbor, close_list );
+				remove_node( &close_list, next_node );
+				free( neighbor );
 				free_list( &open_list );
 				free_list( &close_list );
 				free_list( &neighbors );
-				return neighbor;
+				return next_node;
 			}
 			add_node( &open_list, neighbor );
 			neighbor = remove_first_node( &neighbors );
@@ -108,6 +119,23 @@ struct node* find_unvisited_node( int start_x, int start_y ) {
 	}
 	free_list( &close_list );
 	return NULL;
+}
+
+int direction_of_next_cell( int current_x, int current_y )
+{
+	struct node* next_cell = find_unvisited_cell( current_x, current_y );
+	int next_x = next_cell->x;
+	int next_y = next_cell->y;
+	free( next_cell );
+	if ( current_x != next_x ) {
+		if ( current_x < next_x ) return EAST;
+		if ( current_x > next_x ) return WEST;
+	}
+	if ( current_y != next_y ) {
+		if ( current_y < next_y ) return NORTH;
+		if ( current_y > next_y ) return SOUTH;
+	}
+	return NORTH;
 }
 
 void find_shortest_path( int start_x, int start_y, int stop_x, int stop_y ) {
