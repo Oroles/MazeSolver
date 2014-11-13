@@ -145,8 +145,8 @@ void update_localization() {
 		__last_wL=temp_wL;
 		__last_wR=temp_wR;
 		// Computations
-		wL=wL*CONV;
-		wR=wR*CONV;
+		wL=wL*L_CALIBRATION*CONV;
+		wR=wR*R_CALIBRATION*CONV;
 		double Vs=wL+wR;
 		Vs=Vs/2;
 		double w=wR-wL;
