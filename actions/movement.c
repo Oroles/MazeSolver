@@ -20,10 +20,18 @@ void do_stop() {
 
 void do_move_forward(int power) {
 	int output=get_PID_output();
-	if (ramp_up < power){ramp_up += 5;}
-	else {ramp_up = power;}
-	if(output>ramp_up) output=ramp_up;
-	else if(output<-ramp_up) output=-ramp_up;
+	if(power<0) {
+		if (ramp_up > power)ramp_up -= 5;
+		else ramp_up = power;
+		if(output<ramp_up) output=ramp_up;
+		else if(output>-ramp_up) output=-ramp_up;
+	}
+	else {
+		if (ramp_up < power) ramp_up += 5;
+		else ramp_up = power;
+		if(output>ramp_up) output=ramp_up;
+		else if(output<-ramp_up) output=-ramp_up;
+	}
 	nxt_motor_set_speed( PORT_MOTOR_R, ramp_up - output, 1 );
 	nxt_motor_set_speed( PORT_MOTOR_L, ramp_up + output, 1 );
 }

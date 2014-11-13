@@ -31,7 +31,7 @@ void go_forward(int power) {
 	__movement_order=MOVE_FORWARD;
 	__power=power;
 	__target_w=get_w();
-	init_PID(1,0.5,0.2);
+	init_PID(1,0.1,0.4);
 	ReleaseResource(MovementOrder);
 }
 
