@@ -17,7 +17,8 @@
 #define RAD 		(PI/180.0) 	// Conversion factor that translate angles from degrees to radians
 
 // About the robot
-#define W_DIST 		125 		// The distance between the wheels (in mm)
+#define W_BASE_CALIBRATION (0.94596046)
+#define W_DIST		(W_BASE_CALIBRATION*125) // The distance between the wheels (in mm)
 #define W_DIAM		56 			// Nominal wheel diameter (in mm)
 #define W_PERI		176.5 		// Nominal wheel perimeter (in mm)
 #define PULSES 		360 		// Encoder resolution (in pulses per revolution)
