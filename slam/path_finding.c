@@ -79,6 +79,37 @@ void print_path(struct node* current) {
 	display_update();
 }
 
+struct node* find_unvisited_node( int start_x, int start_y ) {
+	struct node* open_list = create_empty_node();
+	struct node* close_list = NULL;
+	init_nod_position( open_list, start_x, start_y );
+
+	while( count( open_list ) != 0 ) {
+		struct node* current = remove_first_node( &open_list );
+		add_node( &close_list, current );
+		struct node* neighbors = find_neighbors( current );
+		struct node* neighbor = remove_first_node( &neighbors );
+		while( neighbor != NULL ) {
+			if ( find_node( &close_list, neighbor ) || find_node( &open_list, neighbor ) ) {
+				free(neighbor);
+				neighbor = remove_first_node( &neighbors );
+				continue;
+			}
+			U8 data = get_cell_data(neighbor->x, neighbor->y);
+			if ( data == 0x00 ) {
+				free_list( &open_list );
+				free_list( &close_list );
+				free_list( &neighbors );
+				return neighbor;
+			}
+			add_node( &open_list, neighbor );
+			neighbor = remove_first_node( &neighbors );
+		}
+	}
+	free_list( &close_list );
+	return NULL;
+}
+
 void find_shortest_path( int start_x, int start_y, int stop_x, int stop_y ) {
 	struct node* open_list = create_empty_node();
 	struct node* close_list = NULL;
