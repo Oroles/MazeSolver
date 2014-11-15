@@ -32,6 +32,7 @@
 #define MAP_HEIGHT 	7 		// Height of the map
 
 // Cardinal points
+#define NO_CARD -1  // No direction
 #define NORTH 	0 	// North
 #define NO_EA 	1 	// North East
 #define EAST 	2 	// East

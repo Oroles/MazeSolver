@@ -117,8 +117,9 @@ struct node* find_unvisited_cell( int start_x, int start_y ) {
 			neighbor = remove_first_node( &neighbors );
 		}
 	}
+	struct node* current = remove_first_node( &close_list );
 	free_list( &close_list );
-	return NULL;
+	return current;
 }
 
 int direction_of_next_cell( int current_x, int current_y )
@@ -135,7 +136,7 @@ int direction_of_next_cell( int current_x, int current_y )
 		if ( current_y < next_y ) return NORTH;
 		if ( current_y > next_y ) return SOUTH;
 	}
-	return NORTH;
+	return NO_CARD;
 }
 
 void find_shortest_path( int start_x, int start_y, int stop_x, int stop_y ) {
