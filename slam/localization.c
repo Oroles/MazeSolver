@@ -100,12 +100,12 @@ void init_localization() {
 	int distF=get_distanceF();
 	int distR=get_distanceR();
 	int distL=get_distanceL();
-	if(distF!=255)
+	if(distF!=255+CENTER_TO_FRONT)
 		__rx= MAP_RES-((distF*10) % MAP_RES);
 
 	if(distL<distR)
 		__ry= MAP_RES-((distL*10) % MAP_RES);
-	else if(distR!=255)
+	else if(distR!=255+CENTER_TO_SIDES)
 		__ry= (distR*10) % MAP_RES;
 	
 	if ( !is_inside_square(get_realX(),get_realY(),CENTER_RES) ) {
@@ -122,12 +122,16 @@ void update_localization() {
 	static int __last_wL=0;
 	static int __last_wR=0;
 	static double __w=0;
+	static U8 event_sent=FALSE;
 
 	if(is_inside_square(__rx,__ry,CENTER_RES)) {
-		SetEvent(MainController, CellCenter);
+		if(!event_sent) {
+			SetEvent(MainController, CellCenter);
+			event_sent=TRUE;
+		}
 	}
-	if(is_inside_square(__rx,__ry,MAPPING_RES)) {
-		SetEvent(Mapping, StartMapping);
+	else {
+		event_sent=FALSE;
 	}
 
 	// Don't stop me, I need synchronized parameter values

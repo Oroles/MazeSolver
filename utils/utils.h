@@ -43,11 +43,12 @@
 #define WEST 	6 	// West
 #define NO_WE 	7 	// North West
 
-// Returns values for the function is_wall_in_direction(int direction)
+// Returns values for the map functions
 #define UNKNOWN 0
 #define NO_WALL 1
 #define IS_WALL 2
 #define ERROR   3
+#define OUT_OF_MAP 255
 
 //Defines the side of the square
 #define CENTER_RES 20
@@ -57,7 +58,6 @@
 /* OSEK declarations */
 DeclareEvent(EndOfMovement);
 DeclareEvent(CellCenter);
-DeclareEvent(StartMapping);
 
 DeclareCounter(SysTimerCnt);
 DeclareTask(ColorReader);
@@ -67,6 +67,7 @@ DeclareTask(WheelsPositionReader);
 DeclareTask(Localization);
 DeclareTask(Mapping);
 DeclareTask(Movement);
+DeclareTask(PID_Control);
 DeclareTask(MainController);
 
 /* Function declarations */

@@ -46,6 +46,7 @@ TASK(MainController) {
 	WaitEvent(CellCenter);
 	ClearEvent(CellCenter);
 	init_localization();
+	if(is_inside_square(get_realX(),get_realY(),CENTER_RES)) main_step();
 	while(1)
 	{
 		WaitEvent(CellCenter);
