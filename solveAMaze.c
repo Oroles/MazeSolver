@@ -86,7 +86,7 @@ TASK(Movement) {
 }
 
 TASK(ColorReader) {
-	/*set_color(ecrobot_get_nxtcolorsensor_id(PORT_COLOR));*/
+	set_color(ecrobot_get_nxtcolorsensor_id(PORT_COLOR));
 	TerminateTask();
 }
 
