@@ -11,7 +11,7 @@
 #define DISPLAY_MAP 	2
 #define DISPLAY_PID 	3
 
-#define MODE_DISPLAY 	3
+#define MODE_DISPLAY 	0
 
 void displayData() {
 	display_clear(0);
