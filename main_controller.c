@@ -13,8 +13,10 @@ int find_next_goal() {
 	int direction=NORTH;
 	do {
 		if(is_wall_in_direction(direction,get_x(),get_y())==NO_WALL) {
-			if(!is_visited_in_direction(direction,get_x(),get_y())) return direction;
-			else tmp_goal=direction;
+			switch(is_visited_in_direction(direction,get_x(),get_y())) {
+				case FALSE: return direction; break;
+				case TRUE: tmp_goal=direction; break;
+			}
 		}
 		direction=next_cp(direction);
 	}while(direction!=NORTH);
