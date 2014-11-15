@@ -102,7 +102,10 @@ struct node* find_unvisited_cell( int start_x, int start_y ) {
 				neighbor = remove_first_node( &neighbors );
 				continue;
 			}
-			U8 data = get_cell_data(neighbor->x, neighbor->y);
+			int pos_x = neighbor->x;
+			int pos_y = neighbor->y;
+			coord_to_table_index( &pos_x, &pos_y );
+			U8 data = get_cell_data(pos_x, pos_y);
 			neighbor->parent = current;
 			if ( data == 0x00 ) {
 				struct node* next_node = find_parent_node( neighbor, close_list );
