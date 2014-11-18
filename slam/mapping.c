@@ -190,6 +190,27 @@ void update_map() {
 	
 	U8 data = _map[pos_x][pos_y];
 
+	// If just enter in a new cell
+	if ( ( last_pos_y != pos_y ) || ( last_pos_x != pos_x ) ) {
+			if(pos_x<__min_x) __min_x=pos_x;
+			else if(pos_x>__max_x) __max_x=pos_x;
+			if(pos_y<__min_y) __min_y=pos_y;
+			else if(pos_y>__max_y) __max_y=pos_y;
+
+			int direction = direction_of_next_cell(pos_x,pos_y,last_pos_x,last_pos_y);
+			if(direction != NO_CARD) {
+				set_wall_state(&data, direction, NO_WALL);
+				_map[pos_x][pos_y]=data;
+			}
+			last_pos_x = pos_x;
+			last_pos_y = pos_y;
+			count_front_walls = 0;
+			count_left_walls = 0;
+			count_right_walls = 0;
+			ready=FALSE;
+			return;
+	}
+
 	int cardinal_point = get_cardinal_point();
 	// Do measurements only if in a good direction
 	if(is_cp(cardinal_point)) {
@@ -213,26 +234,6 @@ void update_map() {
 	}
 
 	_map[pos_x][pos_y]=data;
-
-	// If just enter in a new cell
-	if ( ( last_pos_y != pos_y ) || ( last_pos_x != pos_x ) ) {
-			if(pos_x<__min_x) __min_x=pos_x;
-			else if(pos_x>__max_x) __max_x=pos_x;
-			if(pos_y<__min_y) __min_y=pos_y;
-			else if(pos_y>__max_y) __max_y=pos_y;
-
-			int direction = direction_of_next_cell(pos_x,pos_y,last_pos_x,last_pos_y);
-			if(direction != NO_CARD) {
-				set_wall_state(&data, direction, NO_WALL);
-				_map[pos_x][pos_y]=data;
-			}
-			last_pos_x = pos_x;
-			last_pos_y = pos_y;
-			count_front_walls = 0;
-			count_left_walls = 0;
-			count_right_walls = 0;
-			ready=FALSE;
-	}
 }
 
 void display_map(int width, int height, U8 matrix[width][height]) {
