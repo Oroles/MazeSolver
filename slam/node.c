@@ -83,7 +83,10 @@ void remove_node(struct node** root, struct node* nod)
 		return;
 	}
 	it_prev->next = it->next;
-	it->next->parent = it_prev;
+	//In case the deleted nod is the last node
+	if ( it->next != NULL ) {
+		it->next->parent = it_prev;
+	}
 }
 
 int equal(struct node* first_node, struct node* second_node) {
