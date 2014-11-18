@@ -74,9 +74,12 @@ void remove_node(struct node** root, struct node* nod)
 	}
 	struct node* it_prev = NULL;
 	struct node* it = *root;
-	while( !equal( it, nod ) ) {
+	while( ( it != NULL ) && ( !equal( it, nod ) ) ) {
 		it_prev = it;
 		it = it->next;
+	}
+	if ( it == NULL ) {
+		return;
 	}
 	if ( it_prev == NULL ) {
 		it = NULL;

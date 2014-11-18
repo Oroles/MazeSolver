@@ -110,7 +110,9 @@ struct node* find_unvisited_cell( int start_x, int start_y ) {
 			if ( data == 0x00 ) {
 				struct node* next_node = find_parent_node( neighbor, close_list );
 				remove_node( &close_list, next_node );
-				free( neighbor );
+				if ( next_node != neighbor ) {
+					free( neighbor );
+				}
 				free_list( &open_list );
 				free_list( &close_list );
 				free_list( &neighbors );
