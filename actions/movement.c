@@ -21,7 +21,7 @@ void do_stop() {
 void do_move_forward(int power) {
 	int output=get_PID_output();
 	if(power<0) {
-		if (ramp_up > power)ramp_up -= 5;
+		if (ramp_up > power) ramp_up -= 5;
 		else ramp_up = power;
 		if(output<ramp_up) output=ramp_up;
 		else if(output>-ramp_up) output=-ramp_up;
@@ -66,15 +66,17 @@ void do_rotate_left(int power) {
 }
 
 void do_turn_to_w(int power) {
-	double error= get_w()-get_mov_target_w();
+	if(!is_mov_ended()) {
+		double error= get_w()-get_mov_target_w();
 
-	if(error<=1 && error>=-1) {
-		end_of_mov();
-		do_stop();
-		SetEvent(MainController, EndOfMovement);
-	}
-	else {
-		do_turn(power);
+		if(error<=1 && error>=-1) {
+			end_of_mov();
+			do_stop();
+			SetEvent(MainController, EndOfMovement);
+		}
+		else {
+			do_turn(power);
+		}
 	}
 }
 
@@ -104,7 +106,6 @@ void do_move_to_xy(int target_x,int target_y,int power) {
 }
 
 void do_movement() {
-	GetResource(MovementOrder);
 	switch(get_mov_order()) {
 		case STOP:
 		do_stop(get_mov_power());
@@ -127,5 +128,4 @@ void do_movement() {
 		default:
 		break;
 	}
-	ReleaseResource(MovementOrder);
 }
