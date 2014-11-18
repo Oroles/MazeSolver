@@ -125,23 +125,6 @@ struct node* find_unvisited_cell( int start_x, int start_y ) {
 	return current;
 }
 
-int direction_of_next_cell( int current_x, int current_y )
-{
-	struct node* next_cell = find_unvisited_cell( current_x, current_y );
-	int next_x = next_cell->x;
-	int next_y = next_cell->y;
-	free( next_cell );
-	if ( current_x != next_x ) {
-		if ( current_x < next_x ) return EAST;
-		if ( current_x > next_x ) return WEST;
-	}
-	if ( current_y != next_y ) {
-		if ( current_y < next_y ) return NORTH;
-		if ( current_y > next_y ) return SOUTH;
-	}
-	return NO_CARD;
-}
-
 void find_shortest_path( int start_x, int start_y, int stop_x, int stop_y ) {
 	struct node* open_list = create_empty_node();
 	struct node* close_list = NULL;

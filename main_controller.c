@@ -3,6 +3,7 @@
 #include "slam/localization.h"
 #include "slam/mapping.h"
 #include "slam/path_finding.h"
+#include "slam/node.h"
 #include "actions/commands.h"
 #include "main_controller.h"
 
@@ -17,7 +18,10 @@ int find_next_goal() {
 		}
 		direction=next_cp(direction);
 	}while(direction!=NORTH);
-	return direction_of_next_cell(get_x(),get_y());
+	struct node* next_cell = find_unvisited_cell(get_x(),get_y());
+	direction = direction_of_next_cell(get_x(),get_y(),next_cell->x,next_cell->y);
+	free( next_cell );
+	return direction;
 }
 
 void goto_cp(int goal){

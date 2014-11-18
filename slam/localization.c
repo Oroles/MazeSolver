@@ -95,6 +95,19 @@ int is_inside_square(double rx, double ry, int side) {
 	}
 }
 
+int direction_of_next_cell( int current_x, int current_y, int next_x, int next_y )
+{
+	if ( current_x != next_x ) {
+		if ( current_x < next_x ) return EAST;
+		if ( current_x > next_x ) return WEST;
+	}
+	if ( current_y != next_y ) {
+		if ( current_y < next_y ) return NORTH;
+		if ( current_y > next_y ) return SOUTH;
+	}
+	return NO_CARD;
+}
+
 // Task functions
 void init_localization() {
 	int distF=get_distanceF();

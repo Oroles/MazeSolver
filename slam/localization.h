@@ -19,5 +19,6 @@ int get_cardinal_point();
 void init_localization();
 void update_localization();
 int is_inside_square(double rx, double ry, int side);
+int direction_of_next_cell( int current_x, int current_y, int next_x, int next_y );
 
 #endif

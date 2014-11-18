@@ -221,8 +221,9 @@ void update_map() {
 			if(pos_y<__min_y) __min_y=pos_y;
 			else if(pos_y>__max_y) __max_y=pos_y;
 
-			if(is_cp(cardinal_point)) {
-				set_wall_state(&data, next_cp(next_cp(cardinal_point)), NO_WALL);
+			int direction = direction_of_next_cell(pos_x,pos_y,last_pos_x,last_pos_y);
+			if(direction != NO_CARD) {
+				set_wall_state(&data, direction, NO_WALL);
 				_map[pos_x][pos_y]=data;
 			}
 			last_pos_x = pos_x;
