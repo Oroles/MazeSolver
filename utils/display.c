@@ -3,6 +3,7 @@
 #include "slam/localization.h"
 #include "slam/mapping.h"
 #include "actions/pid_control.h"
+#include "actions/commands.h"
 #include "shared_variables.h"
 #include "display.h"
 
@@ -32,6 +33,7 @@ void displayData() {
 
 void displayPID() {
 	static int x=0,y=0;
+	if(get_mov_order()!=MOVE_TO_XY) return;
 	display_goto_xy(x,y);
 	display_int(get_PID_error(),2);display_string(",");
 	x=(x+3)%15;
