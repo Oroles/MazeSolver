@@ -4,7 +4,7 @@
 #include "kernel.h"
 #include "ecrobot_interface.h"
 
-#define CARD_PRECISION 2 	// The 4 cardinal points North, East, South and West (for direction of the robot) will be precise with +/- CARD_PRECISION degrees
+#define CARD_PRECISION 5 	// The 4 cardinal points North, East, South and West (for direction of the robot) will be precise with +/- CARD_PRECISION degrees
 #define L_CALIBRATION  (1.00147814) 
 #define R_CALIBRATION  (0.99852185)
 
