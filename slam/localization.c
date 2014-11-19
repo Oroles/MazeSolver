@@ -46,7 +46,7 @@ int __y=0;
 
 // W functions (angle)
 double __w=0;
-int __cp=0;
+int __cp=EAST;
 
 	int find_cardinal(double w) {
 		if(w<CARD_PRECISION) return EAST;
