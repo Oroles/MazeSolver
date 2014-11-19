@@ -78,7 +78,7 @@ CPU ATMEL_AT91SAM7S256
     {
         APPMODE = appmode1;
     };
-    PRIORITY = 10;
+    PRIORITY = 11;
     ACTIVATION = 1;
     SCHEDULE = FULL;
     STACKSIZE = 512;
@@ -86,6 +86,28 @@ CPU ATMEL_AT91SAM7S256
     EVENT=EndOfMovement;
   };
 
+  TASK ColorMaintainer
+  {
+    AUTOSTART = FALSE;
+    PRIORITY = 10;
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+    STACKSIZE = 512;
+  };
+  ALARM cm_alarm
+  {
+    COUNTER = SysTimerCnt;
+    ACTION = ACTIVATETASK
+    {
+        TASK = ColorMaintainer;
+    };
+    AUTOSTART = TRUE
+    {
+        ALARMTIME = 1;
+        CYCLETIME = 50;
+        APPMODE = appmode1;
+    };
+  };
 
   /* Definition of WheelsPositionReader */
   TASK WheelsPositionReader
@@ -155,29 +177,6 @@ CPU ATMEL_AT91SAM7S256
     {
         ALARMTIME = 1;
         CYCLETIME = 100;
-        APPMODE = appmode1;
-    };
-  };
-
-  TASK ColorMaintainer
-  {
-    AUTOSTART = FALSE;
-    PRIORITY = 7;
-    ACTIVATION = 1;
-    SCHEDULE = FULL;
-    STACKSIZE = 512;
-  };
-  ALARM cm_alarm
-  {
-    COUNTER = SysTimerCnt;
-    ACTION = ACTIVATETASK
-    {
-        TASK = ColorMaintainer;
-    };
-    AUTOSTART = TRUE
-    {
-        ALARMTIME = 1;
-        CYCLETIME = 50;
         APPMODE = appmode1;
     };
   };
