@@ -9,8 +9,6 @@
 #define TURN_TO_W 		4
 #define MOVE_TO_XY 		5
 
-DeclareResource(MovementOrder);
-
 U8 get_mov_order();
 int get_mov_power();
 int get_mov_target_w();
