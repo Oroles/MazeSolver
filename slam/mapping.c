@@ -40,14 +40,6 @@ int __min_y=0;
 int __max_x=0;
 int __max_y=0;
 
-void init_mapping( U8 init_val ) {
-	for( int i = 0; i < MAP_WIDTH; ++i ) {
-		for( int j = 0; j < MAP_HEIGHT; ++j ) {
-			_map[i][j] = init_val;
-		}
-	}
-}
-
 U8 is_out_of_map(int pos_x, int pos_y) {
 	if((__max_x-__min_x>=MAP_WIDTH-1 && (pos_x>__max_x || pos_x<__min_x)) ||
 			(__max_y-__min_y>=MAP_HEIGHT-1 && (pos_y>__max_y || pos_y<__min_y)))
@@ -167,10 +159,20 @@ int detect_wall(S32 distance) {
 	return FALSE;
 }
 
+void init_mapping( U8 init_val ) {
+	for( int i = 0; i < MAP_WIDTH; ++i ) {
+		for( int j = 0; j < MAP_HEIGHT; ++j ) {
+			_map[i][j] = init_val;
+		}
+	}
+	// Init value for the back wall of the first cell
+	set_wall_state(&_map[0][0], WEST, NO_WALL);
+}
+
 void update_map() {
 	static U8 ready=FALSE;
-	static int last_pos_x = -1;
-	static int last_pos_y = -1;
+	static int last_pos_x = 0;
+	static int last_pos_y = 0;
 	//Stores the average value of walls
 	static int count_front_walls = 0;
 	static int count_left_walls = 0;
@@ -186,29 +188,37 @@ void update_map() {
 	int pos_y = get_y();
 	// If out of the map, return
 	if (is_out_of_map(pos_x,pos_y)) return;
-	coord_to_table_index(&pos_x,&pos_y);
-	
-	U8 data = _map[pos_x][pos_y];
+	U8 data;
 
 	// If just enter in a new cell
 	if ( ( last_pos_y != pos_y ) || ( last_pos_x != pos_x ) ) {
-			if(pos_x<__min_x) __min_x=pos_x;
-			else if(pos_x>__max_x) __max_x=pos_x;
-			if(pos_y<__min_y) __min_y=pos_y;
-			else if(pos_y>__max_y) __max_y=pos_y;
+		count_front_walls = 0;
+		count_left_walls = 0;
+		count_right_walls = 0;
+		ready=FALSE;
 
-			int direction = direction_of_next_cell(pos_x,pos_y,last_pos_x,last_pos_y);
-			if(direction != NO_CARD) {
-				set_wall_state(&data, direction, NO_WALL);
-				_map[pos_x][pos_y]=data;
-			}
-			last_pos_x = pos_x;
-			last_pos_y = pos_y;
-			count_front_walls = 0;
-			count_left_walls = 0;
-			count_right_walls = 0;
-			ready=FALSE;
-			return;
+		if(pos_x<__min_x) __min_x=pos_x;
+		else if(pos_x>__max_x) __max_x=pos_x;
+		if(pos_y<__min_y) __min_y=pos_y;
+		else if(pos_y>__max_y) __max_y=pos_y;
+
+		int direction = direction_of_next_cell(pos_x,pos_y,last_pos_x,last_pos_y);
+		last_pos_x = pos_x;
+		last_pos_y = pos_y;
+
+		coord_to_table_index(&pos_x,&pos_y);
+		data = _map[pos_x][pos_y];
+
+		if(direction != NO_CARD) {
+			set_wall_state(&data, direction, NO_WALL);
+			_map[pos_x][pos_y]=data;
+		}
+
+		return;
+	}
+	else {
+		coord_to_table_index(&pos_x,&pos_y);
+		data = _map[pos_x][pos_y];
 	}
 
 	int cardinal_point = get_cardinal_point();
