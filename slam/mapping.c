@@ -35,12 +35,16 @@ U8 _map[MAP_WIDTH][MAP_HEIGHT];
 #define W_INFO_MASK  0x02
 #define W_WALL_MASK 0x01
 
-void init_mapping( U8 init_val ) {
-	for( int i = 0; i < MAP_WIDTH; ++i ) {
-		for( int j = 0; j < MAP_HEIGHT; ++j ) {
-			_map[i][j] = init_val;
-		}
-	}
+int __min_x=0;
+int __min_y=0;
+int __max_x=0;
+int __max_y=0;
+
+U8 is_out_of_map(int pos_x, int pos_y) {
+	if((__max_x-__min_x>=MAP_WIDTH-1 && (pos_x>__max_x || pos_x<__min_x)) ||
+			(__max_y-__min_y>=MAP_HEIGHT-1 && (pos_y>__max_y || pos_y<__min_y)))
+		return TRUE;
+	return FALSE;
 }
 
 U8 get_cell_data(int pos_x, int pos_y) {
@@ -56,7 +60,7 @@ void coord_to_table_index(int *x, int *y) {
 	}
 }
 
-int set_masks(int cp, U8 *known_mask, U8 *wall_mask) {
+U8 set_masks(int cp, U8 *known_mask, U8 *wall_mask) {
 	switch(cp) {
 		case NORTH:
 		*known_mask=N_INFO_MASK;
@@ -81,7 +85,7 @@ int set_masks(int cp, U8 *known_mask, U8 *wall_mask) {
 	return TRUE;
 }
 
-int get_wall_state(U8 data, int cp) {
+U8 get_wall_state(U8 data, int cp) {
 	U8 known_mask;
 	U8 wall_mask;
 	if(set_masks(cp, &known_mask, &wall_mask)) {
@@ -125,13 +129,15 @@ void set_wall_state(U8 *data, int cp, int state) {
 	}
 }
 
-int is_wall_in_direction(int orientation, int pos_x, int pos_y) {
+U8 is_wall_in_direction(int orientation, int pos_x, int pos_y) {
 	coord_to_table_index(&pos_x,&pos_y);
 	return get_wall_state(_map[pos_x][pos_y],orientation);
 }
 
-int is_visited_in_direction(int orientation, int pos_x, int pos_y) {
+U8 is_visited_in_direction(int orientation, int pos_x, int pos_y) {
 	coord_for_cp_square(orientation, &pos_x, &pos_y);
+	if(is_out_of_map(pos_x,pos_y)) return OUT_OF_MAP;
+
 	coord_to_table_index(&pos_x,&pos_y);
 
 	U8 data = _map[pos_x][pos_y];
@@ -153,35 +159,75 @@ int detect_wall(S32 distance) {
 	return FALSE;
 }
 
+void init_mapping( U8 init_val ) {
+	for( int i = 0; i < MAP_WIDTH; ++i ) {
+		for( int j = 0; j < MAP_HEIGHT; ++j ) {
+			_map[i][j] = init_val;
+		}
+	}
+	// Init value for the back wall of the first cell
+	set_wall_state(&_map[0][0], WEST, NO_WALL);
+}
+
 void update_map() {
-	static int last_pos_x = -1;
-	static int last_pos_y = -1;
+	static U8 ready=FALSE;
+	static int last_pos_x = 0;
+	static int last_pos_y = 0;
 	//Stores the average value of walls
 	static int count_front_walls = 0;
 	static int count_left_walls = 0;
 	static int count_right_walls = 0;
 
-	WaitEvent(StartMapping);
-	ClearEvent(StartMapping);
-
-	int left_wall = detect_wall(get_distanceL());
-	int right_wall = detect_wall(get_distanceR());
-	int front_wall = detect_wall(get_distanceF());
-	int cardinal_point = get_cardinal_point();
-
-	if (!is_cp(cardinal_point)) {
+	// If not ready (not enough inside the cell), return
+	if(!ready) {
+		if(is_inside_square(get_realX(),get_realY(),MAPPING_RES)) ready=TRUE;
 		return;
 	}
 
 	int pos_x = get_x();
 	int pos_y = get_y();
-	if (pos_x < -MAP_WIDTH || pos_x > MAP_WIDTH) return;
-	if (pos_y < -MAP_HEIGHT || pos_y > MAP_HEIGHT) return;
-	coord_to_table_index(&pos_x,&pos_y);
-	
-	U8 data = _map[pos_x][pos_y];
+	// If out of the map, return
+	if (is_out_of_map(pos_x,pos_y)) return;
+	U8 data;
 
+	// If just enter in a new cell
+	if ( ( last_pos_y != pos_y ) || ( last_pos_x != pos_x ) ) {
+		count_front_walls = 0;
+		count_left_walls = 0;
+		count_right_walls = 0;
+		ready=FALSE;
+
+		if(pos_x<__min_x) __min_x=pos_x;
+		else if(pos_x>__max_x) __max_x=pos_x;
+		if(pos_y<__min_y) __min_y=pos_y;
+		else if(pos_y>__max_y) __max_y=pos_y;
+
+		int direction = direction_of_next_cell(pos_x,pos_y,last_pos_x,last_pos_y);
+		last_pos_x = pos_x;
+		last_pos_y = pos_y;
+
+		coord_to_table_index(&pos_x,&pos_y);
+		data = _map[pos_x][pos_y];
+
+		if(direction != NO_CARD) {
+			set_wall_state(&data, direction, NO_WALL);
+			_map[pos_x][pos_y]=data;
+		}
+
+		return;
+	}
+	else {
+		coord_to_table_index(&pos_x,&pos_y);
+		data = _map[pos_x][pos_y];
+	}
+
+	int cardinal_point = get_cardinal_point();
+	// Do measurements only if in a good direction
 	if(is_cp(cardinal_point)) {
+		int left_wall = detect_wall(get_distanceL());
+		int right_wall = detect_wall(get_distanceR());
+		int front_wall = detect_wall(get_distanceF());
+
 		//Add plus one for is wall and substract one for no wall
 		count_front_walls = front_wall ? count_front_walls + 1 : count_front_walls - 1;
 		count_left_walls = left_wall ? count_left_walls + 1 : count_left_walls - 1;
@@ -198,32 +244,24 @@ void update_map() {
 	}
 
 	_map[pos_x][pos_y]=data;
-
-	if ( ( last_pos_y != pos_y ) || ( last_pos_x != pos_x ) ) {
-			if(is_cp(cardinal_point)) {
-				set_wall_state(&data, next_cp(next_cp(cardinal_point)), NO_WALL);
-				_map[pos_x][pos_y]=data;
-			}
-			last_pos_x = pos_x;
-			last_pos_y = pos_y;
-			count_front_walls = 0;
-			count_left_walls = 0;
-			count_right_walls = 0;
-	}
 }
 
-void display_map(int row, int column, U8 matrix[row][column]) {
+void display_map(int width, int height, U8 matrix[width][height]) {
+	int x=__min_x,y=__min_y;
+	coord_to_table_index(&x,&y);
 	display_clear(0);
-	for( int i = 0; i < row; ++i ) {
-		for( int j = 0; j < column; ++j ) {
-			display_goto_xy( i, j );
+	for( int i = 0; i < width; ++i ) {
+		for( int j = 0; j < height; ++j ) {
+			display_goto_xy(i,j);
 			U8 result = 0x00;
-			result |= ( matrix[i][j] & W_WALL_MASK );
-			result |= ( ( matrix[i][j] & E_WALL_MASK ) >> 1 );
-			result |= ( ( matrix[i][j] & S_WALL_MASK ) >> 2 );
-			result |= ( ( matrix[i][j] & N_WALL_MASK ) >> 3 );
+			result |= ( matrix[x][y] & W_WALL_MASK );
+			result |= ( ( matrix[x][y] & E_WALL_MASK ) >> 1 );
+			result |= ( ( matrix[x][y] & S_WALL_MASK ) >> 2 );
+			result |= ( ( matrix[x][y] & N_WALL_MASK ) >> 3 );
 			display_hex( result, 1 );
+			y=(y+1) % height;
 		}
+		x=(x+1) % width;
 	}
 	display_update();
 }

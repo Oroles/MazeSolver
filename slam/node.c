@@ -67,6 +67,38 @@ struct node* remove_first_node(struct node** root) {
 	return aux;
 }
 
+void remove_node(struct node** root, struct node* nod)
+{
+	if( *root == NULL ) {
+		return;
+	}
+	struct node* it_prev = NULL;
+	struct node* it = *root;
+	while( ( it != NULL ) && ( !equal( it, nod ) ) ) {
+		it_prev = it;
+		it = it->next;
+	}
+	if ( it == NULL ) {
+		return;
+	}
+	if ( it_prev == NULL ) {
+		it = NULL;
+		return;
+	}
+	it_prev->next = it->next;
+	//In case the deleted nod is the last node
+	if ( it->next != NULL ) {
+		it->next->parent = it_prev;
+	}
+}
+
+int equal(struct node* first_node, struct node* second_node) {
+	if( ( first_node->x == second_node->x ) && ( first_node->y == second_node->y ) ) {
+		return TRUE;
+	}
+	return FALSE;
+}
+
 int find_node(struct node** root, struct node* node_to_find) {
 	if ( root == NULL ) {
 		return FALSE;

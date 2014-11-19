@@ -55,10 +55,6 @@ CPU ATMEL_AT91SAM7S256
   {
     RESOURCEPROPERTY = STANDARD;
   };
-  RESOURCE MovementOrder
-  {
-    RESOURCEPROPERTY = STANDARD;
-  };
 
   COUNTER SysTimerCnt
   {
@@ -74,9 +70,6 @@ CPU ATMEL_AT91SAM7S256
   EVENT EndOfMovement{
     MASK = AUTO;
   };
-  EVENT StartMapping{
-    MASK = AUTO;
-  };
 
 
   TASK MainController
@@ -85,15 +78,36 @@ CPU ATMEL_AT91SAM7S256
     {
         APPMODE = appmode1;
     };
-    PRIORITY = 10;
+    PRIORITY = 11;
     ACTIVATION = 1;
     SCHEDULE = FULL;
     STACKSIZE = 512;
     EVENT=CellCenter;
     EVENT=EndOfMovement;
-    RESOURCE=MovementOrder;
   };
 
+  TASK ColorMaintainer
+  {
+    AUTOSTART = FALSE;
+    PRIORITY = 10;
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+    STACKSIZE = 512;
+  };
+  ALARM cm_alarm
+  {
+    COUNTER = SysTimerCnt;
+    ACTION = ACTIVATETASK
+    {
+        TASK = ColorMaintainer;
+    };
+    AUTOSTART = TRUE
+    {
+        ALARMTIME = 1;
+        CYCLETIME = 50;
+        APPMODE = appmode1;
+    };
+  };
 
   /* Definition of WheelsPositionReader */
   TASK WheelsPositionReader
@@ -167,29 +181,6 @@ CPU ATMEL_AT91SAM7S256
     };
   };
 
-  TASK ColorMaintainer
-  {
-    AUTOSTART = FALSE;
-    PRIORITY = 7;
-    ACTIVATION = 1;
-    SCHEDULE = FULL;
-    STACKSIZE = 512;
-  };
-  ALARM cm_alarm
-  {
-    COUNTER = SysTimerCnt;
-    ACTION = ACTIVATETASK
-    {
-        TASK = ColorMaintainer;
-    };
-    AUTOSTART = TRUE
-    {
-        ALARMTIME = 1;
-        CYCLETIME = 50;
-        APPMODE = appmode1;
-    };
-  };
-
   /* Definition of Localization */
   TASK Localization
   {
@@ -209,7 +200,7 @@ CPU ATMEL_AT91SAM7S256
     };
     AUTOSTART = TRUE
     {
-        ALARMTIME = 500;
+        ALARMTIME = 1500;
         CYCLETIME = 100;
         APPMODE = appmode1;
     };
@@ -223,7 +214,6 @@ CPU ATMEL_AT91SAM7S256
     ACTIVATION = 1;
     SCHEDULE = FULL;
     STACKSIZE = 512;
-    RESOURCE=MovementOrder;
   };
   ALARM mov_alarm
   {
@@ -247,7 +237,6 @@ CPU ATMEL_AT91SAM7S256
     PRIORITY = 4;
     ACTIVATION = 1;
     SCHEDULE = FULL;
-    EVENT=StartMapping;
     STACKSIZE = 512;
   };
   ALARM map_alarm
@@ -283,7 +272,7 @@ CPU ATMEL_AT91SAM7S256
     AUTOSTART = TRUE
     {
         ALARMTIME = 500;
-        CYCLETIME = 300;
+        CYCLETIME = 150;
         APPMODE = appmode1;
     };
   };

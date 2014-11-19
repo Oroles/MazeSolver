@@ -4,7 +4,7 @@
 #include "kernel.h"
 #include "ecrobot_interface.h"
 
-#define CARD_PRECISION 2 	// The 4 cardinal points North, East, South and West (for direction of the robot) will be precise with +/- CARD_PRECISION degrees
+#define CARD_PRECISION 5 	// The 4 cardinal points North, East, South and West (for direction of the robot) will be precise with +/- CARD_PRECISION degrees
 #define L_CALIBRATION  (1.00147814) 
 #define R_CALIBRATION  (0.99852185)
 
@@ -19,5 +19,6 @@ int get_cardinal_point();
 void init_localization();
 void update_localization();
 int is_inside_square(double rx, double ry, int side);
+int direction_of_next_cell( int current_x, int current_y, int next_x, int next_y );
 
 #endif

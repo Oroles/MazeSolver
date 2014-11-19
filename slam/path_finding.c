@@ -79,7 +79,14 @@ void print_path(struct node* current) {
 	display_update();
 }
 
-struct node* find_unvisited_node( int start_x, int start_y ) {
+struct node* find_parent_node( struct node* current, struct node* son ) {
+	while( !equal( current->parent, son ) ) {
+		current = current->parent;
+	}
+	return current;
+}
+
+struct node* find_unvisited_cell( int start_x, int start_y ) {
 	struct node* open_list = create_empty_node();
 	struct node* close_list = NULL;
 	init_nod_position( open_list, start_x, start_y );
@@ -95,19 +102,29 @@ struct node* find_unvisited_node( int start_x, int start_y ) {
 				neighbor = remove_first_node( &neighbors );
 				continue;
 			}
-			U8 data = get_cell_data(neighbor->x, neighbor->y);
+			int pos_x = neighbor->x;
+			int pos_y = neighbor->y;
+			coord_to_table_index( &pos_x, &pos_y );
+			U8 data = get_cell_data(pos_x, pos_y);
+			neighbor->parent = current;
 			if ( data == 0x00 ) {
+				struct node* next_node = find_parent_node( neighbor, close_list );
+				remove_node( &close_list, next_node );
+				if ( next_node != neighbor ) {
+					free( neighbor );
+				}
 				free_list( &open_list );
 				free_list( &close_list );
 				free_list( &neighbors );
-				return neighbor;
+				return next_node;
 			}
 			add_node( &open_list, neighbor );
 			neighbor = remove_first_node( &neighbors );
 		}
 	}
+	struct node* current = remove_first_node( &close_list );
 	free_list( &close_list );
-	return NULL;
+	return current;
 }
 
 void find_shortest_path( int start_x, int start_y, int stop_x, int stop_y ) {

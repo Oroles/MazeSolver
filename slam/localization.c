@@ -23,7 +23,7 @@ int __x=0;
 	}
 	void update_x(double dx) {
 		__rx+=dx;
-		__x=__rx/MAP_RES;
+		__x= __rx>=0 ? __rx/MAP_RES : __rx/MAP_RES-1;
 	}
 
 // Y functions
@@ -41,12 +41,12 @@ int __y=0;
 	}
 	void update_y(double dy) {
 		__ry+=dy;
-		__y=__ry/MAP_RES;
+		__y= __ry>=0 ? __ry/MAP_RES : __ry/MAP_RES-1;
 	}
 
 // W functions (angle)
 double __w=0;
-int __cp=0;
+int __cp=EAST;
 
 	int find_cardinal(double w) {
 		if(w<CARD_PRECISION) return EAST;
@@ -95,17 +95,30 @@ int is_inside_square(double rx, double ry, int side) {
 	}
 }
 
+int direction_of_next_cell( int current_x, int current_y, int next_x, int next_y )
+{
+	if ( current_x != next_x ) {
+		if ( current_x < next_x ) return EAST;
+		if ( current_x > next_x ) return WEST;
+	}
+	if ( current_y != next_y ) {
+		if ( current_y < next_y ) return NORTH;
+		if ( current_y > next_y ) return SOUTH;
+	}
+	return NO_CARD;
+}
+
 // Task functions
 void init_localization() {
 	int distF=get_distanceF();
 	int distR=get_distanceR();
 	int distL=get_distanceL();
-	if(distF!=255)
+	if(distF!=255+CENTER_TO_FRONT)
 		__rx= MAP_RES-((distF*10) % MAP_RES);
 
 	if(distL<distR)
 		__ry= MAP_RES-((distL*10) % MAP_RES);
-	else if(distR!=255)
+	else if(distR!=255+CENTER_TO_SIDES)
 		__ry= (distR*10) % MAP_RES;
 	
 	if ( !is_inside_square(get_realX(),get_realY(),CENTER_RES) ) {
@@ -122,12 +135,16 @@ void update_localization() {
 	static int __last_wL=0;
 	static int __last_wR=0;
 	static double __w=0;
+	static U8 event_sent=FALSE;
 
 	if(is_inside_square(__rx,__ry,CENTER_RES)) {
-		SetEvent(MainController, CellCenter);
+		if(!event_sent) {
+			SetEvent(MainController, CellCenter);
+			event_sent=TRUE;
+		}
 	}
-	if(is_inside_square(__rx,__ry,MAPPING_RES)) {
-		SetEvent(Mapping, StartMapping);
+	else {
+		event_sent=FALSE;
 	}
 
 	// Don't stop me, I need synchronized parameter values

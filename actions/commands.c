@@ -21,22 +21,17 @@ void set_mov_target_w(double target_w) { __target_w=target_w; }
 void end_of_mov() { __movement_ended=TRUE; }
 
 void stop() {
-	GetResource(MovementOrder);
 	__movement_order=STOP;
-	ReleaseResource(MovementOrder);
 }
 
 void go_forward(int power) {
-	GetResource(MovementOrder);
 	__movement_order=MOVE_FORWARD;
 	__power=power;
 	__target_w=get_w();
 	init_PID(1,0.1,0.4);
-	ReleaseResource(MovementOrder);
 }
 
 void move_to_xy(double x, double y, int power) {
-	GetResource(MovementOrder);
 	__movement_order=MOVE_TO_XY;
 	__power=power;
 	__movement_ended=FALSE;
@@ -44,7 +39,6 @@ void move_to_xy(double x, double y, int power) {
 	__target_y=y;
 	__target_w=angle_to_reach(get_realX(),get_realY(),__target_x,__target_y);
 	init_PID(1,0.1,0.4);
-	ReleaseResource(MovementOrder);
 }
 void move_to_cell(int cx, int cy, int power) {
 	double x,y;
@@ -53,13 +47,11 @@ void move_to_cell(int cx, int cy, int power) {
 }
 
 void turn_to_w(double w, int power) {
-	GetResource(MovementOrder);
 	__movement_order=TURN_TO_W;
 	__power=power;
 	__movement_ended=FALSE;
 	__target_w=w;
 	init_PID(1,0,0);
-	ReleaseResource(MovementOrder);
 }
 void turn_to_cp(int cp, int power) {
 	switch(cp) {
@@ -75,15 +67,11 @@ void turn_to_cp(int cp, int power) {
 }
 
 void turn_right(int power) {
-	GetResource(MovementOrder);
 	__movement_order=TURN_RIGHT;
 	__power=power;
-	ReleaseResource(MovementOrder);
 }
 
 void turn_left(int power) {
-	GetResource(MovementOrder);
 	__movement_order=TURN_LEFT;
 	__power=power;
-	ReleaseResource(MovementOrder);
 }

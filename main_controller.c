@@ -2,6 +2,8 @@
 #include "utils/shared_variables.h"
 #include "slam/localization.h"
 #include "slam/mapping.h"
+#include "slam/path_finding.h"
+#include "slam/node.h"
 #include "actions/commands.h"
 #include "main_controller.h"
 
@@ -9,16 +11,17 @@ int __next_goal_x=0;
 int __next_goal_y=0;
 
 int find_next_goal() {
-	int tmp_goal=-1;
 	int direction=NORTH;
 	do {
 		if(is_wall_in_direction(direction,get_x(),get_y())==NO_WALL) {
-			if(!is_visited_in_direction(direction,get_x(),get_y())) return direction;
-			else tmp_goal=direction;
+			if(is_visited_in_direction(direction,get_x(),get_y())==FALSE) return direction;
 		}
 		direction=next_cp(direction);
 	}while(direction!=NORTH);
-	return tmp_goal;
+	struct node* next_cell = find_unvisited_cell(get_x(),get_y());
+	direction = direction_of_next_cell(get_x(),get_y(),next_cell->x,next_cell->y);
+	free( next_cell );
+	return direction;
 }
 
 void goto_cp(int goal){
