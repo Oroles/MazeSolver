@@ -66,6 +66,6 @@ double angle_to_reach(double xi, double yi, double xf, double yf) {
 }
 
 void cell_center(int x, int y, double *realx, double *realy) {
-	*realx=(x>=0 ? (x+0.5)*MAP_RES : (x-0.5)*MAP_RES);
-	*realy=(y>=0 ? (y+0.5)*MAP_RES : (y-0.5)*MAP_RES);
+	*realx=(x+0.5)*MAP_RES;
+	*realy=(y+0.5)*MAP_RES;
 }

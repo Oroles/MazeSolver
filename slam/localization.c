@@ -23,7 +23,7 @@ int __x=0;
 	}
 	void update_x(double dx) {
 		__rx+=dx;
-		__x=__rx/MAP_RES;
+		__x= __rx>=0 ? __rx/MAP_RES : __rx/MAP_RES-1;
 	}
 
 // Y functions
@@ -41,7 +41,7 @@ int __y=0;
 	}
 	void update_y(double dy) {
 		__ry+=dy;
-		__y=__ry/MAP_RES;
+		__y= __ry>=0 ? __ry/MAP_RES : __ry/MAP_RES-1;
 	}
 
 // W functions (angle)
