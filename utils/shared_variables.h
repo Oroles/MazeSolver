@@ -12,6 +12,7 @@ void set_wPositionL(int wpositionL);
 void set_wPositionR(int wpositionR);
 
 U8 get_color();
+U8 get_color_counter();
 S32 get_distanceL();
 S32 get_distanceR();
 S32 get_distanceF();

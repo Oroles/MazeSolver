@@ -31,19 +31,13 @@ void goto_cp(int goal){
 	move_to_cell(__next_goal_x,__next_goal_y,30);
 }
 
-int is_stop(U8 color) {
-	static int counter_color = 0;
-	if ( color == NXT_COLOR_GREEN ) {
-		counter_color++;
-	}
-	else {
-		counter_color = 0;
-	}
-	return counter_color > 3 ? TRUE : FALSE;
+int is_stop() {
+	if ( get_color() == NXT_COLOR_GREEN && get_color_counter()>3) return TRUE;
+	return FALSE;
 }
 
 int main_step() {
-	if(!is_stop(get_color())) {
+	if(!is_stop()) {
 		if(get_x()==__next_goal_x && get_y()==__next_goal_y) {
 			stop();
 
