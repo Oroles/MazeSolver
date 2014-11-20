@@ -8,6 +8,7 @@
 #include "slam/localization.h"
 #include "slam/mapping.h"
 #include "slam/path_finding.h"
+#include "slam/node.h"
 #include "actions/pid_control.h"
 #include "actions/commands.h"
 #include "actions/movement.h"
@@ -53,7 +54,9 @@ TASK(MainController) {
 		ClearEvent(CellCenter);
 		if(main_step()) {
 			main_end();
-			find_shortest_path(0,0,get_x(),get_y());
+			struct node* path = find_shortest_path(0,0,get_x(),get_y());
+			print_path(path);
+			free_list(&path);
 			TerminateTask();
 		}
 	}

@@ -66,7 +66,7 @@ void print_path(struct node* current) {
 		int pos_y = current->y;
 		coord_to_table_index(&pos_x,&pos_y);
 		path_map[ pos_x ][ pos_y ] = 1;
-		current = current->parent;
+		current = current->next;
 	}
 
 	display_clear(0);
@@ -84,6 +84,18 @@ struct node* find_parent_node( struct node* current, struct node* son ) {
 		current = current->parent;
 	}
 	return current;
+}
+
+void create_path( struct node** start_list, struct node** close_list ) {
+	if ( (*start_list)->parent != NULL ) {
+		if ( !equal( (*start_list)->parent, *close_list ) ) {
+			do{
+				remove_node( close_list, (*start_list)->parent );
+				(*start_list)->parent->next = *start_list;
+				(*start_list) = (*start_list)->parent;
+			}while( !equal((*start_list)->parent,*close_list) );
+		}
+	}
 }
 
 struct node* find_unvisited_cell( int start_x, int start_y ) {
@@ -110,16 +122,7 @@ struct node* find_unvisited_cell( int start_x, int start_y ) {
 			if ( data == 0x00 ) {
 				struct node* start_list = neighbor->parent;
 				remove_node( &close_list, start_list );
-
-				if ( start_list->parent != NULL ) {
-					if ( !equal( start_list->parent, close_list ) ) {
-						do{
-							remove_node( &close_list, start_list->parent );
-							start_list->parent->next = start_list;
-							start_list = start_list->parent;
-						}while( !equal(start_list->parent,close_list) );
-					}
-				}
+				create_path( &start_list, &close_list );
 
 				if ( start_list != neighbor ) {
 					free( neighbor );
@@ -138,7 +141,7 @@ struct node* find_unvisited_cell( int start_x, int start_y ) {
 	return current;
 }
 
-void find_shortest_path( int start_x, int start_y, int stop_x, int stop_y ) {
+struct node* find_shortest_path( int start_x, int start_y, int stop_x, int stop_y ) {
 	struct node* open_list = create_empty_node();
 	struct node* close_list = NULL;
 
@@ -173,11 +176,10 @@ void find_shortest_path( int start_x, int start_y, int stop_x, int stop_y ) {
 		}
 		current = remove_first_node( &open_list );
 	}
-	print_path( current );
-
+	if ( current != NULL ) {
+		create_path( &current, &close_list );
+	}
 	free_list( &open_list );
 	free_list( &close_list );
-	if ( current != NULL ) {
-		free( current );
-	}
+	return current;
 }

@@ -26,8 +26,18 @@ int find_next_goal() {
 	direction = direction_of_next_cell(get_x(),get_y(),command->x,command->y);
 	free( command );
 
-	if ( direction == -1 ) { //Means that there is end position
-		free_list(commands);
+	if ( direction == -1 ) { //Means that there is no stop position so we try to get back to the starting position
+		free_list(&commands);
+		if ( get_x() == 0 && get_y() == 0 ) { //Reach the starting node and nothing else to explore
+			return direction;
+		}
+		else {
+			commands = find_shortest_path(get_x(),get_y(),0,0);
+		}
+
+		if ( commands == NULL ) { //It means that there is not path from the current nod to the starting node(0,0)
+			direction = -1;
+		}
 	}
 
 	return direction;
