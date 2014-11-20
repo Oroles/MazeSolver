@@ -108,15 +108,26 @@ struct node* find_unvisited_cell( int start_x, int start_y ) {
 			U8 data = get_cell_data(pos_x, pos_y);
 			neighbor->parent = current;
 			if ( data == 0x00 ) {
-				struct node* next_node = find_parent_node( neighbor, close_list );
-				remove_node( &close_list, next_node );
-				if ( next_node != neighbor ) {
+				struct node* start_list = neighbor->parent;
+				remove_node( &close_list, start_list );
+
+				if ( start_list->parent != NULL ) {
+					if ( !equal( start_list->parent, close_list ) ) {
+						do{
+							remove_node( &close_list, start_list->parent );
+							start_list->parent->next = start_list;
+							start_list = start_list->parent;
+						}while( !equal(start_list->parent,close_list) );
+					}
+				}
+
+				if ( start_list != neighbor ) {
 					free( neighbor );
 				}
 				free_list( &open_list );
 				free_list( &close_list );
 				free_list( &neighbors );
-				return next_node;
+				return start_list;
 			}
 			add_node( &open_list, neighbor );
 			neighbor = remove_first_node( &neighbors );

@@ -82,7 +82,7 @@ void remove_node(struct node** root, struct node* nod)
 		return;
 	}
 	if ( it_prev == NULL ) {
-		it = NULL;
+		*root = NULL;
 		return;
 	}
 	it_prev->next = it->next;

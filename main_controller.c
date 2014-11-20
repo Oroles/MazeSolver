@@ -9,6 +9,7 @@
 
 int __next_goal_x=0;
 int __next_goal_y=0;
+struct node* commands = NULL;
 
 int find_next_goal() {
 	int direction=NORTH;
@@ -18,9 +19,17 @@ int find_next_goal() {
 		}
 		direction=next_cp(direction);
 	}while(direction!=NORTH);
-	struct node* next_cell = find_unvisited_cell(get_x(),get_y());
-	direction = direction_of_next_cell(get_x(),get_y(),next_cell->x,next_cell->y);
-	free( next_cell );
+	if ( commands == NULL ) {
+		commands = find_unvisited_cell(get_x(),get_y());
+	}
+	struct node* command = remove_first_node(&commands);
+	direction = direction_of_next_cell(get_x(),get_y(),command->x,command->y);
+	free( command );
+
+	if ( direction == -1 ) { //Means that there is end position
+		free_list(commands);
+	}
+
 	return direction;
 }
 
