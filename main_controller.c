@@ -11,6 +11,20 @@ int __next_goal_x=0;
 int __next_goal_y=0;
 struct node* commands = NULL;
 
+int get_direction(struct node** commands) {
+	int direction;
+	struct node* command = remove_first_node(commands);
+	direction = direction_of_next_cell(get_x(),get_y(),command->x,command->y);
+	free( command );
+
+	if ( is_wall_in_direction(direction,get_x(),get_y()) != NO_WALL ) {
+		direction = -1;
+		free_list( commands );
+	}
+
+	return direction;
+}
+
 int find_next_goal() {
 	int direction=NORTH;
 	do {
@@ -22,14 +36,7 @@ int find_next_goal() {
 	if ( commands == NULL ) {
 		commands = find_unvisited_cell(get_x(),get_y());
 	}
-	struct node* command = remove_first_node(&commands);
-	direction = direction_of_next_cell(get_x(),get_y(),command->x,command->y);
-	free( command );
-
-	if ( is_wall_in_direction(direction,get_x(),get_y()) != NO_WALL ) {
-		direction = -1;
-		free_list( &commands );
-	}
+	direction = get_direction(&commands);
 
 	if ( direction == -1 ) { //Means that there is no stop position so we try to get back to the starting position
 		free_list(&commands);
@@ -44,14 +51,7 @@ int find_next_goal() {
 			direction = -1;
 		}
 		else {
-			command = remove_first_node(&commands);
-			direction = direction_of_next_cell(get_x(),get_y(),command->x,command->y);
-			free( command );
-
-			if ( is_wall_in_direction(direction,get_x(),get_y()) != NO_WALL ) {
-				direction = -1;
-				free_list( &commands );
-			}
+			direction = get_direction(&commands);
 		}
 	}
 
