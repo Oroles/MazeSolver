@@ -20,7 +20,7 @@ struct node* find_neighbors(struct node* current ) {
 			int pos_y = current->y;
 			coord_for_cp_square(orientation, &pos_x, &pos_y);
 			init_nod_position( neighbor, pos_x, pos_y );
-			add_node(&neighbors, neighbor );
+			add_node(neighbors, neighbor );
 		}
 		orientation = next_cp( orientation );
 		++contor;
@@ -86,14 +86,14 @@ struct node* find_parent_node( struct node* current, struct node* son ) {
 	return current;
 }
 
-void create_path( struct node** start_list, struct node** close_list ) {
-	if ( (*start_list)->parent != NULL ) {
-		if ( !equal( (*start_list)->parent, *close_list ) ) {
+void create_path( struct node* start_list, struct node* close_list ) {
+	if ( start_list->parent != NULL ) {
+		if ( !equal( start_list->parent, close_list ) ) {
 			do{
-				remove_node( close_list, (*start_list)->parent );
-				(*start_list)->parent->next = *start_list;
-				(*start_list) = (*start_list)->parent;
-			}while( !equal((*start_list)->parent,*close_list) );
+				remove_node( close_list, start_list->parent );
+				start_list->parent->next = start_list;
+				start_list = start_list->parent;
+			}while( !equal(start_list->parent,close_list) );
 		}
 	}
 }
@@ -104,14 +104,14 @@ struct node* find_unvisited_cell( int start_x, int start_y ) {
 	init_nod_position( open_list, start_x, start_y );
 
 	while( count( open_list ) != 0 ) {
-		struct node* current = remove_first_node( &open_list );
-		add_node( &close_list, current );
+		struct node* current = remove_first_node( open_list );
+		add_node( close_list, current );
 		struct node* neighbors = find_neighbors( current );
-		struct node* neighbor = remove_first_node( &neighbors );
+		struct node* neighbor = remove_first_node( neighbors );
 		while( neighbor != NULL ) {
-			if ( find_node( &close_list, neighbor ) || find_node( &open_list, neighbor ) ) {
+			if ( find_node( close_list, neighbor ) || find_node( open_list, neighbor ) ) {
 				free(neighbor);
-				neighbor = remove_first_node( &neighbors );
+				neighbor = remove_first_node( neighbors );
 				continue;
 			}
 			int pos_x = neighbor->x;
@@ -121,8 +121,8 @@ struct node* find_unvisited_cell( int start_x, int start_y ) {
 			neighbor->parent = current;
 			if ( data == 0x00 ) {
 				struct node* start_list = neighbor->parent;
-				remove_node( &close_list, start_list );
-				create_path( &start_list, &close_list );
+				remove_node( close_list, start_list );
+				create_path( start_list, close_list );
 
 				if ( start_list != neighbor ) {
 					free( neighbor );
@@ -132,8 +132,8 @@ struct node* find_unvisited_cell( int start_x, int start_y ) {
 				free_list( neighbors );
 				return start_list;
 			}
-			add_node( &open_list, neighbor );
-			neighbor = remove_first_node( &neighbors );
+			add_node( open_list, neighbor );
+			neighbor = remove_first_node( neighbors );
 		}
 	}
 	free_list( close_list );
@@ -146,37 +146,37 @@ struct node* find_shortest_path( int start_x, int start_y, int stop_x, int stop_
 
 	init_nod_position( open_list, start_x, start_y );
 
-	struct node* current = remove_first_node( &open_list );
+	struct node* current = remove_first_node( open_list );
 	current->g_cost = 0;
 	while( ( current != NULL ) && ( is_stop_position( current, stop_x, stop_y ) == FALSE ) ) {
 
-		add_node( &close_list, current );
+		add_node( close_list, current );
 
 		struct node* neighbors = find_neighbors( current );
-		struct node* neighbor = remove_first_node( &neighbors );
+		struct node* neighbor = remove_first_node( neighbors );
 		while ( neighbor != NULL ) {
-			if ( find_node(&close_list, neighbor) == TRUE ) {
+			if ( find_node(close_list, neighbor) == TRUE ) {
 				free(neighbor);
-				neighbor = remove_first_node( &neighbors );
+				neighbor = remove_first_node( neighbors );
 				continue;
 			}
 			int cost = current->g_cost + move_cost(current,neighbor);
 
-			if ( (cost < neighbor->g_cost) && ( find_node(&open_list, neighbor) == FALSE ) ) {
+			if ( (cost < neighbor->g_cost) && ( find_node(open_list, neighbor) == FALSE ) ) {
 				neighbor->g_cost = cost;
 				neighbor->f_cost = cost + heuristic_function( neighbor, stop_x, stop_y );
-				add_node_priority(&open_list, neighbor);
+				add_node_priority(open_list, neighbor);
 				neighbor->parent = current;
 			} else {
 				free( neighbor );
 			}
 
-			neighbor = remove_first_node( &neighbors );
+			neighbor = remove_first_node( neighbors );
 		}
-		current = remove_first_node( &open_list );
+		current = remove_first_node( open_list );
 	}
 	if ( current != NULL ) {
-		create_path( &current, &close_list );
+		create_path( current, close_list );
 	}
 	free_list( open_list );
 	free_list( close_list );

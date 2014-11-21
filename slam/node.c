@@ -16,13 +16,13 @@ void init_nod_position(struct node* root, S8 x, S8 y) {
 	root->y = y;
 }
 
-void add_node_priority(struct node** root, struct node* new_node) {
-	if ( *root == NULL ) {
-		*root = new_node;
+void add_node_priority(struct node* root, struct node* new_node) {
+	if ( root == NULL ) {
+		root = new_node;
 		return;
 	}
 	struct node* it_prev = NULL;
-	struct node* it = *root;
+	struct node* it = root;
 	while( it != NULL ) { 
 		if ( it->f_cost <= new_node->f_cost ) {
 			it_prev = it;
@@ -36,7 +36,7 @@ void add_node_priority(struct node** root, struct node* new_node) {
 			}
 			else {
 				new_node->next = it;
-				*root = new_node;
+				root = new_node;
 			}
 			return;
 		}
@@ -45,35 +45,35 @@ void add_node_priority(struct node** root, struct node* new_node) {
 	it_prev->next = new_node;
 }
 
-void add_node(struct node** root, struct node* new_node) {
-	if ( *root == NULL ) {
-		*root = new_node;
+void add_node(struct node* root, struct node* new_node) {
+	if ( root == NULL ) {
+		root = new_node;
 		return;
 	}
-	struct node* it = *root;
+	struct node* it = root;
 	while( it->next != NULL ) {
 		it = it->next;
 	}
 	it->next = new_node;
 }
 
-struct node* remove_first_node(struct node** root) {
-	if ( *root == NULL ) {
+struct node* remove_first_node(struct node* root) {
+	if ( root == NULL ) {
 		return NULL;
 	}
-	struct node* aux = *root;
-	*root = (*root)->next;
+	struct node* aux = root;
+	root = root->next;
 	aux->next = NULL;
 	return aux;
 }
 
-void remove_node(struct node** root, struct node* nod)
+void remove_node(struct node* root, struct node* nod)
 {
-	if( *root == NULL ) {
+	if( root == NULL ) {
 		return;
 	}
 	struct node* it_prev = NULL;
-	struct node* it = *root;
+	struct node* it = root;
 	while( ( it != NULL ) && ( !equal( it, nod ) ) ) {
 		it_prev = it;
 		it = it->next;
@@ -82,7 +82,7 @@ void remove_node(struct node** root, struct node* nod)
 		return;
 	}
 	if ( it_prev == NULL ) {
-		*root = NULL;
+		root = NULL;
 		return;
 	}
 	it_prev->next = it->next;
@@ -99,11 +99,11 @@ int equal(struct node* first_node, struct node* second_node) {
 	return FALSE;
 }
 
-int find_node(struct node** root, struct node* node_to_find) {
+int find_node(struct node* root, struct node* node_to_find) {
 	if ( root == NULL ) {
 		return FALSE;
 	}
-	struct node* it = *root;
+	struct node* it = root;
 	while ( it != NULL ) {
 		if ( ( it->x ==  node_to_find->x ) && ( it->y == node_to_find->y ) ) {
 			return TRUE;
