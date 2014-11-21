@@ -42,7 +42,7 @@ void do_turn(int power) {
 	
 	if(output>0) {
 		if(output>power) output=power;
-		else if(output<10 && output) output=10;
+		else if(output<10) output=10;
 	}
 	else {
 		if(output<-power) output=-power;
