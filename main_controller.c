@@ -11,9 +11,9 @@ int __next_goal_x=0;
 int __next_goal_y=0;
 struct node* commands = NULL;
 
-int get_direction(struct node** commands) {
+int get_direction(struct node* commands) {
 	int direction;
-	struct node* command = remove_first_node(commands);
+	struct node* command = remove_first_node(&commands);
 	direction = direction_of_next_cell(get_x(),get_y(),command->x,command->y);
 	free( command );
 
@@ -30,7 +30,7 @@ int find_next_goal() {
 	do {
 		if(is_wall_in_direction(direction,get_x(),get_y())==NO_WALL) {
 			if(is_visited_in_direction(direction,get_x(),get_y())==FALSE) {
-				free_list(&commands);
+				free_list(commands);
 				return direction;
 			}
 		}
@@ -47,7 +47,7 @@ int find_next_goal() {
 		}
 	}
 
-	return get_direction(&commands);
+	return get_direction(commands);
 }
 
 void goto_cp(int goal){
