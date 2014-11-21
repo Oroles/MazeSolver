@@ -69,7 +69,7 @@ void do_turn_to_w(int power) {
 	if(!is_mov_ended()) {
 		double error= get_w()-get_mov_target_w();
 
-		if(error<=1 && error>=-1) {
+		if(error<=2 && error>=-2) {
 			end_of_mov();
 			do_stop();
 			SetEvent(MainController, EndOfMovement);
