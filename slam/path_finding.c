@@ -177,6 +177,10 @@ struct node* find_shortest_path( int start_x, int start_y, int stop_x, int stop_
 	}
 	if ( current != NULL ) {
 		create_path( current, close_list );
+		if ( is_stop_position( current, start_x, start_y ) == TRUE ) {
+			free( current );
+			current = NULL;
+		}
 	}
 	free_list( open_list );
 	free_list( close_list );
