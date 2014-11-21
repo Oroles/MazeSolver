@@ -5,8 +5,9 @@ static U8 __color = NXT_COLOR_UNKNOWN;
 static U8 __color_counter = 0;
 
 	void set_color(U8 color) {
-		if(__color == color)
+		if(__color == color) {
 			if(__color_counter<255) __color_counter++;
+		}
 		else
 			__color_counter=0;
 		__color = color;
