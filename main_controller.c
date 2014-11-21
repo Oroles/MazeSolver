@@ -19,7 +19,7 @@ int get_direction(struct node** commands) {
 
 	if ( is_wall_in_direction(direction,get_x(),get_y()) != NO_WALL ) {
 		direction = -1;
-		free_list( commands );
+		free_list(commands);
 	}
 
 	return direction;
@@ -29,33 +29,25 @@ int find_next_goal() {
 	int direction=NORTH;
 	do {
 		if(is_wall_in_direction(direction,get_x(),get_y())==NO_WALL) {
-			if(is_visited_in_direction(direction,get_x(),get_y())==FALSE) return direction;
+			if(is_visited_in_direction(direction,get_x(),get_y())==FALSE) {
+				free_list(&commands);
+				return direction;
+			}
 		}
 		direction=next_cp(direction);
 	}while(direction!=NORTH);
-	if ( commands == NULL ) {
+
+	if(commands == NULL) { // If the next position is unknown, try to find a new goal
 		commands = find_unvisited_cell(get_x(),get_y());
-	}
-	direction = get_direction(&commands);
 
-	if ( direction == -1 ) { //Means that there is no stop position so we try to get back to the starting position
-		free_list(&commands);
-		if ( get_x() == 0 && get_y() == 0 ) { //Reach the starting node and nothing else to explore
-			return direction;
-		}
-		else {
+		if (commands==NULL) { // If no unvisited cell, try to go back to the starting position
 			commands = find_shortest_path(get_x(),get_y(),0,0);
-		}
-
-		if ( commands == NULL ) { //It means that there is not path from the current nod to the starting node(0,0)
-			direction = -1;
-		}
-		else {
-			direction = get_direction(&commands);
+			if (commands == NULL) //It means that there is not path from the current cell to the starting cell (0,0), or it's the starting cell
+				return -1;
 		}
 	}
 
-	return direction;
+	return get_direction(&commands);
 }
 
 void goto_cp(int goal){

@@ -136,9 +136,8 @@ struct node* find_unvisited_cell( int start_x, int start_y ) {
 			neighbor = remove_first_node( &neighbors );
 		}
 	}
-	struct node* current = remove_first_node( &close_list );
 	free_list( &close_list );
-	return current;
+	return NULL;
 }
 
 struct node* find_shortest_path( int start_x, int start_y, int stop_x, int stop_y ) {
