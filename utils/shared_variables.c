@@ -5,17 +5,18 @@ static U8 __color = NXT_COLOR_UNKNOWN;
 static U8 __color_counter = 0;
 
 	void set_color(U8 color) {
-		if(__color == color) {
+		if(__color == END_COLOR) {
 			if(__color_counter<255) __color_counter++;
 		}
-		else
-			__color_counter=0;
+		else {
+			if(__color_counter>0) __color_counter--;
+		}
 		__color = color;
 	}
 	U8 get_color() {
 		return __color;
 	}
-	U8 get_color_counter() {
+	U8 get_end_color_counter() {
 		return __color_counter;
 	}
 	

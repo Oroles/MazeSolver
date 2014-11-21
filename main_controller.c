@@ -58,7 +58,7 @@ void goto_cp(int goal){
 }
 
 int is_stop() {
-	if ( get_color() == NXT_COLOR_GREEN && get_color_counter()>3) return TRUE;
+	if (get_end_color_counter()>3) return TRUE;
 	return FALSE;
 }
 

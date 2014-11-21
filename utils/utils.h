@@ -31,6 +31,7 @@
 #define MAP_RES 	300 	// Resolution of the map (in mm) : size of the side of squares used to represent the maze
 #define MAP_WIDTH 	15 		// Width of the map
 #define MAP_HEIGHT 	7 		// Height of the map
+#define END_COLOR 	NXT_COLOR_WHITE
 
 // Cardinal points
 #define NO_CARD -1  // No direction
