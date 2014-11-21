@@ -109,7 +109,7 @@ struct node* find_unvisited_cell( int start_x, int start_y ) {
 		struct node* neighbors = find_neighbors( current );
 		struct node* neighbor = remove_first_node( &neighbors );
 		while( neighbor != NULL ) {
-			if ( find_node( &close_list, neighbor ) || find_node( &open_list, neighbor ) ) {
+			if ( find_node( close_list, neighbor ) || find_node( open_list, neighbor ) ) {
 				free(neighbor);
 				neighbor = remove_first_node( &neighbors );
 				continue;
@@ -155,14 +155,14 @@ struct node* find_shortest_path( int start_x, int start_y, int stop_x, int stop_
 		struct node* neighbors = find_neighbors( current );
 		struct node* neighbor = remove_first_node( &neighbors );
 		while ( neighbor != NULL ) {
-			if ( find_node(&close_list, neighbor) == TRUE ) {
+			if ( find_node(close_list, neighbor) == TRUE ) {
 				free(neighbor);
 				neighbor = remove_first_node( &neighbors );
 				continue;
 			}
 			int cost = current->g_cost + move_cost(current,neighbor);
 
-			if ( (cost < neighbor->g_cost) && ( find_node(&open_list, neighbor) == FALSE ) ) {
+			if ( (cost < neighbor->g_cost) && ( find_node(open_list, neighbor) == FALSE ) ) {
 				neighbor->g_cost = cost;
 				neighbor->f_cost = cost + heuristic_function( neighbor, stop_x, stop_y );
 				add_node_priority(&open_list, neighbor);

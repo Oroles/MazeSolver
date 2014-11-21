@@ -99,11 +99,11 @@ int equal(struct node* first_node, struct node* second_node) {
 	return FALSE;
 }
 
-int find_node(struct node** root, struct node* node_to_find) {
+int find_node(struct node* root, struct node* node_to_find) {
 	if ( root == NULL ) {
 		return FALSE;
 	}
-	struct node* it = *root;
+	struct node* it = root;
 	while ( it != NULL ) {
 		if ( ( it->x ==  node_to_find->x ) && ( it->y == node_to_find->y ) ) {
 			return TRUE;
