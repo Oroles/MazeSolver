@@ -38,6 +38,11 @@ int find_next_goal() {
 		if ( commands == NULL ) { //It means that there is not path from the current nod to the starting node(0,0)
 			direction = -1;
 		}
+		else {
+			command = remove_first_node(&commands);
+			direction = direction_of_next_cell(get_x(),get_y(),command->x,command->y);
+			free( command );
+		}
 	}
 
 	return direction;
