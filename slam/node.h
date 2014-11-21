@@ -29,7 +29,7 @@ int find_node(struct node* root, struct node* node_to_find);
 
 int equal(struct node* first_node, struct node* second_node);
 
-void free_list(struct node** root);
+void free_list(struct node* root);
 int count(struct node* root);
 
 #endif
