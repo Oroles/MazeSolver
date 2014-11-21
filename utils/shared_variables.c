@@ -1,16 +1,22 @@
 #include "utils.h"
 #include "shared_variables.h"
 
-U8 access_color(U8 color, int setMode) {
-	static U8 __color = NXT_COLOR_UNKNOWN;
-	if(setMode) { __color = color; return 0; }
-	else return __color;
-}
+static U8 __color = NXT_COLOR_UNKNOWN;
+static U8 __color_counter = 0;
+
 	void set_color(U8 color) {
-		access_color(color,1);
+		if(__color == color) {
+			if(__color_counter<255) __color_counter++;
+		}
+		else
+			__color_counter=0;
+		__color = color;
 	}
 	U8 get_color() {
-		return access_color(0,0);
+		return __color;
+	}
+	U8 get_color_counter() {
+		return __color_counter;
 	}
 	
 S32 access_distanceL(S32 distanceL, int setMode) {
