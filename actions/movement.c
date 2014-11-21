@@ -42,11 +42,11 @@ void do_turn(int power) {
 	
 	if(output>0) {
 		if(output>power) output=power;
-		else if(output<10) output=10;
+		else if(output<20) output=20;
 	}
 	else {
 		if(output<-power) output=-power;
-		else if(output>-10) output=-10;
+		else if(output>-20) output=-20;
 	}
 
 	nxt_motor_set_speed( PORT_MOTOR_R, -output, 1 );
