@@ -26,6 +26,11 @@ int find_next_goal() {
 	direction = direction_of_next_cell(get_x(),get_y(),command->x,command->y);
 	free( command );
 
+	if ( is_wall_in_direction(direction,get_x(),get_y()) != NO_WALL ) {
+		direction = -1;
+		free_list( &commands );
+	}
+
 	if ( direction == -1 ) { //Means that there is no stop position so we try to get back to the starting position
 		free_list(&commands);
 		if ( get_x() == 0 && get_y() == 0 ) { //Reach the starting node and nothing else to explore
@@ -42,6 +47,11 @@ int find_next_goal() {
 			command = remove_first_node(&commands);
 			direction = direction_of_next_cell(get_x(),get_y(),command->x,command->y);
 			free( command );
+
+			if ( is_wall_in_direction(direction,get_x(),get_y()) != NO_WALL ) {
+				direction = -1;
+				free_list( &commands );
+			}
 		}
 	}
 
