@@ -11,7 +11,7 @@ int __next_goal_x=0;
 int __next_goal_y=0;
 struct node* commands = NULL;
 
-int get_direction(struct node* commands) {
+int get_next_direction() {
 	int direction;
 	struct node* command = remove_first_node(&commands);
 	direction = direction_of_next_cell(get_x(),get_y(),command->x,command->y);
@@ -47,7 +47,7 @@ int find_next_goal() {
 		}
 	}
 
-	return get_direction(commands);
+	return get_next_direction();
 }
 
 void goto_cp(int goal){
