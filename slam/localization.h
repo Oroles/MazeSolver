@@ -10,15 +10,21 @@
 
 DeclareResource(UpdateLocker);
 
+// SHARED VARIABLES
 int get_x();
 double get_realX();
 int get_y();
 double get_realY();
 double get_w();
 int get_cardinal_point();
-void init_localization();
-void update_localization();
+
+// UTILS
+int dist_from_cell_cp(int cp);
 int is_inside_square(double rx, double ry, int side);
 int direction_of_next_cell( int current_x, int current_y, int next_x, int next_y );
+
+// MAIN FUNCTIONS
+void init_localization();
+void update_localization();
 
 #endif

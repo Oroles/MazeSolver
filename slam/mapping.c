@@ -152,8 +152,8 @@ U8 is_visited_in_direction(int orientation, int pos_x, int pos_y) {
 	return FALSE;
 }
 
-int detect_wall(S32 distance) {
-	if (distance < THRESHOLD_DISTANCE) {
+int detect_wall(S32 distance, int cp) {
+	if (distance < dist_from_cell_cp(cp)+20) {
 		return TRUE;
 	}
 	return FALSE;
@@ -224,9 +224,9 @@ void update_map() {
 	int cardinal_point = get_cardinal_point();
 	// Do measurements only if in a good direction
 	if(is_cp(cardinal_point)) {
-		int left_wall = detect_wall(get_distanceL());
-		int right_wall = detect_wall(get_distanceR());
-		int front_wall = detect_wall(get_distanceF());
+		int left_wall = detect_wall(get_distanceL(), cardinal_point);
+		int right_wall = detect_wall(get_distanceR(), next_cp(cardinal_point));
+		int front_wall = detect_wall(get_distanceF(), previous_cp(cardinal_point));
 
 		//Add plus one for is wall and substract one for no wall
 		count_front_walls = front_wall ? count_front_walls + 1 : count_front_walls - 1;

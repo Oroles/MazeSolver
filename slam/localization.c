@@ -108,6 +108,20 @@ int direction_of_next_cell( int current_x, int current_y, int next_x, int next_y
 	return NO_CARD;
 }
 
+int dist_from_cell_cp(int cp) {
+	double x_in_cell=get_realX()-get_x()*MAP_RES;
+	double y_in_cell=get_realY()-get_y()*MAP_RES;
+	if(x_in_cell<0) x_in_cell+=MAP_RES;
+	if(y_in_cell<0) y_in_cell+=MAP_RES;
+	switch(cp) {
+		case NORTH: return MAP_RES-y_in_cell;
+		case EAST: return MAP_RES-x_in_cell;
+		case SOUTH: return y_in_cell;
+		case WEST: return x_in_cell;
+		default: return -1;
+	}
+}
+
 // Task functions
 void init_localization() {
 	int distF=get_distanceF();
