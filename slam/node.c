@@ -113,15 +113,12 @@ int find_node(struct node** root, struct node* node_to_find) {
 	return FALSE;
 }
 
-void free_list(struct node** root) {
-	if ( *root == NULL ) {
-		return;
-	}
-	struct node* aux = *root;
+void free_list(struct node* root) {
+	struct node* aux = root;
 	while ( aux != NULL ) {
-		*root = aux->next;
+		root = aux->next;
 		free( aux );
-		aux = *root;
+		aux = root;
 	}
 }
 

@@ -127,18 +127,17 @@ struct node* find_unvisited_cell( int start_x, int start_y ) {
 				if ( start_list != neighbor ) {
 					free( neighbor );
 				}
-				free_list( &open_list );
-				free_list( &close_list );
-				free_list( &neighbors );
+				free_list( open_list );
+				free_list( close_list );
+				free_list( neighbors );
 				return start_list;
 			}
 			add_node( &open_list, neighbor );
 			neighbor = remove_first_node( &neighbors );
 		}
 	}
-	struct node* current = remove_first_node( &close_list );
-	free_list( &close_list );
-	return current;
+	free_list( close_list );
+	return NULL;
 }
 
 struct node* find_shortest_path( int start_x, int start_y, int stop_x, int stop_y ) {
@@ -178,8 +177,12 @@ struct node* find_shortest_path( int start_x, int start_y, int stop_x, int stop_
 	}
 	if ( current != NULL ) {
 		create_path( &current, &close_list );
+		if ( is_stop_position( current, start_x, start_y ) == TRUE ) {
+			free( current );
+			current = NULL;
+		}
 	}
-	free_list( &open_list );
-	free_list( &close_list );
+	free_list( open_list );
+	free_list( close_list );
 	return current;
 }
