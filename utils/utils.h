@@ -3,6 +3,7 @@
 
 #include "kernel.h"
 #include "kernel_id.h"
+#include "ecrobot_interface.h"
 
 /* PORTS */
 #define PORT_COLOR NXT_PORT_S4
@@ -78,5 +79,6 @@ int coord_for_cp_square(int cp, int *x, int *y);
 void display_cp(int cp);
 double angle_to_reach(double xi, double yi, double xf, double yf);
 void cell_center(int x, int y, double *realx, double *realy);
+int between(S16 val, S16 expected, S8 limit);
 
 #endif

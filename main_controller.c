@@ -65,13 +65,8 @@ void goto_cp(int goal){
 	move_to_cell(__next_goal_x,__next_goal_y,30);
 }
 
-int is_stop() {
-	if ( get_color() == NXT_COLOR_GREEN && get_color_counter()>3) return TRUE;
-	return FALSE;
-}
-
 int main_step() {
-	if(!is_stop()) {
+	if(!is_stop_color()) {
 		if(get_x()==__next_goal_x && get_y()==__next_goal_y) {
 			stop();
 
