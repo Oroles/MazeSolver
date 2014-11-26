@@ -57,7 +57,7 @@ TASK(MainController) {
 			main_end();
 			struct node* path = find_shortest_path(0,0,get_x(),get_y());
 			print_path(path);
-			free_list(&path);
+			free_list(path);
 			TerminateTask();
 		}
 	}

@@ -36,6 +36,8 @@ int is_stop_position(struct node* current, int stop_x, int stop_y )
 {
 	int current_x = current->x < 0 ? current->x + MAP_WIDTH : current->x;
 	int current_y = current->y < 0 ? current->y + MAP_HEIGHT : current->y;
+	stop_x = stop_x < 0 ? stop_x + MAP_WIDTH : stop_x;
+	stop_y = stop_y < 0 ? stop_y + MAP_HEIGHT : stop_y;
 	if ( ( current_x == stop_x ) && ( current_y == stop_y ) ) {
 		return TRUE;
 	}
@@ -46,6 +48,8 @@ int is_stop_position(struct node* current, int stop_x, int stop_y )
 int heuristic_function(struct node* current, int stop_x, int stop_y ) {
 	int current_x = current->x < 0 ? current->x + MAP_WIDTH : current->x;
 	int current_y = current->y < 0 ? current->y + MAP_HEIGHT : current->y;
+	stop_x = stop_x < 0 ? stop_x + MAP_WIDTH : stop_x;
+	stop_y = stop_y < 0 ? stop_y + MAP_HEIGHT : stop_y;
 	int dx = abs( current_x - stop_x );
 	int dy = abs( current_y - stop_y );
 	int result = 0;

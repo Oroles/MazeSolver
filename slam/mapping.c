@@ -178,6 +178,10 @@ void update_map() {
 	static int count_left_walls = 0;
 	static int count_right_walls = 0;
 
+	if (!get_startMapping()) {
+		return;
+	}
+
 	// If not ready (not enough inside the cell), return
 	if(!ready) {
 		if(is_inside_square(get_realX(),get_realY(),MAPPING_RES)) ready=TRUE;
@@ -205,8 +209,9 @@ void update_map() {
 		else if(pos_y>__max_y) __max_y=pos_y;
 
 		int direction = direction_of_next_cell(pos_x,pos_y,last_pos_x,last_pos_y);
-		last_pos_x = pos_x;
-		last_pos_y = pos_y;
+
+		int real_x = pos_x;
+		int real_y = pos_y;
 
 		coord_to_table_index(&pos_x,&pos_y);
 		data = _map[pos_x][pos_y];
@@ -214,8 +219,14 @@ void update_map() {
 		if(direction != NO_CARD) {
 			set_wall_state(&data, direction, NO_WALL);
 			_map[pos_x][pos_y]=data;
-		}
 
+			coord_to_table_index(&last_pos_x,&last_pos_y);
+			U8 oldData = _map[last_pos_x][last_pos_y];
+			set_wall_state(&oldData, next_cp(next_cp(direction)), NO_WALL );
+			_map[last_pos_x][last_pos_y] = oldData;
+		}
+		last_pos_x = real_x;
+		last_pos_y = real_y;
 		return;
 	}
 	else {

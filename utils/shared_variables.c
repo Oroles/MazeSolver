@@ -1,24 +1,21 @@
 #include "utils.h"
 #include "shared_variables.h"
 
-static U8 __color = NXT_COLOR_UNKNOWN;
-static U8 __color_counter = 0;
+static S16 __rgb[3];
+static int start_mapping = false;
 
-	void set_color(U8 color) {
-		if(__color == END_COLOR) {
-			if(__color_counter<255) __color_counter++;
-		}
-		else {
-			if(__color_counter>0) __color_counter--;
-		}
-		__color = color;
-	}
-	U8 get_color() {
-		return __color;
-	}
-	U8 get_end_color_counter() {
-		return __color_counter;
-	}
+void set_rgb(S16* rgb) {
+	__rgb[0] = rgb[0];
+	__rgb[1] = rgb[1];
+	__rgb[2] = rgb[2];
+}
+
+int is_stop_color() {
+	if (!between(__rgb[0],460,20) ) return 0;
+	if (!between(__rgb[1],380,20) ) return 0;
+	if (!between(__rgb[2],380,20) ) return 0;
+	return 1;
+}
 	
 S32 access_distanceL(S32 distanceL, int setMode) {
 	static S32 __distanceL=255+CENTER_TO_SIDES;
@@ -79,4 +76,12 @@ int access_wPositionR(int wPositionR, int setMode) {
 	int get_wPositionR() {
 		return access_wPositionR(0,0);
 	}
+
+void set_startMapping(int status) {
+	start_mapping = status;
+}
+
+int get_startMapping() {
+	return start_mapping;
+}
 
