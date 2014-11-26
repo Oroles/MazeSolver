@@ -153,9 +153,10 @@ U8 is_visited_in_direction(int orientation, int pos_x, int pos_y) {
 }
 
 int detect_wall(S32 distance, int cp) {
-	if (distance*10 <= dist_from_cell_cp(cp)+10) {
+	if(distance<=MIN_DISTANCE)
 		return TRUE;
-	}
+	if(distance*10 <= dist_from_cell_cp(cp)+10)
+		return TRUE;
 	return FALSE;
 }
 

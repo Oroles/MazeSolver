@@ -25,8 +25,10 @@
 #define PULSES 		360 		// Encoder resolution (in pulses per revolution)
 #define CONV 		(W_PERI/PULSES)		// Conversion factor that translates encoder pulses into linear wheel displacement
 // Distance sensors
-#define CENTER_TO_FRONT 3 // Distance from the front sensor to the center of the three sensors (center of the robot)
-#define CENTER_TO_SIDES 6 // Distance from one of the side sensors to the center of the three sensors (center of the robot)
+#define MIN_DISTANCE 		4
+#define MAX_DISTANCE 		255
+#define CENTER_TO_FRONT 	3 // Distance from the front sensor to the center of the three sensors (center of the robot)
+#define CENTER_TO_SIDES 	6 // Distance from one of the side sensors to the center of the three sensors (center of the robot)
 
 // About the map
 #define MAP_RES 	300 	// Resolution of the map (in mm) : size of the side of squares used to represent the maze

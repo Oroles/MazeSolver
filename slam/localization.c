@@ -119,13 +119,13 @@ void init_localization() {
 	int distF=get_distanceF();
 	int distR=get_distanceR();
 	int distL=get_distanceL();
-	if(distF!=255+CENTER_TO_FRONT)
-		__rx= MAP_RES-((distF*10) % MAP_RES);
+	if(distF!=MAX_DISTANCE)
+		__rx= MAP_RES-(((distF+CENTER_TO_FRONT)*10) % MAP_RES);
 
 	if(distL<distR)
-		__ry= MAP_RES-((distL*10) % MAP_RES);
-	else if(distR!=255+CENTER_TO_SIDES)
-		__ry= (distR*10) % MAP_RES;
+		__ry= MAP_RES-(((distL+CENTER_TO_SIDES)*10) % MAP_RES);
+	else if(distR!=MAX_DISTANCE)
+		__ry= ((distR+CENTER_TO_SIDES)*10) % MAP_RES;
 	
 	if ( !is_inside_square(get_realX(),get_realY(),CENTER_RES) ) {
 		double angle=angle_to_reach(MAP_RES/2,MAP_RES/2,__rx,__ry);
