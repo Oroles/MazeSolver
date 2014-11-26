@@ -69,3 +69,11 @@ void cell_center(int x, int y, double *realx, double *realy) {
 	*realx=(x+0.5)*MAP_RES;
 	*realy=(y+0.5)*MAP_RES;
 }
+
+int between(S16 val, S16 expected, S8 limit) {
+	if( ( val > expected - 20 ) &&
+		( val < expected + 20 ) ) {
+		return 1;
+	}
+	return 0;
+}

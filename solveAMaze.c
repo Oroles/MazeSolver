@@ -47,6 +47,7 @@ TASK(MainController) {
 	WaitEvent(CellCenter);
 	ClearEvent(CellCenter);
 	init_localization();
+	set_startMapping(true);
 	if(is_inside_square(get_realX(),get_realY(),CENTER_RES)) main_step();
 	while(1)
 	{
@@ -56,7 +57,7 @@ TASK(MainController) {
 			main_end();
 			struct node* path = find_shortest_path(0,0,get_x(),get_y());
 			print_path(path);
-			free_list(path);
+			free_list(&path);
 			TerminateTask();
 		}
 	}
@@ -89,7 +90,9 @@ TASK(Movement) {
 }
 
 TASK(ColorReader) {
-	set_color(ecrobot_get_nxtcolorsensor_id(PORT_COLOR));
+	S16 rgb[3];
+	ecrobot_get_nxtcolorsensor_rgb(PORT_COLOR,rgb);
+	set_rgb(rgb);
 	TerminateTask();
 }
 
