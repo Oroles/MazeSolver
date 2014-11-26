@@ -137,10 +137,46 @@ void init_localization() {
 	}
 }
 
+void fix_x_and_y(double *x_fix, double *y_fix, int cp) {
+	switch(cp) {
+		case NORTH: *x_fix=*x_fix+1;
+		break;
+		case SOUTH: *x_fix=*x_fix-1;
+		break;
+		case EAST: *y_fix=*y_fix+1;
+		break;
+		case WEST: *y_fix=*y_fix-1;
+		break;
+	}
+}
+void fix_localization(double *x_fix, double *y_fix, double *w_fix) {
+	int cp=__cp;
+	if(is_cp(cp)) {
+		int dist=get_distanceF();
+		int error=dist_from_cell_cp(cp)-(dist+CENTER_TO_FRONT)*10;
+		if(error>20) {
+			fix_x_and_y(x_fix,y_fix,cp);
+		}
+
+		dist=get_distanceR();
+		error=dist_from_cell_cp(previous_cp(cp))-(dist+CENTER_TO_SIDES)*10;
+		if(error>20) {
+			fix_x_and_y(x_fix,y_fix,previous_cp(cp));
+			*w_fix=*w_fix-1;
+		}
+
+		dist=get_distanceL();
+		error=dist_from_cell_cp(next_cp(cp))-(dist+CENTER_TO_SIDES)*10;
+		if(error>20) {
+			fix_x_and_y(x_fix,y_fix,next_cp(cp));
+			*w_fix=*w_fix+1;
+		}
+	}
+}
+
 void update_localization() {
 	static int __last_wL=0;
 	static int __last_wR=0;
-	static double __w=0;
 	static U8 event_sent=FALSE;
 
 	if(is_inside_square(__rx,__ry,CENTER_RES)) {
@@ -174,19 +210,21 @@ void update_localization() {
 		Vs=Vs/2;
 		double w=wR-wL;
 		w=w/W_DIST;
-		__w+=w;
+		w+=__w;
 
 		double x,y;
-		x=cos(__w);
-		y=sin(__w);
+		x=cos(w);
+		y=sin(w);
 		x=Vs*x;
 		y=Vs*y;
+
+		fix_localization(&x,&y,&w);
 
 		// Update Shared Variables
 		GetResource(SyncLocalization);
 		update_x(x);
 		update_y(y);
-		update_w(__w/RAD);
+		update_w(w/RAD);
 		ReleaseResource(SyncLocalization);
 	}
 }
