@@ -51,7 +51,7 @@ CPU ATMEL_AT91SAM7S256
   /* Definition of application mode */
   APPMODE appmode1{};
   
-  RESOURCE UpdateLocker
+  RESOURCE SyncLocalization
   {
     RESOURCEPROPERTY = STANDARD;
   };
@@ -188,7 +188,7 @@ CPU ATMEL_AT91SAM7S256
     PRIORITY = 6;
     ACTIVATION = 1;
     SCHEDULE = FULL;
-    RESOURCE = UpdateLocker;
+    RESOURCE = SyncLocalization;
     STACKSIZE = 512;
   };
   ALARM loc_alarm
@@ -237,6 +237,7 @@ CPU ATMEL_AT91SAM7S256
     PRIORITY = 4;
     ACTIVATION = 1;
     SCHEDULE = FULL;
+    RESOURCE = SyncLocalization;
     STACKSIZE = 512;
   };
   ALARM map_alarm

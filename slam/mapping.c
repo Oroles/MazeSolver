@@ -184,8 +184,10 @@ void update_map() {
 		return;
 	}
 
+	GetResource(SyncLocalization);
 	int pos_x = get_x();
 	int pos_y = get_y();
+	ReleaseResource(SyncLocalization);
 	// If out of the map, return
 	if (is_out_of_map(pos_x,pos_y)) return;
 	U8 data;

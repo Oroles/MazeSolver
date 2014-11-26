@@ -12,13 +12,9 @@
 double __rx=MAP_RES/2;
 int __x=0;
 	int get_x() {
-		GetResource(UpdateLocker);
-		ReleaseResource(UpdateLocker);
 		return __x;
 	}
 	double get_realX() {
-		GetResource(UpdateLocker);
-		ReleaseResource(UpdateLocker);
 		return __rx;
 	}
 	void update_x(double dx) {
@@ -30,13 +26,9 @@ int __x=0;
 double __ry=MAP_RES/2;
 int __y=0;
 	int get_y() {
-		GetResource(UpdateLocker);
-		ReleaseResource(UpdateLocker);
 		return __y;
 	}
 	double get_realY() {
-		GetResource(UpdateLocker);
-		ReleaseResource(UpdateLocker);
 		return __ry;
 	}
 	void update_y(double dy) {
@@ -61,13 +53,9 @@ int __cp=EAST;
 	}
 
 	double get_w() {
-		GetResource(UpdateLocker);
-		ReleaseResource(UpdateLocker);
 		return __w;
 	}
 	int get_cardinal_point() {
-		GetResource(UpdateLocker);
-		ReleaseResource(UpdateLocker);
 		return __cp;
 	}
 	void update_w(double w) {
@@ -79,8 +67,10 @@ int __cp=EAST;
 
 // General functions
 int is_inside_square(double rx, double ry, int side) {
-	double x_in_cell=rx-__x*MAP_RES;
-	double y_in_cell=ry-__y*MAP_RES;
+	GetResource(SyncLocalization);
+	double x_in_cell=get_realX()-get_x()*MAP_RES;
+	double y_in_cell=get_realY()-get_y()*MAP_RES;
+	ReleaseResource(SyncLocalization);
 	if(x_in_cell<0) x_in_cell+=MAP_RES;
 	if(y_in_cell<0) y_in_cell+=MAP_RES;
 
@@ -109,8 +99,10 @@ int direction_of_next_cell( int current_x, int current_y, int next_x, int next_y
 }
 
 int dist_from_cell_cp(int cp) {
+	GetResource(SyncLocalization);
 	double x_in_cell=get_realX()-get_x()*MAP_RES;
 	double y_in_cell=get_realY()-get_y()*MAP_RES;
+	ReleaseResource(SyncLocalization);
 	if(x_in_cell<0) x_in_cell+=MAP_RES;
 	if(y_in_cell<0) y_in_cell+=MAP_RES;
 	switch(cp) {
@@ -191,10 +183,10 @@ void update_localization() {
 		y=Vs*y;
 
 		// Update Shared Variables
-		GetResource(UpdateLocker);
+		GetResource(SyncLocalization);
 		update_x(x);
 		update_y(y);
 		update_w(__w/RAD);
-		ReleaseResource(UpdateLocker);
+		ReleaseResource(SyncLocalization);
 	}
 }

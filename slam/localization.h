@@ -8,7 +8,7 @@
 #define L_CALIBRATION  (1.00147814) 
 #define R_CALIBRATION  (0.99852185)
 
-DeclareResource(UpdateLocker);
+DeclareResource(SyncLocalization);
 
 // SHARED VARIABLES
 int get_x();
