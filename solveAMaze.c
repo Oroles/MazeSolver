@@ -23,7 +23,6 @@ void ecrobot_device_initialize()
 	ecrobot_continuous_sonar_sensor(PORT_DISTANCE_F);
 	ecrobot_off_sonar_sensor(PORT_DISTANCE_L);
 	ecrobot_off_sonar_sensor(PORT_DISTANCE_R);
-	init_mapping( 0x00 );
 }
 void ecrobot_device_terminate()
 {
@@ -47,7 +46,7 @@ TASK(MainController) {
 	WaitEvent(CellCenter);
 	ClearEvent(CellCenter);
 	init_localization();
-	set_startMapping(true);
+	init_mapping( 0x00 );
 	if(is_inside_square(get_realX(),get_realY(),CENTER_RES)) main_step();
 	while(1)
 	{

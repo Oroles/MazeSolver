@@ -2,7 +2,6 @@
 #include "shared_variables.h"
 
 static S16 __rgb[3];
-static int start_mapping = false;
 
 void set_rgb(S16* rgb) {
 	__rgb[0] = rgb[0];
@@ -76,12 +75,4 @@ int access_wPositionR(int wPositionR, int setMode) {
 	int get_wPositionR() {
 		return access_wPositionR(0,0);
 	}
-
-void set_startMapping(int status) {
-	start_mapping = status;
-}
-
-int get_startMapping() {
-	return start_mapping;
-}
 

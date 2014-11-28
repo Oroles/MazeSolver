@@ -178,10 +178,6 @@ void update_map() {
 	static int count_left_walls = 0;
 	static int count_right_walls = 0;
 
-	if (!get_startMapping()) {
-		return;
-	}
-
 	// If not ready (not enough inside the cell), return
 	if(!ready) {
 		if(is_inside_square(get_realX(),get_realY(),MAPPING_RES)) ready=TRUE;
