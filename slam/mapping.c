@@ -231,6 +231,15 @@ void update_map() {
 	int cardinal_point = get_cardinal_point();
 	// Do measurements only if in a good direction
 	if(is_cp(cardinal_point)) {
+
+		static int p_cp = -1;
+		if ( p_cp != cardinal_point ) {
+			count_front_walls = 0;
+			count_left_walls = 0;
+			count_right_walls = 0;
+			p_cp = cardinal_point;
+		}
+
 		int left_wall = detect_wall(get_distanceL());
 		int right_wall = detect_wall(get_distanceR());
 		int front_wall = detect_wall(get_distanceF());
