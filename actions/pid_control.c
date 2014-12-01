@@ -15,17 +15,21 @@ double last_error;
 int pid_output=0;
 
 void init_PID(double Kp, double Ki, double Kd) {
+	GetResource(PIDUpdate);
 	pid_output=0;
 	error_int=0;
 	error_dev=0;
 	last_error=0;
+	ReleaseResource(PIDUpdate);
 	KP=Kp;
 	KI=Ki;
 	KD=Kd;
 	pid_needed=TRUE;
 }
 void stop_PID() {
+	GetResource(PIDUpdate);
 	pid_output=0;
+	ReleaseResource(PIDUpdate);
 	pid_needed=FALSE;
 }
 
@@ -35,10 +39,12 @@ void calculate_PID_output(double target_w) {
 		if ( error > 180 ) error -=360;
 		else if( error < -180) error +=360;
 
+		GetResource(PIDUpdate);
 		error_dev = error - last_error;
 		error_int += error;
 		last_error = error;
 		pid_output = (int) (KP * error + KI * error_int + KD * error_dev);
+		ReleaseResource(PIDUpdate);
 	}
 }
 

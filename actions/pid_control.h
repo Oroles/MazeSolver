@@ -1,6 +1,8 @@
 #ifndef _PID_H
 #define _PID_H
 
+DeclareResource(PIDUpdate);
+
 void init_PID(double Kp, double Ki, double Kd);
 int get_PID_output();
 int get_PID_error();

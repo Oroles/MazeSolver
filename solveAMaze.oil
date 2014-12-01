@@ -55,6 +55,10 @@ CPU ATMEL_AT91SAM7S256
   {
     RESOURCEPROPERTY = STANDARD;
   };
+  RESOURCE PIDUpdate
+  {
+    RESOURCEPROPERTY = STANDARD;
+  };
 
   COUNTER SysTimerCnt
   {
@@ -82,6 +86,7 @@ CPU ATMEL_AT91SAM7S256
     ACTIVATION = 1;
     SCHEDULE = FULL;
     STACKSIZE = 512;
+    RESOURCE = PIDUpdate;
     EVENT=CellCenter;
     EVENT=EndOfMovement;
   };
@@ -213,6 +218,7 @@ CPU ATMEL_AT91SAM7S256
     PRIORITY = 5;
     ACTIVATION = 1;
     SCHEDULE = FULL;
+    RESOURCE = PIDUpdate;
     STACKSIZE = 512;
   };
   ALARM mov_alarm
@@ -224,8 +230,32 @@ CPU ATMEL_AT91SAM7S256
     };
     AUTOSTART = TRUE
     {
-        ALARMTIME = 500;
+        ALARMTIME = 1500;
         CYCLETIME = 100;
+        APPMODE = appmode1;
+    };
+  };
+
+  TASK PIDControl
+  {
+    AUTOSTART = FALSE;
+    PRIORITY = 4;
+    ACTIVATION = 1;
+    SCHEDULE = FULL;
+    RESOURCE = PIDUpdate;
+    STACKSIZE = 512;
+  };
+  ALARM pidc_alarm
+  {
+    COUNTER = SysTimerCnt;
+    ACTION = ACTIVATETASK
+    {
+        TASK = PIDControl;
+    };
+    AUTOSTART = TRUE
+    {
+        ALARMTIME = 1500;
+        CYCLETIME = 150;
         APPMODE = appmode1;
     };
   };
@@ -234,7 +264,7 @@ CPU ATMEL_AT91SAM7S256
   TASK Mapping
   {
     AUTOSTART = FALSE;
-    PRIORITY = 4;
+    PRIORITY = 3;
     ACTIVATION = 1;
     SCHEDULE = FULL;
     RESOURCE = SyncLocalization;
@@ -249,31 +279,8 @@ CPU ATMEL_AT91SAM7S256
     };
     AUTOSTART = TRUE
     {
-        ALARMTIME = 500;
+        ALARMTIME = 1500;
         CYCLETIME = 180;
-        APPMODE = appmode1;
-    };
-  };
-
-  TASK PIDControl
-  {
-    AUTOSTART = FALSE;
-    PRIORITY = 3;
-    ACTIVATION = 1;
-    SCHEDULE = FULL;
-    STACKSIZE = 512;
-  };
-  ALARM pidc_alarm
-  {
-    COUNTER = SysTimerCnt;
-    ACTION = ACTIVATETASK
-    {
-        TASK = PIDControl;
-    };
-    AUTOSTART = TRUE
-    {
-        ALARMTIME = 500;
-        CYCLETIME = 150;
         APPMODE = appmode1;
     };
   };
