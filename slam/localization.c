@@ -38,9 +38,9 @@ int __y=0;
 
 // W functions (angle)
 double __w=0;
-int __cp=EAST;
+U8 __cp=EAST;
 
-	int find_cardinal(double w) {
+	U8 find_cardinal(double w) {
 		if(w<CARD_PRECISION) return EAST;
 		if(w<90-CARD_PRECISION) return NO_EA;
 		if(w<=90+CARD_PRECISION) return NORTH;
@@ -66,7 +66,7 @@ int __cp=EAST;
 	}
 
 // General functions
-int is_inside_square(double rx, double ry, int side) {
+U8 is_inside_square(int side) {
 	GetResource(SyncLocalization);
 	double x_in_cell=get_realX()-get_x()*MAP_RES;
 	double y_in_cell=get_realY()-get_y()*MAP_RES;
@@ -85,7 +85,7 @@ int is_inside_square(double rx, double ry, int side) {
 	}
 }
 
-int direction_of_next_cell( int current_x, int current_y, int next_x, int next_y )
+U8 direction_of_next_cell( int current_x, int current_y, int next_x, int next_y )
 {
 	if ( current_x != next_x ) {
 		if ( current_x < next_x ) return EAST;
@@ -98,7 +98,7 @@ int direction_of_next_cell( int current_x, int current_y, int next_x, int next_y
 	return NO_CARD;
 }
 
-int dist_from_cell_cp(int cp) {
+int dist_from_cell_cp(U8 cp) {
 	GetResource(SyncLocalization);
 	double x_in_cell=get_realX()-get_x()*MAP_RES;
 	double y_in_cell=get_realY()-get_y()*MAP_RES;
@@ -127,49 +127,56 @@ void init_localization() {
 	else if(distR!=MAX_DISTANCE)
 		__ry= ((distR+CENTER_TO_SIDES)*10) % MAP_RES;
 	
-	if ( !is_inside_square(get_realX(),get_realY(),CENTER_RES) ) {
-		double angle=angle_to_reach(MAP_RES/2,MAP_RES/2,__rx,__ry);
+	// If in the center, RETURN
+	if (is_inside_square(CENTER_RES)) return;
 
-		turn_to_w(angle,20);
-		WaitEvent(EndOfMovement);
-		ClearEvent(EndOfMovement);
-		go_forward(-20);
-	}
+	// Reach the center (move backwards to avoid risk of wall collision), and turn again to EAST
+	double angle=angle_to_reach(MAP_RES/2,MAP_RES/2,__rx,__ry);
+
+	turn_to_w(angle,20);
+	WaitEvent(EndOfMovement);
+	ClearEvent(EndOfMovement);
+	move_to_xy(MAP_RES/2,MAP_RES/2,-20);
+	WaitEvent(EndOfMovement);
+	ClearEvent(EndOfMovement);
+	turn_to_cp(EAST,20);
+	WaitEvent(EndOfMovement);
+	ClearEvent(EndOfMovement);
 }
 
-void fix_x_and_y(double *x_fix, double *y_fix, int cp) {
+void fix_x_and_y(double *x_fix, double *y_fix, U8 cp, U8 fix_val) {
 	switch(cp) {
-		case NORTH: *x_fix=*x_fix+1;
+		case NORTH: *y_fix=*y_fix+fix_val;
 		break;
-		case SOUTH: *x_fix=*x_fix-1;
+		case SOUTH: *y_fix=*y_fix-fix_val;
 		break;
-		case EAST: *y_fix=*y_fix+1;
+		case EAST: *x_fix=*x_fix+fix_val;
 		break;
-		case WEST: *y_fix=*y_fix-1;
+		case WEST: *x_fix=*x_fix-fix_val;
 		break;
 	}
 }
 void fix_localization(double *x_fix, double *y_fix, double *w_fix) {
-	int cp=__cp;
-	if(is_cp(cp)) {
+	U8 cp=__cp;
+	if(is_cp(cp) && !is_inside_square(CENTER_RES)) {
 		int dist=get_distanceF();
-		int error=dist_from_cell_cp(cp)-(dist+CENTER_TO_FRONT)*10;
-		if(error>20) {
-			fix_x_and_y(x_fix,y_fix,cp);
-		}
-
-		dist=get_distanceR();
-		error=dist_from_cell_cp(previous_cp(cp))-(dist+CENTER_TO_SIDES)*10;
-		if(error>20) {
-			fix_x_and_y(x_fix,y_fix,previous_cp(cp));
-			*w_fix=*w_fix-1;
+		int error=dist_from_cell_cp(cp)/10-(dist+CENTER_TO_FRONT);
+		if(error>1) {
+			fix_x_and_y(x_fix,y_fix,cp,0);
 		}
 
 		dist=get_distanceL();
-		error=dist_from_cell_cp(next_cp(cp))-(dist+CENTER_TO_SIDES)*10;
-		if(error>20) {
-			fix_x_and_y(x_fix,y_fix,next_cp(cp));
-			*w_fix=*w_fix+1;
+		error=dist_from_cell_cp(previous_cp(cp))/10-(dist+CENTER_TO_SIDES);
+		if(error>1) {
+			fix_x_and_y(x_fix,y_fix,previous_cp(cp),1);
+			*w_fix=*w_fix+0.016;
+		}
+
+		dist=get_distanceR();
+		error=dist_from_cell_cp(next_cp(cp))/10-(dist+CENTER_TO_SIDES);
+		if(error>1) {
+			fix_x_and_y(x_fix,y_fix,next_cp(cp),1);
+			*w_fix=*w_fix-0.016;
 		}
 	}
 }
@@ -177,9 +184,10 @@ void fix_localization(double *x_fix, double *y_fix, double *w_fix) {
 void update_localization() {
 	static int __last_wL=0;
 	static int __last_wR=0;
+	static double __w=0;
 	static U8 event_sent=FALSE;
 
-	if(is_inside_square(__rx,__ry,CENTER_RES)) {
+	if(is_inside_square(CENTER_RES)) {
 		if(!event_sent) {
 			SetEvent(MainController, CellCenter);
 			event_sent=TRUE;
@@ -210,21 +218,21 @@ void update_localization() {
 		Vs=Vs/2;
 		double w=wR-wL;
 		w=w/W_DIST;
-		w+=__w;
+		__w+=w;
 
 		double x,y;
-		x=cos(w);
-		y=sin(w);
+		x=cos(__w);
+		y=sin(__w);
 		x=Vs*x;
 		y=Vs*y;
 
-		fix_localization(&x,&y,&w);
+		fix_localization(&x,&y,&__w);
 
 		// Update Shared Variables
 		GetResource(SyncLocalization);
 		update_x(x);
 		update_y(y);
-		update_w(w/RAD);
+		update_w(__w/RAD);
 		ReleaseResource(SyncLocalization);
 	}
 }

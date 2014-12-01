@@ -19,9 +19,9 @@ double get_w();
 int get_cardinal_point();
 
 // UTILS
-int dist_from_cell_cp(int cp);
-int is_inside_square(double rx, double ry, int side);
-int direction_of_next_cell( int current_x, int current_y, int next_x, int next_y );
+int dist_from_cell_cp(U8 cp);
+U8 is_inside_square(int side);
+U8 direction_of_next_cell( int current_x, int current_y, int next_x, int next_y );
 
 // MAIN FUNCTIONS
 void init_localization();
