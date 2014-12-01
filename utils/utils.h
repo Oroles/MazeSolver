@@ -25,7 +25,7 @@
 #define PULSES 		360 		// Encoder resolution (in pulses per revolution)
 #define CONV 		(W_PERI/PULSES)		// Conversion factor that translates encoder pulses into linear wheel displacement
 // Distance sensors
-#define MIN_DISTANCE 		4
+#define MIN_DISTANCE 		5
 #define MAX_DISTANCE 		255
 #define CENTER_TO_FRONT 	3 // Distance from the front sensor to the center of the three sensors (center of the robot)
 #define CENTER_TO_SIDES 	6 // Distance from one of the side sensors to the center of the three sensors (center of the robot)
@@ -37,14 +37,14 @@
 #define END_COLOR 	NXT_COLOR_WHITE
 
 // Cardinal points
-#define NO_CARD -1  // No direction
+#define NO_CARD 255  // No direction
 #define NORTH 	0 	// North
-#define NO_EA 	1 	// North East
-#define EAST 	2 	// East
-#define SO_EA 	3 	// South East
-#define SOUTH 	4 	// South
-#define SO_WE 	5 	// South West
-#define WEST 	6 	// West
+#define EAST 	1 	// East
+#define SOUTH 	2 	// South
+#define WEST 	3 	// West
+#define NO_EA 	4 	// North East
+#define SO_EA 	5 	// South East
+#define SO_WE 	6 	// South West
 #define NO_WE 	7 	// North West
 
 // Returns values for the map functions
@@ -56,7 +56,7 @@
 
 //Defines the side of the square
 #define CENTER_RES 20
-#define MAPPING_RES 100
+#define MAPPING_RES 130
 
 
 /* OSEK declarations */
@@ -74,14 +74,31 @@ DeclareTask(Movement);
 DeclareTask(PID_Control);
 DeclareTask(MainController);
 
+// About tasks
+#define NB_TASKS 10
+#define COLORREADER 	0
+#define COLORMAINTAIN 	1
+#define DISTREADER 		2
+#define WPOSREADER 		3
+#define LOCALIZATION 	4
+#define MAPPING			5
+#define MOVEMENT 		6
+#define PIDCONTROL 		7
+#define MAINCONTROL 	8
+#define DISPLAY 	 	9
+
 /* Function declarations */
-int next_cp(int cp);
-int previous_cp(int cp);
-int is_cp(int val);
-int coord_for_cp_square(int cp, int *x, int *y);
-void display_cp(int cp);
+U8 next_cp(U8 cp);
+U8 previous_cp(U8 cp);
+U8 is_cp(U8 val);
+U8 coord_for_cp_square(U8 cp, int *x, int *y);
+void display_cp(U8 cp);
 double angle_to_reach(double xi, double yi, double xf, double yf);
 void cell_center(int x, int y, double *realx, double *realy);
 int between(S16 val, S16 expected, S8 limit);
+
+void start_time(U8 taskID);
+void stop_time(U8 taskID);
+void display_scheduling();
 
 #endif

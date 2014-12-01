@@ -3,7 +3,7 @@
 #include "ecrobot_interface.h"
 #include "utils.h"
 
-int next_cp(int cp) {
+U8 next_cp(U8 cp) {
 	switch(cp) {
 		case NORTH: case NO_EA: return EAST;
 		case EAST: case SO_EA: return SOUTH;
@@ -13,7 +13,7 @@ int next_cp(int cp) {
 	}
 }
 
-int previous_cp(int cp) {
+U8 previous_cp(U8 cp) {
 	switch(cp) {
 		case NORTH: case NO_EA: return WEST;
 		case EAST: case SO_EA: return NORTH;
@@ -23,9 +23,9 @@ int previous_cp(int cp) {
 	}
 }
 
-int is_cp(int val) { return (val==NORTH)||(val==EAST)||(val==SOUTH)||(val==WEST); }
+U8 is_cp(U8 val) { return (val==NORTH)||(val==EAST)||(val==SOUTH)||(val==WEST); }
 
-int coord_for_cp_square(int cp, int *x, int *y) {
+U8 coord_for_cp_square(U8 cp, int *x, int *y) {
 	switch(cp) {
 		case NORTH: (*y)++; return TRUE;
 		case EAST: (*x)++; return TRUE;
@@ -35,7 +35,7 @@ int coord_for_cp_square(int cp, int *x, int *y) {
 	}
 }
 
-void display_cp(int cp) {
+void display_cp(U8 cp) {
 	switch(cp) {
 		case NORTH: display_string("NORTH"); break;
 		case EAST: display_string("EAST"); break;
@@ -76,4 +76,55 @@ int between(S16 val, S16 expected, S8 limit) {
 		return 1;
 	}
 	return 0;
+}
+
+#define TMSIZE 49
+U8 ring_timeline[TMSIZE];
+U8 ring_tm_index=0;
+
+U32 worst_case_exe_time[NB_TASKS]={0};
+U32 st_time[NB_TASKS]={0};
+int preemption=0;
+int max_preemption=0;
+
+void display_timeline() {
+	int x=0,y=0,i=ring_tm_index,init=ring_tm_index;
+	display_clear(0);
+	do {
+		display_goto_xy(x,y);
+		display_int(ring_timeline[i]-NB_TASKS,2);
+		i=(i+1)%TMSIZE;
+		x=(x+2)%14;
+		if(x==0) y=(y+1);
+	}while(i!=init);
+	display_update();
+}
+
+void start_time(U8 taskID) {
+	preemption++;
+	st_time[taskID]=systick_get_ms();
+	ring_timeline[ring_tm_index]=NB_TASKS+taskID;
+	ring_tm_index= (ring_tm_index+1) % TMSIZE;
+}
+
+void stop_time(U8 taskID) {
+	U32 exe_time=systick_get_ms()-st_time[taskID];
+	if(exe_time>worst_case_exe_time[taskID]) worst_case_exe_time[taskID]=exe_time;
+	preemption--;
+	if(preemption>max_preemption) max_preemption=preemption;
+	ring_timeline[ring_tm_index]=NB_TASKS-taskID;
+	ring_tm_index= (ring_tm_index+1) % TMSIZE;
+}
+
+void display_scheduling() {
+	display_clear(0);
+	display_goto_xy(0,0);display_string("LOC");display_goto_xy(5,0);display_int(worst_case_exe_time[LOCALIZATION],3);
+	display_goto_xy(0,1);display_string("MAP");display_goto_xy(5,1);display_int(worst_case_exe_time[MAPPING],3);
+	display_goto_xy(0,2);display_string("MAIN");display_goto_xy(5,2);display_int(worst_case_exe_time[MAINCONTROL],3);
+	display_goto_xy(0,3);display_string("MOVE");display_goto_xy(5,3);display_int(worst_case_exe_time[MOVEMENT],3);
+	display_goto_xy(0,4);display_string("PID");display_goto_xy(5,4);display_int(worst_case_exe_time[PIDCONTROL],3);
+	display_goto_xy(0,5);display_string("DISP");display_goto_xy(5,5);display_int(worst_case_exe_time[DISPLAY],3);
+	//display_goto_xy(0,4);display_string("PID");display_goto_xy(5,6);display_int(worst_case_exe_time[MAINCONTROL],3);
+	display_goto_xy(0,7);display_string("MAXPREEMPT");display_goto_xy(11,7);display_int(max_preemption,3);
+	display_update();
 }
