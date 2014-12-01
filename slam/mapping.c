@@ -24,7 +24,7 @@
 */
 
 U8 _map[MAP_WIDTH][MAP_HEIGHT];
-#define THRESHOLD_DISTANCE 30
+#define THRESHOLD_DISTANCE 15
 
 #define N_INFO_MASK  0x80
 #define N_WALL_MASK 0x40
@@ -152,12 +152,10 @@ U8 is_visited_in_direction(int orientation, int pos_x, int pos_y) {
 	return FALSE;
 }
 
-int detect_wall(S32 distance, int cp) {
-	if(distance<=MIN_DISTANCE)
-		return TRUE;
-	if(distance*10 <= dist_from_cell_cp(cp)+10)
-		return TRUE;
-	return FALSE;
+int detect_wall(S32 distance, U8 cp) {
+	int wall_diff = dist_from_cell_cp(cp)/10 - distance; // distance between the side cell and the closest wall
+	if(wall_diff<-2*THRESHOLD_DISTANCE) return -2*THRESHOLD_DISTANCE;
+	return wall_diff+THRESHOLD_DISTANCE;
 }
 
 void init_mapping( U8 init_val ) {
@@ -175,17 +173,12 @@ void update_map() {
 	static int last_pos_x = 0;
 	static int last_pos_y = 0;
 	//Stores the average value of walls
-	static int count_front_walls = 0;
-	static int count_left_walls = 0;
-	static int count_right_walls = 0;
+	static int wall_counter[4] = {0};
 
-	if (!get_startMapping()) {
-		return;
-	}
-
-	// If not ready (not enough inside the cell), return
+	// CONDITIONS OF EXECUTION
+	// COND1: If not ready (not enough inside the cell), RETURN
 	if(!ready) {
-		if(is_inside_square(get_realX(),get_realY(),MAPPING_RES)) ready=TRUE;
+		if(is_inside_square(MAPPING_RES)) ready=TRUE;
 		return;
 	}
 
@@ -193,15 +186,13 @@ void update_map() {
 	int pos_x = get_x();
 	int pos_y = get_y();
 	ReleaseResource(SyncLocalization);
-	// If out of the map, return
-	if (is_out_of_map(pos_x,pos_y)) return;
-	U8 data;
 
-	// If just enter in a new cell
+	// COND2: If out of the map, RETURN
+	if (is_out_of_map(pos_x,pos_y)) return;
+
+	// COND3: If just enter in a new cell, init and RETURN
 	if ( ( last_pos_y != pos_y ) || ( last_pos_x != pos_x ) ) {
-		count_front_walls = 0;
-		count_left_walls = 0;
-		count_right_walls = 0;
+		for(int i=0 ; i<4 ; i++) wall_counter[i] =0;
 		ready=FALSE;
 
 		if(pos_x<__min_x) __min_x=pos_x;
@@ -209,53 +200,48 @@ void update_map() {
 		if(pos_y<__min_y) __min_y=pos_y;
 		else if(pos_y>__max_y) __max_y=pos_y;
 
-		int direction = direction_of_next_cell(pos_x,pos_y,last_pos_x,last_pos_y);
+		U8 direction = direction_of_next_cell(pos_x,pos_y,last_pos_x,last_pos_y);
 
-		int real_x = pos_x;
-		int real_y = pos_y;
+		int temp_last_x = last_pos_x;
+		int temp_last_y = last_pos_y;
+		last_pos_x = pos_x;
+		last_pos_y = pos_y;
 
 		coord_to_table_index(&pos_x,&pos_y);
-		data = _map[pos_x][pos_y];
 
 		if(direction != NO_CARD) {
-			set_wall_state(&data, direction, NO_WALL);
-			_map[pos_x][pos_y]=data;
+			set_wall_state(&_map[pos_x][pos_y], direction, NO_WALL);
 
-			coord_to_table_index(&last_pos_x,&last_pos_y);
-			U8 oldData = _map[last_pos_x][last_pos_y];
-			set_wall_state(&oldData, next_cp(next_cp(direction)), NO_WALL );
-			_map[last_pos_x][last_pos_y] = oldData;
+			coord_to_table_index(&temp_last_x,&temp_last_y);
+			set_wall_state(&_map[temp_last_x][temp_last_y], next_cp(next_cp(direction)), NO_WALL );
 		}
-		last_pos_x = real_x;
-		last_pos_y = real_y;
 		return;
 	}
-	else {
-		coord_to_table_index(&pos_x,&pos_y);
-		data = _map[pos_x][pos_y];
-	}
 
-	int cardinal_point = get_cardinal_point();
-	// Do measurements only if in a good direction
-	if(is_cp(cardinal_point)) {
-		int left_wall = detect_wall(get_distanceL(), cardinal_point);
-		int right_wall = detect_wall(get_distanceR(), next_cp(cardinal_point));
-		int front_wall = detect_wall(get_distanceF(), previous_cp(cardinal_point));
+	U8 front_cp = get_cardinal_point();
+	// COND4: If not oriented in a good direction, RETURN
+	if(!is_cp(front_cp)) return;
 
-		//Add plus one for is wall and substract one for no wall
-		count_front_walls = front_wall ? count_front_walls + 1 : count_front_walls - 1;
-		count_left_walls = left_wall ? count_left_walls + 1 : count_left_walls - 1;
-		count_right_walls = right_wall ? count_right_walls + 1 : count_right_walls - 1;
+	// NORMAL BEHAVIOUR
+	U8 left_cp=previous_cp(front_cp);
+	U8 right_cp=next_cp(front_cp);
 
-		if(count_front_walls>0) set_wall_state(&data, cardinal_point, IS_WALL);
-		else set_wall_state(&data, cardinal_point, NO_WALL);
+	coord_to_table_index(&pos_x,&pos_y);
+	U8 data = _map[pos_x][pos_y];
 
-		if(count_right_walls>0) set_wall_state(&data, next_cp(cardinal_point), IS_WALL);
-		else set_wall_state(&data, next_cp(cardinal_point), NO_WALL);
+	//Add a positive value when there is wall, negative otherwise
+	wall_counter[left_cp] += detect_wall(get_distanceL()+CENTER_TO_SIDES, left_cp);
+	wall_counter[right_cp] += detect_wall(get_distanceR()+CENTER_TO_SIDES, right_cp);
+	wall_counter[front_cp] += detect_wall(get_distanceF()+CENTER_TO_FRONT, front_cp);
 
-		if(count_left_walls>0) set_wall_state(&data, previous_cp(cardinal_point), IS_WALL);
-		else set_wall_state(&data, previous_cp(cardinal_point), NO_WALL);
-	}
+	if(wall_counter[left_cp]>0) set_wall_state(&data, left_cp, IS_WALL);
+	else if(wall_counter[left_cp]<0) set_wall_state(&data, left_cp, NO_WALL);
+
+	if(wall_counter[right_cp]>0) set_wall_state(&data, right_cp, IS_WALL);
+	else if(wall_counter[right_cp]<0) set_wall_state(&data, right_cp, NO_WALL);
+
+	if(wall_counter[front_cp]>0) set_wall_state(&data, front_cp, IS_WALL);
+	else if(wall_counter[front_cp]<0) set_wall_state(&data, front_cp, NO_WALL);
 
 	_map[pos_x][pos_y]=data;
 }
