@@ -8,12 +8,14 @@
 #define TURN_LEFT 		3
 #define TURN_TO_W 		4
 #define MOVE_TO_XY 		5
+#define STOP_MS 		6
 
 U8 get_mov_order();
 int get_mov_power();
 int get_mov_target_w();
 int get_mov_target_x();
 int get_mov_target_y();
+U32 get_mov_timeout();
 U8 is_mov_ended();
 
 void set_mov_target_w(double target_w);
@@ -27,5 +29,6 @@ void turn_to_w(double w, int power);
 void turn_to_cp(int cp, int power);
 void move_to_xy(double x, double y, int power);
 void move_to_cell(int cx, int cy, int power);
+void stop_during_period(U32 ms);
 
 #endif

@@ -65,6 +65,18 @@ void do_rotate_left(int power) {
 	nxt_motor_set_speed(PORT_MOTOR_R,power,1);
 }
 
+void do_stop_period(U32 timeout) {
+	if(!is_mov_ended()) {
+		if(systick_get_ms()>timeout) {
+			end_of_mov();
+			SetEvent(MainController, EndOfMovement);
+		}
+		else {
+			do_stop();
+		}
+	}
+}
+
 void do_turn_to_w(int power) {
 	if(!is_mov_ended()) {
 		double error= get_w()-get_mov_target_w();
@@ -84,20 +96,24 @@ void do_move_to_xy(int target_x,int target_y,int power) {
 	if(!is_mov_ended()) {
 		double x=get_realX();
 		double y=get_realY();
-		double w_to_reach=angle_to_reach(x,y,target_x,target_y);
-		double wdiff=get_w()-w_to_reach;
+		double w_to_reach;
+		if(power>=0) w_to_reach=angle_to_reach(x,y,target_x,target_y);
+		else w_to_reach=angle_to_reach(target_x,target_y,x,y);
+
 		if(target_x-x<=POS_RES+40 && x-target_x<=POS_RES+40 &&
-			target_y-y<=POS_RES+40 && y-target_y<=POS_RES+40) {
+					target_y-y<=POS_RES+40 && y-target_y<=POS_RES+40) {
 			set_mov_target_w(w_to_reach);
-			do_move_forward(15);
+			if(power>=0) do_move_forward(15);
+			else do_move_forward(-15);
 			if(target_x-x<=POS_RES && x-target_x<=POS_RES &&
-				target_y-y<=POS_RES && y-target_y<=POS_RES) {
+						target_y-y<=POS_RES && y-target_y<=POS_RES) {
 				end_of_mov();
 				do_stop();
 				SetEvent(MainController, EndOfMovement);
 			}
 		}
 		else {
+			double wdiff=get_w()-w_to_reach;
 			if(wdiff>5 || wdiff<-5)
 				set_mov_target_w(w_to_reach);
 			do_move_forward(power);
@@ -108,7 +124,16 @@ void do_move_to_xy(int target_x,int target_y,int power) {
 void do_movement() {
 	switch(get_mov_order()) {
 		case STOP:
-		do_stop(get_mov_power());
+		do_stop();
+		break;
+		case TURN_TO_W:
+		do_turn_to_w(get_mov_power());
+		break;
+		case MOVE_TO_XY:
+		do_move_to_xy(get_mov_target_x(),get_mov_target_y(),get_mov_power());
+		break;
+		case STOP_MS:
+		do_stop_period(get_mov_timeout());
 		break;
 		case MOVE_FORWARD:
 		do_move_forward(get_mov_power());
@@ -118,12 +143,6 @@ void do_movement() {
 		break;
 		case TURN_LEFT:
 		do_rotate_left(get_mov_power());
-		break;
-		case TURN_TO_W:
-		do_turn_to_w(get_mov_power());
-		break;
-		case MOVE_TO_XY:
-		do_move_to_xy(get_mov_target_x(),get_mov_target_y(),get_mov_power());
 		break;
 		default:
 		break;
