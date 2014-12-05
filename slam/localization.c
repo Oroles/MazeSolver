@@ -12,13 +12,9 @@
 double __rx=MAP_RES/2;
 int __x=0;
 	int get_x() {
-		GetResource(UpdateLocker);
-		ReleaseResource(UpdateLocker);
 		return __x;
 	}
 	double get_realX() {
-		GetResource(UpdateLocker);
-		ReleaseResource(UpdateLocker);
 		return __rx;
 	}
 	void update_x(double dx) {
@@ -30,13 +26,9 @@ int __x=0;
 double __ry=MAP_RES/2;
 int __y=0;
 	int get_y() {
-		GetResource(UpdateLocker);
-		ReleaseResource(UpdateLocker);
 		return __y;
 	}
 	double get_realY() {
-		GetResource(UpdateLocker);
-		ReleaseResource(UpdateLocker);
 		return __ry;
 	}
 	void update_y(double dy) {
@@ -198,10 +190,8 @@ void update_localization() {
 	}
 
 	// Don't stop me, I need synchronized parameter values
-	GetResource(RES_SCHEDULER);
 	int temp_wL=get_wPositionL();
 	int temp_wR=get_wPositionR();
-	ReleaseResource(RES_SCHEDULER);
 	
 	// Initialization
 	double wL,wR;
@@ -229,10 +219,8 @@ void update_localization() {
 		fix_localization(&x,&y,&__w);
 
 		// Update Shared Variables
-		GetResource(UpdateLocker);
 		update_x(x);
 		update_y(y);
 		update_w(__w/RAD);
-		ReleaseResource(UpdateLocker);
 	}
 }
