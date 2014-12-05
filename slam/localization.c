@@ -131,6 +131,56 @@ void init_localization() {
 	}
 }
 
+int dist_from_cell_cp(U8 cp) {
+	double x_in_cell=get_realX()-get_x()*MAP_RES;
+	double y_in_cell=get_realY()-get_y()*MAP_RES;
+	if(x_in_cell<0) x_in_cell+=MAP_RES;
+	if(y_in_cell<0) y_in_cell+=MAP_RES;
+	switch(cp) {
+		case NORTH: return MAP_RES-y_in_cell;
+		case EAST: return MAP_RES-x_in_cell;
+		case SOUTH: return y_in_cell;
+		case WEST: return x_in_cell;
+		default: return -1;
+	}
+}
+
+void fix_x_and_y(double *x_fix, double *y_fix, U8 cp, U8 fix_val) {
+	switch(cp) {
+		case NORTH: *y_fix=*y_fix+fix_val;
+		break;
+		case SOUTH: *y_fix=*y_fix-fix_val;
+		break;
+		case EAST: *x_fix=*x_fix+fix_val;
+		break;
+		case WEST: *x_fix=*x_fix-fix_val;
+		break;
+	}
+}
+void fix_localization(double *x_fix, double *y_fix, double *w_fix) {
+	U8 cp=__cp;
+	if(is_cp(cp) && !is_inside_square(get_realX(),get_realY(),CENTER_RES)) {
+		int dist=get_distanceF();
+		int error=dist_from_cell_cp(cp)/10-(dist+CENTER_TO_FRONT);
+		if(error>1) {
+			fix_x_and_y(x_fix,y_fix,cp,0);
+		}
+		dist=get_distanceL();
+		error=dist_from_cell_cp(previous_cp(cp))/10-(dist+CENTER_TO_SIDES);
+		if(error>1) {
+			fix_x_and_y(x_fix,y_fix,previous_cp(cp),1);
+			*w_fix=*w_fix+0.016;
+		}
+		dist=get_distanceR();
+		error=dist_from_cell_cp(next_cp(cp))/10-(dist+CENTER_TO_SIDES);
+		if(error>1) {
+			fix_x_and_y(x_fix,y_fix,next_cp(cp),1);
+			*w_fix=*w_fix-0.016;
+		}
+	}
+}
+
+
 void update_localization() {
 	static int __last_wL=0;
 	static int __last_wR=0;
@@ -175,6 +225,8 @@ void update_localization() {
 		y=sin(__w);
 		x=Vs*x;
 		y=Vs*y;
+
+		fix_localization(&x,&y,&__w);
 
 		// Update Shared Variables
 		GetResource(UpdateLocker);
