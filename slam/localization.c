@@ -12,13 +12,9 @@
 double __rx=MAP_RES/2;
 int __x=0;
 	int get_x() {
-		GetResource(UpdateLocker);
-		ReleaseResource(UpdateLocker);
 		return __x;
 	}
 	double get_realX() {
-		GetResource(UpdateLocker);
-		ReleaseResource(UpdateLocker);
 		return __rx;
 	}
 	void update_x(double dx) {
@@ -30,13 +26,9 @@ int __x=0;
 double __ry=MAP_RES/2;
 int __y=0;
 	int get_y() {
-		GetResource(UpdateLocker);
-		ReleaseResource(UpdateLocker);
 		return __y;
 	}
 	double get_realY() {
-		GetResource(UpdateLocker);
-		ReleaseResource(UpdateLocker);
 		return __ry;
 	}
 	void update_y(double dy) {
@@ -61,13 +53,9 @@ int __cp=EAST;
 	}
 
 	double get_w() {
-		GetResource(UpdateLocker);
-		ReleaseResource(UpdateLocker);
 		return __w;
 	}
 	int get_cardinal_point() {
-		GetResource(UpdateLocker);
-		ReleaseResource(UpdateLocker);
 		return __cp;
 	}
 	void update_w(double w) {
