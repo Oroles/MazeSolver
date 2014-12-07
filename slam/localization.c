@@ -168,7 +168,6 @@ void fix_localization(double *x_fix, double *y_fix, double *w_fix) {
 	}
 }
 
-
 void update_localization() {
 	static int __last_wL=0;
 	static int __last_wR=0;
@@ -215,12 +214,9 @@ void update_localization() {
 		y=Vs*y;
 
 		fix_localization(&x,&y,&__w);
-
 		// Update Shared Variables
-		GetResource(UpdateLocker);
 		update_x(x);
 		update_y(y);
 		update_w(__w/RAD);
-		ReleaseResource(UpdateLocker);
 	}
 }

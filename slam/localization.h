@@ -8,8 +8,6 @@
 #define L_CALIBRATION  (1.00147814) 
 #define R_CALIBRATION  (0.99852185)
 
-DeclareResource(UpdateLocker);
-
 int get_x();
 double get_realX();
 int get_y();
