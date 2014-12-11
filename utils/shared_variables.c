@@ -1,6 +1,7 @@
 #include "utils.h"
 #include "shared_variables.h"
 
+#define COLOR_THRESHOLD 50
 static S16 __rgb[3];
 
 void set_rgb(S16* rgb) {
@@ -10,9 +11,9 @@ void set_rgb(S16* rgb) {
 }
 
 int is_stop_color() {
-	if (!between(__rgb[0],460,20) ) return 0;
-	if (!between(__rgb[1],380,20) ) return 0;
-	if (!between(__rgb[2],380,20) ) return 0;
+	if (!between(__rgb[0],460,COLOR_THRESHOLD) ) return 0;
+	if (!between(__rgb[1],380,COLOR_THRESHOLD) ) return 0;
+	if (!between(__rgb[2],380,COLOR_THRESHOLD) ) return 0;
 	return 1;
 }
 	
