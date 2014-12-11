@@ -31,5 +31,6 @@ int equal(struct node* first_node, struct node* second_node);
 
 void free_list(struct node** root);
 int count(struct node* root);
+void display_directions(struct node* root);
 
 #endif

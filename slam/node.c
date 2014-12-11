@@ -125,6 +125,24 @@ void free_list(struct node** root) {
 	}
 }
 
+void display_directions_helper(struct node* root, int contor_direction){
+	if ( root != NULL ) {
+		display_goto_xy(0,contor_direction);
+		display_int( root->x, 2);
+		display_goto_xy(3,contor_direction);
+		display_int( root->y, 2);
+		root = root->next;
+		display_directions_helper(root,++contor_direction);
+	}
+}
+
+void display_directions(struct node* root){
+	int contor_direction = 0;
+	display_clear(0);
+	display_directions_helper(root,contor_direction);
+	display_update();
+}
+
 int count(struct node* root) {
 	int result = 0;
 	while( root != NULL ) {
