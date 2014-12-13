@@ -10,6 +10,7 @@
 int __next_goal_x=0;
 int __next_goal_y=0;
 struct node* commands = NULL;
+int goal;
 
 int get_direction(struct node** commands) {
 	int direction;
@@ -60,8 +61,6 @@ int find_next_goal() {
 
 	return direction;
 }
-
-int goal;
 
 int get_goal() {
 	return goal;
