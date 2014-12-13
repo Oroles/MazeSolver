@@ -61,6 +61,12 @@ int find_next_goal() {
 	return direction;
 }
 
+int goal;
+
+int get_goal() {
+	return goal;
+}
+
 void goto_cp(int goal){
 	turn_to_cp(goal,20);
 	WaitEvent(EndOfMovement);
@@ -74,7 +80,7 @@ int main_step() {
 			stop();
 
 			// Find the next goal, then go in its direction
-			int goal=find_next_goal();
+			goal=find_next_goal();
 
 			if(goal>=0) {
 				coord_for_cp_square(goal,&__next_goal_x,&__next_goal_y);

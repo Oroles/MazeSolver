@@ -4,6 +4,7 @@
 #include "utils/shared_variables.h"
 #include "utils/utils.h"
 #include "localization.h"
+#include "main_controller.h"
 
 /*
   7   6   5   4   3   2   1   0
@@ -230,7 +231,7 @@ void update_map() {
 
 	int cardinal_point = get_cardinal_point();
 	// Do measurements only if in a good direction
-	if(is_cp(cardinal_point)) {
+	if(is_cp(cardinal_point) && cardinal_point == get_goal() ) {
 
 		static int p_cp = -1;
 		if ( p_cp != cardinal_point ) {

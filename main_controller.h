@@ -3,5 +3,6 @@
 
 int main_step();
 void main_end();
+int get_goal();
 
 #endif
